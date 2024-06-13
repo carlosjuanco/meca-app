@@ -13,7 +13,7 @@ type Pages = {
     name_component: string;
 }
 
-type State {
+type State = {
     api_token: string;
     user: User;
     pages: Pages;
