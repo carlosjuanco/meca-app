@@ -14,5 +14,4 @@ if (api_token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${api_token}`
 }
 
-
 createApp(App).use(router).use(store).mount('#app')
