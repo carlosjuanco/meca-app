@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-// import axios from 'axios'
+import axios from 'axios'
 
 type User = {
     id: number;
@@ -46,32 +46,32 @@ export default createStore({
     },
     actions: {
         async login ({ commit }, data) {
-            // const response = await axios.post('/login', data)
-            // const api_token = response.data.api_token
+            const response = await axios.post('/login', data)
+            const api_token = response.data.api_token
 
-            // localStorage.setItem('api_token', api_token)
+            localStorage.setItem('api_token', api_token)
 
-            // axios.defaults.headers.common['Authorization'] = `Bearer ${api_token}`
+            axios.defaults.headers.common['Authorization'] = `Bearer ${api_token}`
 
-            // commit('SET_API_TOKEN', api_token)
-            // commit('SET_USER', response.data.user)
-            // commit('SET_PAGES', response.data.pages)
+            commit('SET_API_TOKEN', api_token)
+            commit('SET_USER', response.data.user)
+            commit('SET_PAGES', response.data.pages)
         },
         async check ({ commit }) {
-            // const response = await axios.get('/check')
+            const response = await axios.get('/check')
 
-            // commit('SET_USER', response.data.user)
-            // commit('SET_PAGES', response.data.pages)
+            commit('SET_USER', response.data.user)
+            commit('SET_PAGES', response.data.pages)
         },
         async logout ({ dispatch }) {
-            // await axios.post('/logout')
+            await axios.post('/logout')
 
             dispatch('destroySession')
         },
         destroySession ({ commit }) {
             localStorage.removeItem('api_token')
 
-            // delete axios.defaults.headers.common['Authorization']
+            delete axios.defaults.headers.common['Authorization']
 
             commit('SET_API_TOKEN', '')
             commit('SET_PAGES', [])
