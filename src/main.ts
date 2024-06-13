@@ -5,6 +5,7 @@ import store from './store/index'
 import axios from 'axios'
 import 'bulma/css/bulma.css'
 import 'animate.css'
+import '@fortawesome/fontawesome-free/css/all.min.css'
 
 const api_token: string | null = localStorage.getItem('api_token')
 
