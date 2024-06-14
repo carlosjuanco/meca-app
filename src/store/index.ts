@@ -1,6 +1,8 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
 
+type Data = { [key: string]: any }
+
 type User = {
     id: number;
     name: string;
@@ -45,7 +47,7 @@ export default createStore({
         }
     },
     actions: {
-        async login ({ commit }, data) {
+        async login ({ commit }, data:Data):Promise<void> {
             const response = await axios.post('/login', data)
             const api_token = response.data.api_token
 
