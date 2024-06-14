@@ -11,7 +11,8 @@ const helpers = () => {
         if (error.response) {
             if (error.response.data.errors) {
                 Object.entries(error.response.data.errors).forEach(([key, value]) => {
-                    errors[key] = value
+                    const valor = value as string[]
+                    errors[key] = valor[0]
                 })
             }
             else {
