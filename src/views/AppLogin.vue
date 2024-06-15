@@ -114,9 +114,9 @@
             </div>
         </div>
         <modal-notification
-              :show="show_modal_notification"
-              :data="data_modal_notification"
-              @close="show_modal_notification = false"
+            :show="show_modal_notification"
+            :data="data_modal_notification"
+            @close="show_modal_notification = false"
           ></modal-notification>
     </section>
 </template>
