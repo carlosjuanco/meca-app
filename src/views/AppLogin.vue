@@ -43,7 +43,6 @@
 
             const login = async (values:{ [key: string]: any }) => {
                 loading.value = true
-                console.log('Lo que tiene values: ', values)
 
                 try {
                     await store.dispatch('login', values)
