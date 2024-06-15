@@ -3,6 +3,7 @@ import store from '../store/index'
 
 import HelloWord from "../components/HelloWorld.vue"
 import AppLogin from "../views/AppLogin.vue"
+import AppHome from "../views/AppHome.vue"
 
 const routes = [
     {
@@ -14,6 +15,11 @@ const routes = [
         path: '/appLogin',
         name: 'login',
         component: AppLogin
+    },
+    {
+      path: '/AppHome',
+      name: 'Inicio',
+      component: AppHome,
     }
 ]
 
