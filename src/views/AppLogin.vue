@@ -29,7 +29,7 @@
               email: yup.string().email('El correo electrónico debe ser un correo electrónico válido')
               .required('El campo correo es obligatorio.'),
               password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres')
-              .required('El contraseña correo es obligatorio.'),
+              .required('El campo contraseña es obligatorio.'),
             });
 
             let loading = ref(false)
