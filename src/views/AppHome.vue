@@ -27,6 +27,8 @@
         url: ''
       })
 
+      let show_navbar = ref(false)
+
       const logout = async () => {
           try {
               await store.dispatch('logout')
@@ -41,11 +43,18 @@
             console.log(error)
           }
       }
+
+      const show_menu = () => {
+        show_navbar.value = show_navbar.value ? false : true
+      }
+
       return {
         pages, 
         logout, 
         show_modal_notification, 
-        data_modal_notification
+        data_modal_notification,
+        show_menu,
+        show_navbar
       }
     }
 	})
@@ -57,7 +66,7 @@
         <a class="navbar-item" href="#">
           <img src="../assets/logoJuanito.png" alt="Mi Logo">
         </a>
-        <div class="navbar-burger js-burger" data-target="navbarExampleTransparentExample">
+        <div class="navbar-burger js-burger" data-target="navbarExampleTransparentExample" @click="show_menu">
           <span></span>
           <span></span>
           <span></span>
@@ -65,7 +74,7 @@
         </div>
       </div>
 
-      <div id="navbarExampleTransparentExample" class="navbar-menu">
+      <div id="navbarExampleTransparentExample" :class="{'navbar-menu': true, 'is-active': show_navbar}">
         <div class="navbar-start">
           <router-link v-for="page in pages" :key="page" :to="page.name_component" class="navbar-item">{{ page.name }}</router-link>
         </div>
