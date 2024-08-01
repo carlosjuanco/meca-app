@@ -5,6 +5,8 @@ import HelloWord from "@/components/HelloWorld.vue"
 import AppLogin from "@/views/AppLogin.vue"
 import AppHome from "@/views/AppHome.vue"
 import CapturarInformeActual from "@/components/SecretariaDeIglesia/CapturarInformeActual.vue"
+import InformePorMes from "@/components/SecretariaDeIglesia/InformePorMes.vue"
+import InformeMesX from "@/components/SecretariaDeIglesia/InformeMesX.vue"
 
 const routes = [
     {
@@ -30,6 +32,28 @@ const routes = [
             components: {
                 default: CapturarInformeActual,
                 sidebar: CapturarInformeActual
+            }
+        }]
+    },
+    {
+        path: '/InformePorMes',
+        component: AppHome,
+        children: [{
+            path: '/InformePorMes', name: 'Informe por mes',
+            components: {
+                default: InformePorMes,
+                sidebar: InformePorMes
+            }
+        }]
+    },
+    {
+        path: '/InformeMesX',
+        component: AppHome,
+        children: [{
+            path: '/InformeMesX', name: 'Informe mes x',
+            components: {
+                default: InformeMesX,
+                sidebar: InformeMesX
             }
         }]
     },
