@@ -126,10 +126,8 @@
         </div>
       </div>
     </nav>
-    <section class="hero is-info is-fullheight">
-      <div class="hero-body">
+    <section>
         <router-view name="sidebar"></router-view>
-      </div>
     </section>
     <modal-notification
       :show="show_modal_notification"
