@@ -150,9 +150,8 @@
           <button type="submit" class="button is-success is-family-monospace is-fullwidth">Guardar</button>
       </Form>
     </div>
-    <p>Espacio</p>
     <div class="columns">
-      <div class="columns">
+      <div class="column is-full">
           <article class="panel is-link">
               <p class="panel-heading">Reglas de negocio</p>
               <a class="panel-block">
