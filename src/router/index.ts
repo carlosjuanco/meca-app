@@ -4,6 +4,7 @@ import store from '@/store/index'
 import HelloWord from "@/components/HelloWorld.vue"
 import AppLogin from "@/views/AppLogin.vue"
 import AppHome from "@/views/AppHome.vue"
+import CapturarInformeActual from "@/components/SecretariaDeIglesia/CapturarInformeActual.vue"
 
 const routes = [
     {
@@ -17,10 +18,21 @@ const routes = [
         component: AppLogin
     },
     {
-      path: '/AppHome',
-      name: 'Inicio',
-      component: AppHome,
-    }
+        path: '/AppHome',
+        name: 'Inicio',
+        component: AppHome,
+    },
+    {
+        path: '/CapturarInformeActual',
+        component: AppHome,
+        children: [{
+            path: '/CapturarInformeActual', name: 'Capturar informe actual',
+            components: {
+                default: CapturarInformeActual,
+                sidebar: CapturarInformeActual
+            }
+        }]
+    },
 ]
 
 const router = createRouter({
