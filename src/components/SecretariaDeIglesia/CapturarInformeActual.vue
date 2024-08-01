@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { Field, Form, ErrorMessage, FieldArray } from 'vee-validate'
   import * as yup from 'yup'
 
