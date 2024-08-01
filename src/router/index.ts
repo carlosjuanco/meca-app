@@ -5,6 +5,7 @@ import HelloWord from "@/components/HelloWorld.vue"
 import WelcomeUser from "@/components/WelcomeUser.vue"
 import AppLogin from "@/views/AppLogin.vue"
 import AppHome from "@/views/AppHome.vue"
+import CapturarInformeActual from "@/components/SecretariaDeIglesia/CapturarInformeActual.vue"
 
 const routes = [
     {
@@ -18,18 +19,18 @@ const routes = [
         component: AppLogin
     },
     {
-      path: '/AppHome',
-      name: 'Inicio',
-      component: AppHome,
+        path: '/AppHome',
+        name: 'Inicio',
+        component: AppHome,
     },
     {
-        path: '/WelcomeUser',
+        path: '/CapturarInformeActual',
         component: AppHome,
         children: [{
-            path: '/:name_user', name: 'Bienvenido usuario',
+            path: '/CapturarInformeActual', name: 'Capturar informe actual',
             components: {
-                default: WelcomeUser,
-                sidebar: WelcomeUser
+                default: CapturarInformeActual,
+                sidebar: CapturarInformeActual
             }
         }]
     },
