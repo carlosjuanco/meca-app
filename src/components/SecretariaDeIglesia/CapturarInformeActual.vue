@@ -11,8 +11,8 @@
         FieldArray
     },
     setup() {
-      const name_iglesia = 'Familias en crecimiento'
-      const concepts = [
+      const name_iglesia: string = 'Familias en crecimiento'
+      const concepts: string[] = [
         "",
         "GRUPOS PEQUEÑOS",
         "CONTACTOS MISIONEROS",
@@ -26,7 +26,7 @@
         "INVITADOS EN LA CAMPAÑA DE IGLESIA",
         ""
       ]
-      const total_weeks = [
+      const total_weeks: string[] = [
         "Primera semana",
         "Segunda semana",
         "Tercera semana",
@@ -65,7 +65,7 @@
         ).strict(),
       })
 
-      const save = (values) => {
+      const save = (values:{ [key: string]: any }) => {
         console.log('No soy', values)
       }
 
