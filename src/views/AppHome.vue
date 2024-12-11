@@ -20,6 +20,7 @@
       const { handleErrors } = helpers()
       
       let pages = store.getters.pages
+      let name_user = store.getters.user.name
       let show_modal_notification = ref(false)
       let data_modal_notification: Datamodal = reactive({
         title: '',
@@ -28,6 +29,8 @@
       })
 
       let show_navbar = ref(false)
+
+      router.replace({ name: "Bienvenido usuario", params:{ name_user: name_user} })
 
       const logout = async () => {
           try {
