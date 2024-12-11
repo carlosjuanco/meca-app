@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router"
 import store from '@/store/index'
 
 import HelloWord from "@/components/HelloWorld.vue"
+import WelcomeUser from "@/components/WelcomeUser.vue"
 import AppLogin from "@/views/AppLogin.vue"
 import AppHome from "@/views/AppHome.vue"
 import CapturarInformeActual from "@/components/SecretariaDeIglesia/CapturarInformeActual.vue"
@@ -20,9 +21,20 @@ const routes = [
         component: AppLogin
     },
     {
-        path: '/AppHome',
-        name: 'Inicio',
+      path: '/AppHome',
+      name: 'Inicio',
+      component: AppHome,
+    },
+    {
+        path: '/WelcomeUser',
         component: AppHome,
+        children: [{
+            path: '/:name_user', name: 'Bienvenido usuario',
+            components: {
+                default: WelcomeUser,
+                sidebar: WelcomeUser
+            }
+        }]
     },
     {
         path: '/CapturarInformeActual',
