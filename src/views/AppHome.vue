@@ -19,7 +19,8 @@
       const router = useRouter()
       const { handleErrors } = helpers()
       
-      let pages = store.getters.pages
+      let pages = store.getters.pages.filter((page: { [key: string]: any }) => JSON.parse(page.pivot.permissions).Ver_la_pagina_en_el_menu)
+      
       let name_user = store.getters.user.name
       let show_modal_notification = ref(false)
       let data_modal_notification: Datamodal = reactive({
