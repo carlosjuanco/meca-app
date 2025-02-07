@@ -26,7 +26,7 @@
             const router = useRouter()
             const { handleErrors } = helpers()
             const schema = yup.object({
-              email: yup.string().email('El correo electrónico debe ser un correo electrónico válido')
+              email: yup.string().email('La estructura del correo no es válido.')
               .required('El campo correo es obligatorio.'),
               password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres')
               .required('El campo contraseña es obligatorio.'),
