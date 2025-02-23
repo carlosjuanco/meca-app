@@ -8,6 +8,7 @@ import AppHome from "@/views/AppHome.vue"
 import CapturarInformeActual from "@/components/SecretariaDeIglesia/CapturarInformeActual.vue"
 import InformePorMes from "@/components/SecretariaDeIglesia/InformePorMes.vue"
 import InformeMesX from "@/components/SecretariaDeIglesia/InformeMesX.vue"
+import InformeMensualActual from "@/components/DistrictSecretary/InformeMensualActual.vue";
 
 const routes = [
     {
@@ -66,6 +67,17 @@ const routes = [
             components: {
                 default: InformeMesX,
                 sidebar: InformeMesX
+            }
+        }]
+    },
+    {
+        path: '/InformeMensualActual',
+        component: AppHome,
+        children: [{
+            path: '/InformeMensualActual', name: 'Informe mensual actual',
+            components: {
+                default: InformeMensualActual,
+                sidebar: InformeMensualActual
             }
         }]
     },
