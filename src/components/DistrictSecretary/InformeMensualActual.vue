@@ -62,7 +62,7 @@ export default {
         <td>1</td>
         <td>1</td>
       </tr>
-      <tr>
+      <tr class="is-light">
         <td>Anterior</td>
         <td>2</td>
         <td>2</td>
@@ -75,7 +75,7 @@ export default {
         <td>2</td>
         <td>2</td>
       </tr>
-      <tr>
+      <tr class="is-light">
         <td>Total distrital</td>
         <td>3</td>
         <td>3</td>
