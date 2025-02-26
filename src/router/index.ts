@@ -9,6 +9,8 @@ import CapturarInformeActual from "@/components/SecretariaDeIglesia/CapturarInfo
 import InformePorMes from "@/components/SecretariaDeIglesia/InformePorMes.vue"
 import InformeMesX from "@/components/SecretariaDeIglesia/InformeMesX.vue"
 import InformeMensualActual from "@/components/DistrictSecretary/InformeMensualActual.vue";
+import InformePorMeses from "@/components/DistrictSecretary/InformePorMeses.vue";
+import InformeMesSeleccionado from "@/components/DistrictSecretary/InformeMesSeleccionado.vue";
 
 const routes = [
     {
@@ -78,6 +80,28 @@ const routes = [
             components: {
                 default: InformeMensualActual,
                 sidebar: InformeMensualActual
+            }
+        }]
+    },
+    {
+        path: '/InformePorMeses',
+        component: AppHome,
+        children: [{
+            path: '/InformePorMeses', name: 'Informe por meses',
+            components: {
+                default: InformePorMeses,
+                sidebar: InformePorMeses
+            }
+        }]
+    },
+    {
+        path: '/InformeMesSeleccionado',
+        component: AppHome,
+        children: [{
+            path: '/InformeMesSeleccionado', name: 'Informe mes seleccionado',
+            components: {
+                default: InformeMesSeleccionado,
+                sidebar: InformeMesSeleccionado
             }
         }]
     },
