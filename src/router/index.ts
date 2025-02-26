@@ -11,6 +11,7 @@ import InformeMesX from "@/components/SecretariaDeIglesia/InformeMesX.vue"
 import InformeMensualActual from "@/components/DistrictSecretary/InformeMensualActual.vue";
 import InformePorMeses from "@/components/DistrictSecretary/InformePorMeses.vue";
 import InformeMesSeleccionado from "@/components/DistrictSecretary/InformeMesSeleccionado.vue";
+import AperturaDeMes from "@/components/DistrictSecretary/AperturaDeMes.vue";
 
 const routes = [
     {
@@ -102,6 +103,17 @@ const routes = [
             components: {
                 default: InformeMesSeleccionado,
                 sidebar: InformeMesSeleccionado
+            }
+        }]
+    },
+    {
+        path: '/AperturaDeMes',
+        component: AppHome,
+        children: [{
+            path: '/AperturaDeMes', name: 'Apertura de mes',
+            components: {
+                default: AperturaDeMes,
+                sidebar: AperturaDeMes
             }
         }]
     },
