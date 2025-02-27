@@ -14,16 +14,16 @@
       const name_iglesia: string = 'Familias en crecimiento'
       const concepts: string[] = [
         "",
-        "GRUPOS PEQUEÑOS",
-        "CONTACTOS MISIONEROS",
-        "ESTUDIOS ACUMULADOS",
-        "NUEVOS ESTUDIOS",
-        "BAUTISMOS",
-        "TOTAL DE PERSONAS ESTUDIANDO",
-        "TOTAL DE ESTUDIOS MENSUALES",
-        "TOTAL DE BAUTISMOS ALCANZADOS",
-        "INVITADOS EN LA CAMPAÑA DE GP",
-        "INVITADOS EN LA CAMPAÑA DE IGLESIA",
+        "Grupos pequeños",
+        "Contactos misioneros",
+        "Estudios acumulados",
+        "Nuevos estudios",
+        "Bautismos",
+        "Total de personas estudiando",
+        "Total de estudios mensuales",
+        "Total de bautismos alcanzados",
+        "Invitados en la campaña de GP",
+        "Invitados en la campaña de iglesia",
         ""
       ]
       const total_weeks: string[] = [
@@ -149,36 +149,5 @@
           </table>
           <button type="submit" class="button is-success is-family-monospace is-fullwidth">Guardar</button>
       </Form>
-    </div>
-    <div class="columns">
-      <div class="column is-full">
-          <article class="panel is-link">
-              <p class="panel-heading">Reglas de negocio</p>
-              <a class="panel-block">
-                <span class="panel-icon">
-                  <i class="fas fa-book" aria-hidden="true"></i>
-                </span>
-                El texto "Familias en crecimiento" cambiará de acuerdo a la iglesia que este adjunto la persona
-              </a>
-              <a class="panel-block">
-                <span class="panel-icon">
-                  <i class="fas fa-book" aria-hidden="true"></i>
-                </span>
-                Cuando pierda el foco un imput se guardará automáticamente
-              </a>
-              <a class="panel-block">
-                <span class="panel-icon">
-                  <i class="fas fa-book" aria-hidden="true"></i>
-                </span>
-                Si presiona más de 4 veces el botón de "Nueva semana" ya no deberá agregar mas filas
-              </a>
-              <a class="panel-block">
-                <span class="panel-icon">
-                  <i class="fas fa-book" aria-hidden="true"></i>
-                </span>
-                Cuando creé la segunda semana, se deshabilitara todos los input de la primera semana, así sucesivamente.
-              </a>
-            </article>
-      </div>
     </div>
 </template>
