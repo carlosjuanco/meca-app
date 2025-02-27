@@ -14,16 +14,16 @@
       const name_iglesia: string = 'Familias en crecimiento'
       const concepts: string[] = [
         "",
-        "GRUPOS PEQUEÑOS",
-        "CONTACTOS MISIONEROS",
-        "ESTUDIOS ACUMULADOS",
-        "NUEVOS ESTUDIOS",
-        "BAUTISMOS",
-        "TOTAL DE PERSONAS ESTUDIANDO",
-        "TOTAL DE ESTUDIOS MENSUALES",
-        "TOTAL DE BAUTISMOS ALCANZADOS",
-        "INVITADOS EN LA CAMPAÑA DE GP",
-        "INVITADOS EN LA CAMPAÑA DE IGLESIA",
+        "Grupos pequeños",
+        "Contactos misioneros",
+        "Estudios acumulados",
+        "Nuevos estudios",
+        "Bautismos",
+        "Total de personas estudiando",
+        "Total de estudios mensuales",
+        "Total de bautismos alcanzados",
+        "Invitados en la campaña de GP",
+        "Invitados en la campaña de iglesia",
         ""
       ]
       const total_weeks: string[] = [
