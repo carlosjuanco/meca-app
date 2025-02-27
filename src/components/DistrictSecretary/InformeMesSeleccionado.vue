@@ -42,7 +42,7 @@ export default {
 <template>
   <div class="table-container">
     <p class="title is-1 has-text-centered mt-1">Informe de las iglesias del distrito de las flores </p>
-    <p class="subtitle is-2 has-text-centered mt-1">Mes de Enero</p>
+    <p class="subtitle is-2 has-text-centered mt-1">Enero 2025</p>
     <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
       <thead>
         <tr class="is-light">
@@ -91,5 +91,71 @@ export default {
         </tr>
       </tbody>
     </table>
+  </div>
+  <div class="columns">
+      <div class="column">
+          <article class="panel is-link">
+              <p class="panel-heading">Reglas de negocio</p>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                La intersección de iglesia y conceptos, es lo que capturo cada <span class="tag is-light">secretaria de iglesia</span>.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                La etiqueta <span class="tag is-light">Enero</span> cambiará de acuerdo al mes seleccionado.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                La etiqueta <span class="tag is-light">2025</span> cambiará de acuerdo al año correspondiente.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                La fila con la etiqueta <span class="tag is-light">anterior</span> es el total por cada columna del mes anterior.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                La fila con la etiqueta <span class="tag is-light">Total distrital</span> es el total del mes actual.
+              </a>
+          </article>
+      </div>
+      <div class="column">
+          <article class="panel is-link">
+              <p class="panel-heading">Funcionalidad</p>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Los conceptos se traeran de la tabla <span class="tag is-light">conceptos</span>.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Los nombres de iglesias se traeran de la tabla <span class="tag is-light">iglesias</span>.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Obtener la información de la intersección de iglesias y conceptos.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Solo el primer mes, después que se haya puesto en marcha el sistema, la fila anterior, tendrá ceros.
+              </a>
+          </article>
+      </div>
   </div>
 </template>
