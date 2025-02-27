@@ -72,9 +72,20 @@ export default {
     </div>
   </div>
   <div class="columns">
-    <div class="column is-full">
+    <div class="column">
         <article class="panel is-link">
             <p class="panel-heading">Reglas de negocio</p>
+            <a class="panel-block">
+              <span class="panel-icon">
+                <i class="fas fa-book" aria-hidden="true"></i>
+              </span>
+              El rol <span class="tag is-black">Secretaria de distrito</span> es la única responsable de abrir o cerrar un mes/periodo.
+            </a>
+          </article>
+    </div>
+    <div class="column">
+        <article class="panel is-link">
+            <p class="panel-heading">Funcionalidad</p>
             <a class="panel-block">
               <span class="panel-icon">
                 <i class="fas fa-book" aria-hidden="true"></i>
