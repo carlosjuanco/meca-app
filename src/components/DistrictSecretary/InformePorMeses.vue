@@ -96,7 +96,7 @@ export default {
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                Buscamos todos los años de captura que existen, para poner esos años, en la lista desplegable.
+                Buscamos todos los años en la tabla meses , del campo anio y agrupamos, para obtener todos los años.
               </a>
               <a class="panel-block">
                 <span class="panel-icon">
