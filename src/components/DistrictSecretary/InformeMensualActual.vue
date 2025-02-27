@@ -99,19 +99,19 @@ export default {
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                La interseccion de iglesia y conceptos, es lo que capturo cada <span class="tag is-light">secretaria de iglesia</span>.
+                La intersección de iglesia y conceptos, es lo que capturo cada <span class="tag is-light">secretaria de iglesia</span>.
               </a>
               <a class="panel-block">
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                La fila con el etiqueta <span class="tag is-light">anterior</span> es el total por cada columna del mes anterior.
+                La fila con la etiqueta <span class="tag is-light">anterior</span> es el total por cada columna del mes anterior.
               </a>
               <a class="panel-block">
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                La fila con el etiqueta <span class="tag is-light">Total distrital</span> es el total del mes actual.
+                La fila con la etiqueta <span class="tag is-light">Total distrital</span> es el total del mes actual.
               </a>
           </article>
       </div>
@@ -140,7 +140,7 @@ export default {
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                El primero mes, cuando comience a usarse el sistema, todo estará en ceros.
+                El primer mes, cuando comience a usarse el sistema, todo estará en ceros.
               </a>
               <a class="panel-block">
                 <span class="panel-icon">
@@ -150,5 +150,5 @@ export default {
               </a>
           </article>
       </div>
-    </div>
+  </div>
 </template>
