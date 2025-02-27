@@ -46,31 +46,29 @@
         </div>
     </div>
     <div class="table-container mt-6">
-      <Form @submit="save" :validation-schema="schema" :initial-values="initialData">
-          <table class="table is-link">
-            <thead>
-              <tr>
-                <th v-for="(concept, index) in concepts" :key="index" v-text="concept"></th>
-              </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th><strong>Primera semana</strong></th>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                </tr>
-            </tbody>
-          </table>
-      </Form>
+      <table class="table is-link">
+        <thead>
+          <tr>
+            <th v-for="(concept, index) in concepts" :key="index" v-text="concept"></th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th><strong>Primera semana</strong></th>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+                <td>1</td>
+            </tr>
+        </tbody>
+      </table>
     </div>
     <div class="columns">
       <div class="column">
