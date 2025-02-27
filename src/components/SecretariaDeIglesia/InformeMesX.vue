@@ -34,7 +34,7 @@
 <template>
     <div class="columns">
         <div class="column is-four-fifths">
-          
+          <h3 class="title is-2">Enero 2025</h3>
         </div>
         <div class="column">
             <button class="button is-info is-large pt-3 pb-3 is-fullwidth">
@@ -42,7 +42,7 @@
                   <i class="fa-solid fa-file-pdf"></i>
                 </span>
                 <span>Exportar en PDF</span>
-              </button>
+            </button>
         </div>
     </div>
     <div class="table-container mt-6">
@@ -80,6 +80,18 @@
                 </span>
                 Visualizar lo capturado del mes correspondiente.
               </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                La etiqueta <span class="tag is-light">Enero</span> cambiará de acuerdo al mes seleccionado.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                La etiqueta <span class="tag is-light">2025</span> cambiará de acuerdo al año correspondiente.
+              </a>
           </article>
       </div>
       <div class="column">
@@ -89,7 +101,7 @@
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                Obtener la información de la interseccion de iglesias y conceptos.
+                Obtener la información de la intersección de iglesias y conceptos.
               </a>
           </article>
       </div>
