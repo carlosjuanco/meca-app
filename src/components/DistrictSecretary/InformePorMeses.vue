@@ -71,4 +71,46 @@ export default {
       <button class="button is-large pt-6 pb-6 is-fullwidth">Diciembre</button>
     </div>
   </div>
+  <div class="columns">
+      <div class="column">
+          <article class="panel is-link">
+              <p class="panel-heading">Reglas de negocio</p>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Que pueda seleccionar que mes desea ver el informe mensual.
+              </a>
+          </article>
+      </div>
+      <div class="column">
+          <article class="panel is-link">
+              <p class="panel-heading">Funcionalidad</p>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                La lista desplegable, que seleccione el año actual siempre.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Buscamos todos los años de captura que existen, para poner esos años, en la lista desplegable.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Cuando haga un clic sobre un mes, en caso que no tenga información, que muestre una ventana con la informacion "Todavía no hay información para este mes".
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Cuando tenga informacion el mes, abrirá el componente "informe mes seleccionado".
+              </a>
+          </article>
+      </div>
+  </div>
 </template>
