@@ -151,14 +151,43 @@
       </Form>
     </div>
     <div class="columns">
-      <div class="column is-full">
+      <div class="column">
           <article class="panel is-link">
               <p class="panel-heading">Reglas de negocio</p>
               <a class="panel-block">
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
+                Si el periodo de capturar ya termino, entonces no puede capturar ningun dato.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Cuando creé la segunda semana, se deshabilitara todos los input de la primera semana, así sucesivamente.
+              </a>
+            </article>
+      </div>
+      <div class="column">
+          <article class="panel is-link">
+              <p class="panel-heading">Funcionalidad</p>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
                 El texto "Familias en crecimiento" cambiará de acuerdo a la iglesia que este adjunto la persona
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Los conceptos se traeran de la tabla <span class="tag is-light">concepts</span>.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Las columnas que representan las semanas de un mes, se almacenan en una variable.
               </a>
               <a class="panel-block">
                 <span class="panel-icon">
@@ -171,12 +200,6 @@
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
                 Si presiona más de 4 veces el botón de "Nueva semana" ya no deberá agregar mas filas
-              </a>
-              <a class="panel-block">
-                <span class="panel-icon">
-                  <i class="fas fa-book" aria-hidden="true"></i>
-                </span>
-                Cuando creé la segunda semana, se deshabilitara todos los input de la primera semana, así sucesivamente.
               </a>
             </article>
       </div>
