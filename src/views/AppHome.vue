@@ -52,13 +52,22 @@
         show_navbar.value = show_navbar.value ? false : true
       }
 
+      const go_to_route = (page:string): void => {
+        if(page === "Inicio"){
+          router.replace({ name: "Bienvenido usuario", params:{ name_user: name_user} })
+        }else {
+          router.replace({ name: page })
+        }
+      }
+
       return {
         pages, 
         logout, 
         show_modal_notification, 
         data_modal_notification,
         show_menu,
-        show_navbar
+        show_navbar,
+        go_to_route
       }
     }
 	})
@@ -80,7 +89,16 @@
 
       <div id="navbarExampleTransparentExample" :class="{'navbar-menu': true, 'is-active': show_navbar}">
         <div class="navbar-start">
-          <router-link v-for="page in pages" :key="page" :to="page.name_component" class="navbar-item">{{ page.name }}</router-link>
+          <router-link v-for="page in pages" :key="page.name_component"
+                       :to="page.name_component"
+                       custom>
+            <a
+              @click="go_to_route(page.name)"
+              class="navbar-item"
+            >
+              {{ page.name }}
+            </a>
+          </router-link>
         </div>
 
         <div class="navbar-end">
