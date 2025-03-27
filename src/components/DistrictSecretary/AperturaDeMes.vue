@@ -81,22 +81,55 @@ export default {
               </span>
               El rol <span class="tag is-black">Secretaria de distrito</span> es la única responsable de abrir o cerrar un mes/periodo.
             </a>
+            <a class="panel-block">
+              <span class="panel-icon">
+                <i class="fas fa-book" aria-hidden="true"></i>
+              </span>
+              En la lista desplegable, por predeterminado seleccionamos el año actual.
+            </a>
           </article>
     </div>
     <div class="column">
         <article class="panel is-link">
             <p class="panel-heading">Funcionalidad</p>
             <a class="panel-block">
+              <div class="content">
+                <ol>
+                  <li>
+                    Buscamos todos los años en la tabla meses , del campo anio y agrupamos, para obtener todos los años.
+                  </li>
+                  <li>
+                    Dibujamos la lista desplegable con los datos obtenidos.
+                  </li>
+                  <li>
+                    En la lista desplegable, por predeterminado seleccionamos el año actual.
+                  </li>
+                </ol>
+              </div>
+            </a>
+            <a class="panel-block">
               <span class="panel-icon">
                 <i class="fas fa-book" aria-hidden="true"></i>
               </span>
-              En la lista desplegable, se mostrará únicamente el año actual.
+              El mes que ésta aperturado se visualizará en color azul.
             </a>
             <a class="panel-block">
-                <span class="panel-icon">
-                  <i class="fas fa-book" aria-hidden="true"></i>
-                </span>
-                Buscamos todos los años en la tabla meses , del campo anio y agrupamos, para obtener todos los años.
+              <span class="panel-icon">
+                <i class="fas fa-book" aria-hidden="true"></i>
+              </span>
+              Cuando haga clic sobre una etiqueta de "Abierto" de un mes que no este abierto, mandamos un mensaje al usuario que primero debe de cerrar el mes aperturado.
+            </a>
+            <a class="panel-block">
+              <span class="panel-icon">
+                <i class="fas fa-book" aria-hidden="true"></i>
+              </span>
+              Cuando haga clic sobre la opción de "Cerrado", del mes aperturado, se volverá opaco, el cuadro que representa el mes y las opciones "Abierto" y "Cerrado" quedaran disponibles para seleccionarlas.
+            </a>
+            <a class="panel-block">
+              <span class="panel-icon">
+                <i class="fas fa-book" aria-hidden="true"></i>
+              </span>
+              En caso que se diriga a otro módulo y no haya ningún mes abierto, se mostrará el mensaje, "Aperture un mes".
             </a>
             <a class="panel-block">
               <span class="panel-icon">
@@ -115,30 +148,6 @@ export default {
                 <i class="fas fa-book" aria-hidden="true"></i>
               </span>
               Solo el mes actual estará habilitado y abierto, con la posibilidad de cerrar el mes.
-            </a>
-            <a class="panel-block">
-              <span class="panel-icon">
-                <i class="fas fa-book" aria-hidden="true"></i>
-              </span>
-              Por lo tanto solo en un mes, estará la opción de abierto o cerrado.
-            </a>
-            <a class="panel-block">
-              <span class="panel-icon">
-                <i class="fas fa-book" aria-hidden="true"></i>
-              </span>
-              Si necesita abrir un mes anterior, tine que llamar a los "Creadores del sistema".
-            </a>
-            <a class="panel-block">
-              <span class="panel-icon">
-                <i class="fas fa-book" aria-hidden="true"></i>
-              </span>
-              El mes actual o el mes que está aperturado se visualizará en color azul.
-            </a>
-            <a class="panel-block">
-              <span class="panel-icon">
-                <i class="fas fa-book" aria-hidden="true"></i>
-              </span>
-              Por predeterminado estará seleccionado abierto el elemento tipo radio.
             </a>
           </article>
     </div>
