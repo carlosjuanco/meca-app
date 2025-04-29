@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
@@ -69,11 +69,51 @@ const helpers = () => {
         return form
     }
 
+    const handleRequest = async (method: string, url: string, data?: Data, id?: number) => {
+        if (url.endsWith('/')) {
+            url = url.slice(0, -1)
+        }
+
+        if (id) {
+            url += `/${id}`
+            data = data ?? {} as Data; // Asigna un objeto vacío si `data` es undefined
+            data['_method'] = 'put'
+        }
+
+        const response = await axios({ method, url, data })
+
+        if (response.data.message) {
+            // toast({
+            //     message: response.data.message,
+            //     type: 'is-success'
+            // })
+        }
+
+        return response.data
+    }
+
+    type APIResponse = 
+      | Record<string, any>                          // Un objeto simple
+      | { [key: string]: Record<string, any>[] };    // Un objeto con una propiedad que es un arreglo de objetos
+
+    const handleMultipleRequests = async (requests: string[]): Promise<APIResponse> => {
+      const functions: (() => Promise<AxiosResponse<any>>)[] = requests.map(r => {
+        return () => axios.get(r);
+      });
+
+      const responses = await Promise.all(functions.map(f => f()));
+
+      return responses.map(r => r.data);
+    }
+
+
     return {
+        handleRequest,
         handleErrors,
         logout,
         getInformationUser,
-        setForm
+        setForm,
+        handleMultipleRequests
     }
 }
 
