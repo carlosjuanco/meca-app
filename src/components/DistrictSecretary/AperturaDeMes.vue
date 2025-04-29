@@ -51,12 +51,30 @@ export default {
             month.is_open = false
             month.disabled = false
             month.checked = false
-            month.id = monthOpen.id
           } else {
             month.is_open = false
             month.disabled = false
             month.checked = false
-            month.id = monthOpen.id
+          }
+        })
+      }
+      catch (error) {
+        handleErrors(error)
+      }
+    }
+
+    const openMonth = async (monthOpen: Month) => {
+      try {
+        await handleRequest('put', `/openMonth`, monthOpen, monthOpen.id)
+        months.forEach(function (month: Month) {
+          if(month.month == monthOpen.month){
+            month.is_open = true
+            month.disabled = false
+            month.checked = true
+          } else {
+            month.is_open = false
+            month.disabled = true
+            month.checked = false
           }
         })
       }
@@ -122,7 +140,6 @@ export default {
               month.is_open = true
               month.disabled = false
               month.checked = true
-              month.id = monthOpen.value.id
             }
           })
         } else if(typeof responses[2].month == 'string') {
@@ -141,7 +158,7 @@ export default {
     onMounted(() => {
       getData()
     })
-    return { years, grid, months, closeMonth }
+    return { years, grid, months, closeMonth, openMonth }
   }
 }
 </script>
@@ -168,7 +185,8 @@ export default {
                 <div class="column">
                   <label class="radio" :disabled="month.disabled ? 'disabled' : null">
                     <input type="radio" :name="`open_or_close_${month.month}`" 
-                      :disabled="month.disabled" :checked="month.checked" value="Abierto"/>
+                      :disabled="month.disabled" :checked="month.checked" value="Abierto"
+                      @click="openMonth(month)"/>
                     Abierto
                   </label>
                 </div>
