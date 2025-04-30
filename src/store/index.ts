@@ -19,7 +19,6 @@ type State = {
     api_token: string;
     user: User;
     pages: Pages;
-    show_navbar: boolean;
 }
 
 // Define the initial state
@@ -27,7 +26,6 @@ const state: State = {
     api_token: localStorage.getItem('api_token') || '',
     user: {id: 0, name: '', email:''},
     pages: {id: 0, name: '', name_component: ''},
-    show_navbar: false
 };
 
 export default createStore({
@@ -42,9 +40,6 @@ export default createStore({
         SET_PAGES (state, pages) {
             state.pages = pages
         },
-        SET_SHOW_NAVBAR (state, show) {
-            state.show_navbar = show
-        }
     },
     actions: {
         async login ({ commit }, data:Data):Promise<void> {
@@ -79,15 +74,11 @@ export default createStore({
             commit('SET_PAGES', [])
             commit('SET_USER', {})
         },
-        toggleNavbar ({ commit }, value) {
-            commit('SET_SHOW_NAVBAR', value)
-        }
     },
     modules: {},
     getters: {
         api_token: state => state.api_token,
         pages: state => state.pages,
         user: state => state.user,
-        showNavbar: state => state.show_navbar
     }
 })
