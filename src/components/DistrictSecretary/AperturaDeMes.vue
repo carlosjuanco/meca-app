@@ -30,7 +30,7 @@ export default {
       columns: 4
     }
     let months = reactive<Month[]>([]);
-    let monthOpen = ref<Month>({
+    let monthOpen = ref<Month | undefined>({
         id: 0,
         month: '',
         status: '',
@@ -85,7 +85,7 @@ export default {
 
     const getData = async () => {
       try {
-        const responses = await handleMultipleRequests([`/getMonths/`, `/getYears/`, `/getMonthOpen/`])
+        const responses = await handleMultipleRequests([`/getMonths/`, `/getYears/`])
 
         responses[0].months.map(function (month: Month) {
           month.is_open = false
@@ -133,16 +133,12 @@ export default {
 
         years.value = responses[1].years
 
-        if(typeof responses[2].month == 'object'){
-          monthOpen.value = responses[2].month
-          months.forEach(function (month: Month) {
-            if(month.month == monthOpen.value.month){
-              month.is_open = true
-              month.disabled = false
-              month.checked = true
-            }
-          })
-        } else if(typeof responses[2].month == 'string') {
+        monthOpen.value = months.find((month: Month) => month.status == 'Abierto')
+        if(monthOpen.value) {
+          monthOpen.value.is_open = true
+          monthOpen.value.disabled = false
+          monthOpen.value.checked = true
+        } else {
           months.forEach(function (month: Month) {
             month.is_open = false
             month.disabled = false
