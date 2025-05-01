@@ -19,6 +19,7 @@ type State = {
     api_token: string;
     user: User;
     pages: Pages;
+    monthOpen: string;
 }
 
 // Define the initial state
@@ -26,6 +27,7 @@ const state: State = {
     api_token: localStorage.getItem('api_token') || '',
     user: {id: 0, name: '', email:''},
     pages: {id: 0, name: '', name_component: ''},
+    monthOpen: '',
 };
 
 export default createStore({
@@ -40,6 +42,9 @@ export default createStore({
         SET_PAGES (state, pages) {
             state.pages = pages
         },
+        SET_MONTHOPEN (state, monthOpen) {
+            state.monthOpen = monthOpen
+        },
     },
     actions: {
         async login ({ commit }, data:Data):Promise<void> {
@@ -53,12 +58,14 @@ export default createStore({
             commit('SET_API_TOKEN', api_token)
             commit('SET_USER', response.data.user)
             commit('SET_PAGES', response.data.user.role.pages)
+            commit('SET_MONTHOPEN', response.data.user.monthOpen)
         },
         async check ({ commit }) {
             const response = await axios.get('/check')
 
             commit('SET_USER', response.data.user)
             commit('SET_PAGES', response.data.user.role.pages)
+            commit('SET_MONTHOPEN', response.data.user.monthOpen)
         },
         async logout ({ dispatch }) {
             await axios.post('/logout')
@@ -73,6 +80,7 @@ export default createStore({
             commit('SET_API_TOKEN', '')
             commit('SET_PAGES', [])
             commit('SET_USER', {})
+            commit('SET_MONTHOPEN', {})
         },
     },
     modules: {},
@@ -80,5 +88,6 @@ export default createStore({
         api_token: state => state.api_token,
         pages: state => state.pages,
         user: state => state.user,
+        monthOpen: state => state.monthOpen,
     }
 })
