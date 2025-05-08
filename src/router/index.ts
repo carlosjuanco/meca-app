@@ -25,9 +25,20 @@ const routes = [
         component: AppLogin
     },
     {
-        path: '/AppHome',
-        name: 'Inicio',
+      path: '/AppHome',
+      name: 'Inicio',
+      component: AppHome,
+    },
+    {
+        path: '/WelcomeUser',
         component: AppHome,
+        children: [{
+            path: '/:name_user', name: 'Bienvenido usuario',
+            components: {
+                default: WelcomeUser,
+                sidebar: WelcomeUser
+            }
+        }]
     },
     {
         path: '/CapturarInformeActual',
