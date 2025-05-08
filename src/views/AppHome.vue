@@ -59,7 +59,7 @@
         }
       }
 
-      router.afterEach((to, from) => {
+      router.afterEach(() => {
         if (store.getters.monthOpen == 'No hay mes aperturado') {
           data_modal_notification.title = 'Advertencia'
           data_modal_notification.message = { message: store.getters.monthOpen } 
