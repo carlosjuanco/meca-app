@@ -60,7 +60,6 @@
       }
 
       router.afterEach((to, from) => {
-        console.log('La navegación ha terminado.', to, from);
         if (store.getters.monthOpen == 'No hay mes aperturado') {
           data_modal_notification.title = 'Advertencia'
           data_modal_notification.message = { message: store.getters.monthOpen } 
