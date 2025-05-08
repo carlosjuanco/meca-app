@@ -1,6 +1,6 @@
 describe('Componente AppLogin', () => {
     beforeEach(() => {
-        cy.visit('http://localhost:8081/')
+        cy.visit('http://localhost:8083/')
     })
 
     it('¿Esta corriendo el sistema?', () => {
@@ -18,7 +18,7 @@ describe('Componente AppLogin', () => {
         cy.get('form').get("input[type='email']").type('juancho')
             .blur()
 
-        cy.get('.is-warning').contains("El correo electrónico debe ser un correo electrónico válido")
+        cy.get('.is-warning').contains("La estructura del correo no es válido.")
     })
 
     it('El correo electrónico es válido', () => {
@@ -37,15 +37,6 @@ describe('Componente AppLogin', () => {
         cy.get('form').get("input[type='password']").type('password')
             .blur().not(".is-warning")
     })
-
-    // it('Error de red', () => {
-    //     cy.get('form').get("input[type='email']").type('carlosjuancho328@gmail.com')
-    //     cy.get('form').get("input[type='password']").type('password')
-
-    //     cy.get('form').contains('Ingresar').click()
-
-    //     cy.contains("h4", "Network Error")
-    // })
 
     it('Mostrar vista de los creadores del sistema', () => {
         cy.get('form').get("input[type='email']").type('carlosjuancho328@gmail.com')
