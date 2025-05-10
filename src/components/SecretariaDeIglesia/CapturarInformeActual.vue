@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { onMounted, reactive } from 'vue'
   import { Field, Form, ErrorMessage, FieldArray } from 'vee-validate'
   import * as yup from 'yup'
+  import { useStore } from 'vuex'
+  import helpers from '../../helpers'
 
 	export default {
     name: 'CapturarInformeActual',
@@ -11,28 +14,38 @@
         FieldArray
     },
     setup() {
-      const name_iglesia: string = 'Familias en crecimiento'
-      const concepts: string[] = [
-        "",
-        "Grupos pequeños",
-        "Contactos misioneros",
-        "Estudios acumulados",
-        "Nuevos estudios",
-        "Bautismos",
-        "Total de personas estudiando",
-        "Total de estudios mensuales",
-        "Total de bautismos alcanzados",
-        "Invitados en la campaña de GP",
-        "Invitados en la campaña de iglesia",
-        ""
-      ]
+      const store = useStore()
+      const { handleRequest, handleErrors } = helpers()
+      const name_iglesia: string = store.getters.user.church_to_which_it_belongs
+      let concepts = reactive<string[]>([""]);
       const total_weeks: string[] = [
         "Primera semana",
         "Segunda semana",
         "Tercera semana",
         "Cuarta semana"
       ]
-      
+
+      // interface Concept {
+      //   id: number,
+      //   concept: string,
+      //   human_id: number, 
+      //   created_at: string,
+      //   updated_at: string,
+      //   deleted_at: string | null
+      // }
+
+      const getConcepts = async () => {
+        try {
+          const responses = await handleRequest('get', `/getConcepts`)
+          responses.concepts.map(function (concept: string) {
+            concepts.splice(concepts.length, 0, concept);
+          })
+        }
+        catch (error) {
+          handleErrors(error)
+        }
+      }
+      // https://vee-validate.logaretm.com/v4/examples/array-fields/
       const initialData = {
         weeks: [{
           concept1: 0,
@@ -51,23 +64,28 @@
       const schema = yup.object().shape({
         weeks: yup.array().of(
           yup.object().shape({
-            concept1:yup.number(),
-            concept2:yup.number(),
-            concept3:yup.number(),
-            concept4:yup.number(),
-            concept5:yup.number(),
-            concept6:yup.number(),
-            concept7:yup.number(),
-            concept8:yup.number(),
-            concept9:yup.number(),
-            concept10:yup.number()
+            concept1:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
+            concept2:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
+            concept3:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
+            concept4:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
+            concept5:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
+            concept6:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
+            concept7:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
+            concept8:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
+            concept9:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
+            concept10:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100')
           })
         ).strict(),
       })
 
       const save = (values:{ [key: string]: any }) => {
-        console.log('No soy', values)
+        console.info('No soy', values)
+        console.info('TigerBlind',JSON.stringify(values, null, 2));
       }
+
+      onMounted(() => {
+        getConcepts()
+      })
 
       return {
         name_iglesia,
