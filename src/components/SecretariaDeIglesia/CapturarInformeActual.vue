@@ -78,9 +78,21 @@
         ).strict(),
       })
 
-      const save = (values:{ [key: string]: any }) => {
+      const save = async (values:{ [key: string]: any }) => {
         console.info('No soy', values)
         console.info('TigerBlind',JSON.stringify(values, null, 2));
+        try {
+            await handleRequest('post', '/storeChurcheWithConcepts', JSON.stringify(values.weeks, null, 2))
+
+            // emit('close')
+            
+        }
+        catch (error) {
+            // handleErrors(error)
+        }
+        finally {
+            // loading.value = false
+        }
       }
 
       onMounted(() => {
@@ -155,7 +167,7 @@
                     </td>
                     <td v-if="index == 0">
                       <button class="button" 
-                        @click="push({ concept1: 0, concept2: 0, concept3: 0, concept4: 0, concept5: 0,
+                        @click="fields.length < 4 && push({ concept1: 0, concept2: 0, concept3: 0, concept4: 0, concept5: 0,
                         concept6: 0, concept7: 0, concept8: 0, concept9: 0, concept10: 0 })"
                         >Nueva semana</button>
                     </td>
