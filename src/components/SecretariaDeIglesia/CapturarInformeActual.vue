@@ -1,23 +1,14 @@
 <script lang="ts">
-  import { onMounted, reactive } from 'vue'
-  import { Field, Form, ErrorMessage, FieldArray } from 'vee-validate'
-  import * as yup from 'yup'
+  import { onMounted, reactive, ref } from 'vue'
   import { useStore } from 'vuex'
   import helpers from '../../helpers'
 
 	export default {
     name: 'CapturarInformeActual',
-    components: {
-        Form,
-        Field,
-        ErrorMessage,
-        FieldArray
-    },
     setup() {
       const store = useStore()
       const { handleRequest, handleErrors } = helpers()
       const name_iglesia: string = store.getters.user.church_to_which_it_belongs
-      let concepts = reactive<string[]>([""]);
       const total_weeks: string[] = [
         "Primera semana",
         "Segunda semana",
@@ -25,64 +16,61 @@
         "Cuarta semana"
       ]
 
-      // interface Concept {
-      //   id: number,
-      //   concept: string,
-      //   human_id: number, 
-      //   created_at: string,
-      //   updated_at: string,
-      //   deleted_at: string | null
-      // }
+      interface Nameweek {
+        name: string,
+        terminate_or_enable: string,
+      }
+
+      let name_weeks = reactive<Nameweek[]>([
+        { name: "primeraSemana", terminate_or_enable: 'Terminar semana' },
+        { name: "segundaSemana", terminate_or_enable: 'Terminar semana' },
+        { name: "terceraSemana", terminate_or_enable: 'Terminar semana' },
+        { name: "cuartaSemana", terminate_or_enable: 'Terminar semana' },
+      ])
+
+      interface Concept {
+        id: number,
+        concept: string,
+      }
+
+      interface Weeks {
+        valor: number,
+        concept_id: number,
+        churche_id: number,
+        month_id: number,
+        week: number,
+        status: 'Cerrado' | 'Abierto',
+      }
+
+      type SemanaClave = 'primeraSemana' | 'segundaSemana' | 'terceraSemana' | 'cuartaSemana';
+      type Mes = Partial<Record<SemanaClave, Weeks[]>>
+
+      let concepts = reactive<Concept[]>([{
+        id: 0,
+        concept: '',
+      }]);
+
+      let churche_concepts = reactive<Mes>({});
+      const weeksAdded = ref(Object.keys(churche_concepts).length)
 
       const getConcepts = async () => {
         try {
           const responses = await handleRequest('get', `/getConcepts`)
-          responses.concepts.map(function (concept: string) {
+          responses.concepts.map(function (concept: Concept) {
             concepts.splice(concepts.length, 0, concept);
           })
+          addConceptsToTheWeek('primeraSemana')
         }
         catch (error) {
           handleErrors(error)
         }
       }
-      // https://vee-validate.logaretm.com/v4/examples/array-fields/
-      const initialData = {
-        weeks: [{
-          concept1: 0,
-          concept2: 0,
-          concept3: 0,
-          concept4: 0,
-          concept5: 0,
-          concept6: 0,
-          concept7: 0,
-          concept8: 0,
-          concept9: 0,
-          concept10: 0
-        }]
-      }
 
-      const schema = yup.object().shape({
-        weeks: yup.array().of(
-          yup.object().shape({
-            concept1:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
-            concept2:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
-            concept3:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
-            concept4:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
-            concept5:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
-            concept6:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
-            concept7:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
-            concept8:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
-            concept9:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100'),
-            concept10:yup.number().min(0, 'Debe ser mayor o igual a 0').max(100, 'Debe ser menor o igual a 100')
-          })
-        ).strict(),
-      })
-
-      const save = async (values:{ [key: string]: any }) => {
-        console.info('No soy', values)
-        console.info('TigerBlind',JSON.stringify(values, null, 2));
+      const save = async () => {
+        console.info('No soy', churche_concepts)
+        console.info('TigerBlind', JSON.stringify({ datos: churche_concepts }, null, 2));
         try {
-            await handleRequest('post', '/storeChurcheWithConcepts', JSON.stringify(values.weeks, null, 2))
+            await handleRequest('post', '/storeChurcheWithConcepts', churche_concepts)
 
             // emit('close')
             
@@ -95,6 +83,49 @@
         }
       }
 
+      const addConceptsToTheWeek = (semana: SemanaClave | undefined) => {
+        if(typeof semana == "string"){
+          concepts.forEach(function (concept: Concept) {
+            if(concept.id > 0 ){
+              if (!churche_concepts[semana]) {
+                churche_concepts[semana] = [];
+              }
+              churche_concepts[semana]!.splice(churche_concepts[semana]!.length, 0, { 
+                valor: 0, 
+                concept_id: concept.id,
+                churche_id: store.getters.user.churche_id,
+                month_id: store.getters.user.month_id,
+                week: (name_weeks.findIndex(weekk => weekk.name == semana)) + 1,
+                status: 'Abierto'
+              });
+            }
+          })
+          weeksAdded.value = Object.keys(churche_concepts).length
+        }
+      }
+
+      const endOfTheWeek = (semana: SemanaClave | undefined, terminate_or_enable: string) => {
+        console.info('Que trae semana, ', semana)
+        console.info('Que tiene churche_concepts, ', churche_concepts)
+        if(typeof semana == "string"){
+          name_weeks.forEach((week: Nameweek) => {
+            if(week.name == semana) {
+              week.terminate_or_enable = terminate_or_enable == 'Terminar semana' ? 'Habilitar semana' : 'Terminar semana'
+            }
+          })
+          console.info('Que tiene name_weeks, ', name_weeks)
+          console.info('Que tiene terminate_or_enable, ', terminate_or_enable)
+          churche_concepts[semana]!.forEach((week: Weeks) => {
+            if(terminate_or_enable == 'Terminar semana'){
+              week.status = 'Cerrado'
+            } else {
+              week.status = 'Abierto'
+            }
+            
+          })
+        } 
+      }
+
       onMounted(() => {
         getConcepts()
       })
@@ -103,8 +134,11 @@
         name_iglesia,
         concepts,
         total_weeks,
-        initialData,
-        schema,
+        churche_concepts,
+        name_weeks,
+        weeksAdded,
+        addConceptsToTheWeek,
+        endOfTheWeek,
         save
       }
     }
@@ -114,70 +148,37 @@
 <template>
     <div class="table-container">
       <p class="title is-1 has-text-centered mt-1" v-text="`Iglesia ${name_iglesia}`"> </p>
-      <Form @submit="save" :validation-schema="schema" :initial-values="initialData">
-          <table class="table is-link">
-            <thead>
-              <tr>
-                <th v-for="(concept, index) in concepts" :key="index" v-text="concept"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <FieldArray name="weeks" v-slot="{ fields, push }">
-                <tr v-for="(field, index) in fields" :key="field.key">
-                    <th v-text="total_weeks[index]"></th>
-                    <td>
-                      <Field :name="`weeks[${index}].concept1`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept1`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept2`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept2`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept3`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept3`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept4`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept4`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept5`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept5`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept6`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept6`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept7`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept7`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept8`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept8`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept9`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept9`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept10`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept10`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td v-if="index == 0">
+        <table class="table is-link">
+          <thead>
+            <tr>
+              <th v-for="(concept, index) in concepts" :key="index" v-text="concept.concept"></th>
+            </tr>
+          </thead>
+          <tbody>
+              <template v-for="(total_week, index) in weeksAdded" :key="index">
+                <tr>
+                  <th>
+                    <span v-text="total_weeks[index]"></span>
+                    <span>
                       <button class="button" 
-                        @click="fields.length < 4 && push({ concept1: 0, concept2: 0, concept3: 0, concept4: 0, concept5: 0,
-                        concept6: 0, concept7: 0, concept8: 0, concept9: 0, concept10: 0 })"
-                        >Nueva semana</button>
-                    </td>
-                    <td v-else>
-                    </td>
+                        @click="endOfTheWeek(name_weeks[index].name, name_weeks[index].terminate_or_enable)" 
+                        v-text="name_weeks[index].terminate_or_enable">
+                      </button>
+                    </span>
+                  </th>
+                  <td v-for="(concept, index_concept) in churche_concepts[name_weeks[index].name]" :key="index_concept">
+                    <input type="number" v-model="concept.valor" :disabled="concept.status == 'Cerrado' "
+                      class="input is-family-monospace has-text-centered"/>
+                  </td>
                 </tr>
-              </FieldArray>
-            </tbody>
-          </table>
-          <button type="submit" class="button is-success is-family-monospace is-fullwidth">Guardar</button>
-      </Form>
+              </template>
+                <tr>
+                  <td>
+                    <button class="button" @click="weeksAdded < 4 &&  addConceptsToTheWeek(name_weeks[weeksAdded].name)">Nueva semana</button>
+                  </td>
+                </tr>
+          </tbody>
+        </table>
+        <button class="button is-success is-family-monospace is-fullwidth" @click="save">Guardar</button>
     </div>
 </template>
