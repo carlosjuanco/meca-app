@@ -7,7 +7,7 @@
     name: 'CapturarInformeActual',
     setup() {
       const store = useStore()
-      const { handleRequest, handleErrors } = helpers()
+      const { handleRequest, handleErrors, handleMultipleRequests } = helpers()
       const name_iglesia: string = store.getters.user.church_to_which_it_belongs
       const total_weeks: string[] = [
         "Primera semana",
@@ -34,10 +34,12 @@
       }
 
       interface Weeks {
-        valor: number,
+        id: number
+        value: number,
         concept_id: number,
         churche_id: number,
         month_id: number,
+        human_id: number,
         week: number,
         status: 'Cerrado' | 'Abierto',
       }
@@ -53,18 +55,18 @@
       let churche_concepts = reactive<Mes>({});
       const weeksAdded = ref(Object.keys(churche_concepts).length)
 
-      const getConcepts = async () => {
-        try {
-          const responses = await handleRequest('get', `/getConcepts`)
-          responses.concepts.map(function (concept: Concept) {
-            concepts.splice(concepts.length, 0, concept);
-          })
-          addConceptsToTheWeek('primeraSemana')
-        }
-        catch (error) {
-          handleErrors(error)
-        }
-      }
+      // const getConcepts = async () => {
+      //   try {
+      //     const responses = await handleRequest('get', `/getConcepts`)
+      //     responses.concepts.map(function (concept: Concept) {
+      //       concepts.splice(concepts.length, 0, concept);
+      //     })
+      //     addConceptsToTheWeek('primeraSemana')
+      //   }
+      //   catch (error) {
+      //     handleErrors(error)
+      //   }
+      // }
 
       const save = async () => {
         console.info('No soy', churche_concepts)
@@ -90,11 +92,13 @@
               if (!churche_concepts[semana]) {
                 churche_concepts[semana] = [];
               }
-              churche_concepts[semana]!.splice(churche_concepts[semana]!.length, 0, { 
-                valor: 0, 
+              churche_concepts[semana]!.splice(churche_concepts[semana]!.length, 0, {
+                id: 0,
+                value: 0, 
                 concept_id: concept.id,
                 churche_id: store.getters.user.churche_id,
                 month_id: store.getters.user.month_id,
+                human_id: 0,
                 week: (name_weeks.findIndex(weekk => weekk.name == semana)) + 1,
                 status: 'Abierto'
               });
@@ -126,8 +130,46 @@
         } 
       }
 
+      // const addChurcheConceptMonthHuman = (semana: SemanaClave, churcheConceptMonthHuman: Weeks) => {
+      //   if (!churche_concepts[semana]) {
+      //     churche_concepts[semana] = [];
+      //   }
+      //   churche_concepts[semana]!.splice(churche_concepts[semana]!.length, 0, churcheConceptMonthHuman);
+      // }
+
+      const getData = async () => {
+        try {
+          const responses = await handleMultipleRequests([`/getConcepts/`, `/getChurcheWithConcepts/`])
+          console.info('Magin',responses[1].churcheConceptMonthHuman)
+          responses[0].concepts.map(function (concept: Concept) {
+            concepts.splice(concepts.length, 0, concept);
+          })
+
+          if(responses[1].churcheConceptMonthHuman.length > 0) {
+            console.info('cabañas')
+            let semana: SemanaClave = 'primeraSemana'
+            responses[1].churcheConceptMonthHuman.map(function (churcheConceptMonthHuman: Weeks) {
+              semana = name_weeks[churcheConceptMonthHuman.week - 1].name as SemanaClave
+              console.log('valor que trae semana', semana)
+              console.log('valor que trae churcheConceptMonthHuman', churcheConceptMonthHuman)
+              // addChurcheConceptMonthHuman(semana, churcheConceptMonthHuman)
+              if (!churche_concepts[semana]) {
+                churche_concepts[semana] = [];
+              }
+              churche_concepts[semana]!.splice(churche_concepts[semana]!.length, 0, churcheConceptMonthHuman);
+            })      
+            weeksAdded.value = Object.keys(churche_concepts).length      
+          } else {
+            addConceptsToTheWeek('primeraSemana')
+          }
+
+        } catch (error) {
+            handleErrors(error)
+        }
+      }
+
       onMounted(() => {
-        getConcepts()
+        getData()
       })
 
       return {
@@ -167,7 +209,7 @@
                     </span>
                   </th>
                   <td v-for="(concept, index_concept) in churche_concepts[name_weeks[index].name]" :key="index_concept">
-                    <input type="number" v-model="concept.valor" :disabled="concept.status == 'Cerrado' "
+                    <input type="number" v-model="concept.value" :disabled="concept.status == 'Cerrado' "
                       class="input is-family-monospace has-text-centered"/>
                   </td>
                 </tr>
