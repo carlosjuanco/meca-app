@@ -96,6 +96,7 @@
           data_internal_notification.url = `/`
 
           show_internal_notification.value = true
+          getChurcheWithConcepts()
         }
         catch (error) {
           data_internal_notification.title = 'Advertencia'
@@ -129,7 +130,18 @@
         }
       }
 
-      const endOfTheWeek = (semana: SemanaClave | undefined, terminate_or_enable: string) => {
+      /*
+        @seman: SemanaClave Solo recibe los posibles valores "'primeraSemana' | 'segundaSemana' | 'terceraSemana' | 'cuartaSemana'"
+          también puede recibiar un valor undefined.
+        @terminate_or_enable: string Recibe dos posibles valores "'Habilitar semana' | 'Terminar semana'".
+        @guardar: boolean Si es true, mandaremos a llamar al metodo "save", para guardar los datos. Lo que 
+          significa que el usuario posiblemente modifico un datos de la fila y posteriormente hizo clic
+          en el botón "Terminar semana".
+          Si es falso, entonces estamos llamando a este método desde la función "getChurcheWithConcepts".
+          Lo que significa que no necesitamos guardar, solo necesitamos refrescar la tabla por completo. 
+      */
+
+      const endOfTheWeek = (semana: SemanaClave | undefined, terminate_or_enable: string, guardar: boolean) => {
         if(typeof semana == "string"){
           name_weeks.forEach((week: Nameweek) => {
             if(week.name == semana) {
@@ -142,12 +154,38 @@
             } else {
               week.status = 'Abierto'
             }
-            
           })
-          if(terminate_or_enable == 'Terminar semana'){
+          if(terminate_or_enable == 'Terminar semana' && guardar ){
             save()
           }
         } 
+      }
+
+      const getChurcheWithConcepts = async () => {
+        try {
+          const responses = await handleRequest('get',`/getChurcheWithConcepts/`)
+
+          if(responses.churcheConceptMonthHuman.length > 0) {
+            let semana: SemanaClave = 'primeraSemana'
+            responses.churcheConceptMonthHuman.map(function (churcheConceptMonthHuman: Weeks) {
+              semana = name_weeks[churcheConceptMonthHuman.week - 1].name as SemanaClave
+              if (!churche_concepts[semana]) {
+                churche_concepts[semana] = [];
+              }
+              churche_concepts[semana]!.forEach((concept: Weeks) => {
+                if(concept.concept_id == churcheConceptMonthHuman.concept_id){
+                  concept.id = churcheConceptMonthHuman.id
+                }
+              })
+            })      
+            weeksAdded.value = Object.keys(churche_concepts).length      
+          } else {
+            addConceptsToTheWeek('primeraSemana')
+          }
+
+        } catch (error) {
+            handleErrors(error)
+        }
       }
 
       const getData = async () => {
@@ -159,12 +197,17 @@
 
           if(responses[1].churcheConceptMonthHuman.length > 0) {
             let semana: SemanaClave = 'primeraSemana'
+            let conts: object | undefined = {}
             responses[1].churcheConceptMonthHuman.map(function (churcheConceptMonthHuman: Weeks) {
               semana = name_weeks[churcheConceptMonthHuman.week - 1].name as SemanaClave
               if (!churche_concepts[semana]) {
                 churche_concepts[semana] = [];
               }
               churche_concepts[semana]!.splice(churche_concepts[semana]!.length, 0, churcheConceptMonthHuman);
+              conts = churche_concepts[semana]!.find((concep: Weeks) => concep.status == 'Cerrado')
+              if(conts !== undefined) {
+                endOfTheWeek(semana, 'Terminar semana', false)
+              }
             })      
             weeksAdded.value = Object.keys(churche_concepts).length      
           } else {
@@ -216,7 +259,7 @@
                   <span v-text="total_weeks[index]"></span>
                   <span>
                     <button class="button" 
-                      @click="endOfTheWeek(name_weeks[index].name, name_weeks[index].terminate_or_enable)" 
+                      @click="endOfTheWeek(name_weeks[index].name, name_weeks[index].terminate_or_enable, true)" 
                       v-text="name_weeks[index].terminate_or_enable">
                     </button>
                   </span>
