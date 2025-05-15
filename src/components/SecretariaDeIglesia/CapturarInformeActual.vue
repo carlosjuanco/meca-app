@@ -37,6 +37,7 @@
         human_id: number,
         week: number,
         status: 'Cerrado' | 'Abierto',
+        error?: string
       }
 
       let show_internal_notification = ref(false)
@@ -75,7 +76,6 @@
       const validateFiel = (concept: Weeks): void => {
         if (concept.value < 0) concept.value = 0;
         if (concept.value > 1000) concept.value = 1000;
-        console.info('Me esta llegando el valor: ', concept.value)
       }
 
       const whenTheFieldLosesFocus = (concept: Weeks): void => {
@@ -89,6 +89,7 @@
         try {
           show_spiner.value = true
 
+
           const response = await handleRequest('post', '/storeChurcheWithConcepts', churche_concepts)
 
           data_internal_notification.title = 'Advertencia'
@@ -99,11 +100,26 @@
           getChurcheWithConcepts()
         }
         catch (error) {
-          data_internal_notification.title = 'Advertencia'
-          data_internal_notification.message = handleErrors(error)
-          data_internal_notification.url = `/`
+          let semanas: string[] = Object.keys(churche_concepts)
+          semanas.forEach((semana) => {
+            let seman = semana as SemanaClave
+            churche_concepts[seman]!.forEach((concept: Weeks) => {
+              concept.error = ''
+            })
+          })
+          let errores = Object.entries(handleErrors(error))
+          let separateFirstPosition: string[] = []
+          let semana: SemanaClave = 'primeraSemana'
+          let position: number = 0
+          errores.forEach((error) => {
+            separateFirstPosition = error[0].split('.')
+            semana = separateFirstPosition[0] as SemanaClave
+            position = Number(separateFirstPosition[1])
 
-          show_internal_notification.value = true
+            churche_concepts[semana]![position].error = error[1].replace(`de ${error[0]}`, ""); 
+          })
+
+          show_spiner.value = false
         }
       }
 
@@ -176,6 +192,7 @@
                 if(concept.concept_id == churcheConceptMonthHuman.concept_id){
                   concept.id = churcheConceptMonthHuman.id
                 }
+                concept.error = ''
               })
             })      
             weeksAdded.value = Object.keys(churche_concepts).length      
@@ -203,6 +220,8 @@
               if (!churche_concepts[semana]) {
                 churche_concepts[semana] = [];
               }
+              churcheConceptMonthHuman.error = ''
+
               churche_concepts[semana]!.splice(churche_concepts[semana]!.length, 0, churcheConceptMonthHuman);
               conts = churche_concepts[semana]!.find((concep: Weeks) => concep.status == 'Cerrado')
               if(conts !== undefined) {
@@ -270,12 +289,13 @@
                     :disabled="concept.status == 'Cerrado' "
                     @input="validateFiel(concept)"
                     @blur="whenTheFieldLosesFocus(concept)"
-                    class="input is-family-monospace has-text-centered"/>
-                  <span class="icon-text has-text-warning">
+                    class="input is-family-monospace has-text-centered"
+                  />
+                  <span v-if="concept.error" class="icon-text has-text-warning" >
                     <span class="icon">
                       <i class="fas fa-exclamation-triangle"></i>
                     </span>
-                    <span>Warning</span>
+                    <span v-text="concept.error"></span>
                   </span>
                   <!--strong class="help is-danger">Me diran</strong-->
                 </td>
