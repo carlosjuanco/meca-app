@@ -73,11 +73,24 @@
       let churche_concepts = reactive<Mes>({});
       const weeksAdded = ref(Object.keys(churche_concepts).length)
 
+      /*
+        Validar valor.
+
+        Si el valor es menor a 0, establecerlo en 0
+        Si el valor es mayor a 1000, establecerlo en 1000
+
+        return void
+      */
       const validateFiel = (concept: Weeks): void => {
         if (concept.value < 0) concept.value = 0;
         if (concept.value > 1000) concept.value = 1000;
       }
 
+      /*
+        Cuando pierda el foco un campo, si no introducimos nada, entonces establecerlo en 0
+
+        return void
+      */
       const whenTheFieldLosesFocus = (concept: Weeks): void => {
         let typeData = typeof concept.value
         if(typeData == 'string') {
@@ -85,10 +98,19 @@
         }
       }
 
+      /*
+        Guardar los datos capturados
+
+        -Habiliar el spiner
+        -Realizar la peticion para guardar los datos.
+        -Establecer los datos al componente "InternalNotification"
+        -Llamar al método "getChurcheWithConcepts"
+
+        return show internal_notification
+      */
       const save = async () => {
         try {
           show_spiner.value = true
-
 
           const response = await handleRequest('post', '/storeChurcheWithConcepts', churche_concepts)
 
@@ -123,6 +145,16 @@
         }
       }
 
+      /*
+        Agregar una fila(primeraSemana, segundaSemana, terceraSemana y cuartaSemana) a nuestro 
+        arreglo "churche_concepts", por una fila, agregar cada uno de los conceptos que existen
+        en la tabla "concepts".
+
+        @semana de tipo SemanaClave o undefined, ya que habra un caso donde no traiga nada.
+          entonces, validamos que sea de tipo "texto", si no es, no hacemos nada.
+
+        return void
+      */
       const addConceptsToTheWeek = (semana: SemanaClave | undefined) => {
         if(typeof semana == "string"){
           concepts.forEach(function (concept: Concept) {
@@ -147,14 +179,19 @@
       }
 
       /*
-        @seman: SemanaClave Solo recibe los posibles valores "'primeraSemana' | 'segundaSemana' | 'terceraSemana' | 'cuartaSemana'"
-          también puede recibiar un valor undefined.
+        Deshabilitar o habilitar los campos, si deshabilitamos significa que terminamos la semana.
+        Si habilitamos, nos hizo falta algo.
+
+        @semana: SemanaClave Solo recibe los posibles valores "'primeraSemana' | 'segundaSemana' | 'terceraSemana' | 'cuartaSemana'"
+          también puede recibir un valor undefined.
         @terminate_or_enable: string Recibe dos posibles valores "'Habilitar semana' | 'Terminar semana'".
         @guardar: boolean Si es true, mandaremos a llamar al metodo "save", para guardar los datos. Lo que 
           significa que el usuario posiblemente modifico un datos de la fila y posteriormente hizo clic
           en el botón "Terminar semana".
           Si es falso, entonces estamos llamando a este método desde la función "getChurcheWithConcepts".
           Lo que significa que no necesitamos guardar, solo necesitamos refrescar la tabla por completo. 
+
+        return void
       */
 
       const endOfTheWeek = (semana: SemanaClave | undefined, terminate_or_enable: string, guardar: boolean) => {
@@ -177,6 +214,20 @@
         } 
       }
 
+      /*
+        Realizar la petición, para obtener los datos que le pertenecen a un usuario, que esta vinculado
+        a una iglesia, esta iglesia, tiene muchos conceptos.
+
+        -Realiza la petición.
+        -Verificamos si trae mas de una posición el arreglo.
+        -Recorremos el resultado.
+        -Comprobamos si existe la propiedad "primeraSemana" en "churche_concepts" si no la creamos.
+        -Si el concept_id de la peticion y concept_id, del arreglo "churche_concepts", coinciden,
+          entonces, establecemos el ID de la base de datos, de paso establecemos en vacio la
+          propiedad "error".
+
+        return void
+      */
       const getChurcheWithConcepts = async () => {
         try {
           const responses = await handleRequest('get',`/getChurcheWithConcepts/`)
@@ -205,6 +256,26 @@
         }
       }
 
+      /*
+        Realizar dos peticiones en una sola petición
+        La primera para obtener todos los conceptos.
+        La segunda para obtener todos los conceptos que le pertenecen a una iglesia x, que a su vez
+          esta vinculada con una persona (humano).
+
+        -Asignamos todos los conceptos obtenidos, a la variable "concepts", para que sea reactivo.
+        -Asignamos todo los registros obtenidos de la tabla "churche_concept_month_human" a la 
+          variable "churche_concepts".
+          -Establecemos la propiedad "error" en vacio.
+          -Identificamos si un registro de una semana, trae el valor "Cerrado", en la propiedad
+            "status", si es así, llamamos al método "endOfTheWeek", para deshabilitar la semana
+            y que aparezca el texto "Habilitar semana".
+          -Obtenemos la longitud del arreglo "churche_concepts" y se lo establecemos a la variable 
+            "weeksAdded"
+        -En caso que venga vacio la respuesta de "getChurcheWithConcepts", llamamos al método 
+          "addConceptsToTheWeek", lo que significa que apenas comenzará a capturar.
+
+        return void
+      */
       const getData = async () => {
         try {
           const responses = await handleMultipleRequests([`/getConcepts/`, `/getChurcheWithConcepts/`])

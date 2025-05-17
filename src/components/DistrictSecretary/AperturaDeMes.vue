@@ -42,7 +42,20 @@ export default {
         deleted_at: null
       });
 
+    /*
+      Cerrar el mes
 
+      @monthOpen del tipo de dato "Month".
+
+      -Realizamos la petición a "closeMonth" y mandamos como parámetros al mes abierto y el ID.
+      -Recorremos el arreglo "months", buscamo el mes seleccionado para cerrar y cambiamos las
+        propiedades "is_open", "disabled" y "checked", todos los establecemos en false.
+        Cuando no sea el mes, a todos los meses, le indicamos que no esta abierto (is_open = false),
+        también, indicamos que todos estaran habilitados (disabled = false), y por último
+        todos no estan chequeados (checked = false)
+
+      return void
+    */
     const closeMonth = async (monthOpen: Month) => {
       try {
         await handleRequest('put', `/closeMonth`, monthOpen, monthOpen.id)
@@ -63,6 +76,20 @@ export default {
       }
     }
 
+    /*
+      Abrir el mes
+
+      @monthOpen del tipo de dato "Month".
+
+      -Realizamos la petición a "openMonth" y mandamos como parámetros al mes que deseamos abrir y el ID.
+      -Recorremos el arreglo "months", buscamo el mes seleccionado para abrir y cambiamos las
+        propiedades "is_open = true", "disabled = false" y "checked = true".
+        Cuando no sea el mes, a todos los meses, le indicamos que no esta abierto (is_open = false),
+        también, indicamos que todos estaran deshabilitados (disabled = true), y por último
+        todos no estan chequeados (checked = false)
+
+      return void
+    */
     const openMonth = async (monthOpen: Month) => {
       try {
         await handleRequest('put', `/openMonth`, monthOpen, monthOpen.id)
@@ -83,6 +110,32 @@ export default {
       }
     }
 
+    /*
+        Realizar dos peticiones en una sola petición
+        La primera para obtener todos los meses.
+        La segunda para obtener todos los años.
+
+        -Asignamos todos los meses obtenidos, a la variable "months", para que sea reactivo.
+          -Establecer la propiedad "is_open" a falso. Es una propiedad que no esta en la 
+            base de datos, pero ésta como propiedad opcional en la interfaz definida
+            para "months".
+          -Establecer la propiedad "disabled" a falso. Es una propiedad que no esta en la 
+            base de datos, pero ésta como propiedad opcional en la interfaz definida
+            para "months".
+          -Establecer la propiedad "checked" a falso. Es una propiedad que no esta en la 
+            base de datos, pero ésta como propiedad opcional en la interfaz definida
+            para "months".
+          -Por cada mes, definimos la fila y columna que le corresponde, esto para dibujar
+            la "Red para apertura de mes".
+        -Asignamos todos los años obtenidos, a la variable "years", para que sea reactivo.
+        -Finalmente, buscamos dentro del arreglo "months", el mes abierto, es decir, aquel
+          que tiene la propiedad "status" igual a "Abierto".
+          -El mes que resulte abierto. Indicamos que este abierto (is_open = true), que 
+            se encuentre deshabilitado (disabled = false) y que si este chequeado
+            (checked = true).
+
+        return void
+      */
     const getData = async () => {
       try {
         const responses = await handleMultipleRequests([`/getMonths/`, `/getYears/`])
