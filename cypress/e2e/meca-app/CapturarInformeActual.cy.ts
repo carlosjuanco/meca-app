@@ -198,9 +198,9 @@ describe('Componente CapturarInformeActual', () => {
     cy.get(".table tbody tr:nth-child(2)").find("td:nth-child(10)").find("input[type='number']").type('{backspace}30')
     cy.get(".table tbody tr:nth-child(2)").find("td:nth-child(11)").find("input[type='number']").type('{backspace}30')
 
-    // // Clic en guardar
+    // Clic en guardar
     cy.get(".button.is-success").click()
-    // // Clic en el modal interno
+    // Clic en el modal interno
     cy.get(".fas.fa-circle-check.fas.fa-10x").click()
 
     // Clic, para que aparezca el menú
@@ -238,9 +238,9 @@ describe('Componente CapturarInformeActual', () => {
     cy.get(".table tbody tr:nth-child(3)").find("td:nth-child(10)").find("input[type='number']").type('{backspace}40')
     cy.get(".table tbody tr:nth-child(3)").find("td:nth-child(11)").find("input[type='number']").type('{backspace}40')
 
-    // // Clic en guardar
+    // Clic en guardar
     cy.get(".button.is-success").click()
-    // // Clic en el modal interno
+    // Clic en el modal interno
     cy.get(".fas.fa-circle-check.fas.fa-10x").click()
 
     // Clic, para que aparezca el menú
@@ -249,7 +249,7 @@ describe('Componente CapturarInformeActual', () => {
     cy.get(".button").contains("Cerrar").click()
   })
 
-  it('Agregar una cuarta fila (Segunda semana), ingresar por cada concepto el valor de 50, guardamos los datos.', () => {
+  it('Agregar una cuarta fila (Segunda semana), ingresar por cada concepto el valor de 50, guardamos los datos', () => {
     cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
     cy.get('form').get("input[type='password']").type('secretariaiglesia')
 
@@ -278,14 +278,78 @@ describe('Componente CapturarInformeActual', () => {
     cy.get(".table tbody tr:nth-child(4)").find("td:nth-child(10)").find("input[type='number']").type('{backspace}50')
     cy.get(".table tbody tr:nth-child(4)").find("td:nth-child(11)").find("input[type='number']").type('{backspace}50')
 
-    // // Clic en guardar
+    // Clic en guardar
     cy.get(".button.is-success").click()
-    // // Clic en el modal interno
+    // Clic en el modal interno
     cy.get(".fas.fa-circle-check.fas.fa-10x").click()
 
     // Clic, para que aparezca el menú
     cy.get(".js-burger").click()
     // Cerrar sesión
     cy.get(".button").contains("Cerrar").click()
+  })
+
+  it('Agregar una quinta fila, no debe de aparecer ningula fila más', () => {
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+
+    cy.get('form').contains('Ingresar').click()
+
+    cy.contains("a", "Inicio")
+    // Clic, para que aparezca el menú
+    cy.get(".js-burger").click()
+    cy.get("a").contains("Capturar informe actual").click()
+    // Desaparecer menú
+    cy.get(".js-burger").click()
+
+    // Buscar botón "Nueva semana" y hacer clic
+    // Este boton no tiene un identificador único por ese motivo, lo busco entre varios
+    cy.get(".table tbody tr:nth-child(5)").contains("Nueva semana").click()
+
+    // No debe existir una 5 fila de conceptos
+    cy.get(".table tbody tr").should('have.length', 5)
+
+    // Clic, para que aparezca el menú
+    cy.get(".js-burger").click()
+    // Cerrar sesión
+    cy.get(".button").contains("Cerrar").click()
+  })
+
+  it('Terminar la "Primera semana", deben de deshabilitarse todos los campos de esa fila', () => {
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+
+    cy.get('form').contains('Ingresar').click()
+
+    cy.contains("a", "Inicio")
+    // Clic, para que aparezca el menú
+    cy.get(".js-burger").click()
+    cy.get("a").contains("Capturar informe actual").click()
+    // Desaparecer menú
+    cy.get(".js-burger").click()
+
+    // Buscar botón "Terminar semana" y hacer clic
+    // Este boton no tiene un identificador único por ese motivo lo filtro por fila
+    cy.get(".table tbody tr:nth-child(1)").contains("Terminar semana").click()
+
+    // Clic en el modal interno
+    cy.get(".fas.fa-circle-check.fas.fa-10x").click()
+
+    // Verificar que los campos tengan la propiedad disabled
+    cy.get(".table tbody tr:nth-child(1)").find("td:nth-child(2)").find("input[type='number']").should('be.disabled')
+    cy.get(".table tbody tr:nth-child(1)").find("td:nth-child(3)").find("input[type='number']").should('be.disabled')
+    cy.get(".table tbody tr:nth-child(1)").find("td:nth-child(4)").find("input[type='number']").should('be.disabled')
+    cy.get(".table tbody tr:nth-child(1)").find("td:nth-child(5)").find("input[type='number']").should('be.disabled')
+    cy.get(".table tbody tr:nth-child(1)").find("td:nth-child(6)").find("input[type='number']").should('be.disabled')
+    cy.get(".table tbody tr:nth-child(1)").find("td:nth-child(7)").find("input[type='number']").should('be.disabled')
+    cy.get(".table tbody tr:nth-child(1)").find("td:nth-child(8)").find("input[type='number']").should('be.disabled')
+    cy.get(".table tbody tr:nth-child(1)").find("td:nth-child(9)").find("input[type='number']").should('be.disabled')
+    cy.get(".table tbody tr:nth-child(1)").find("td:nth-child(10)").find("input[type='number']").should('be.disabled')
+    cy.get(".table tbody tr:nth-child(1)").find("td:nth-child(11)").find("input[type='number']").should('be.disabled')
+
+    // Clic, para que aparezca el menú
+    // cy.get(".js-burger").click()
+    // Cerrar sesión
+    // cy.get(".button").contains("Cerrar").click()
   })
 })
