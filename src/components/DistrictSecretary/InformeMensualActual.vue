@@ -26,6 +26,22 @@ export default {
     let previousMonth: Churche[] = reactive<Churche[]>([]);
     let districtTotal: Churche[] = reactive<Churche[]>([]);
 
+    /*
+      Realizar dos peticiones en una sola petición
+      La primera para obtener todos los conceptos.
+      La segunda es para obtener por cada iglesia la sumatoria de todas las semanas del mes aperturado
+
+      -Asignamos todos los conceptos obtenidos, a la variable "concepts", para que sea reactivo.
+      -Asignamos todos los registros obtenidos de la ruta "getForEachChurchTheSumOfAllTheWeeksOfTheMonthOpened" 
+        a la variable "churches".
+        -Si el nombre de la iglesia es igual a "Total distrital", entonces agregamos esos datos 
+          a la variable "districtTotal"
+        -Si el nombre de la iglesia es igual a "Anterior", entonces agregamos esos datos
+          a la variable "previousMonth".
+        -De lo contrario asignamos los datos a la variable "churches"
+
+      return void
+    */
     const getData = async () => {
       try {
         const responses = await handleMultipleRequests([`/getConcepts/`,
