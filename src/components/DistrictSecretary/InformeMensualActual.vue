@@ -1,39 +1,68 @@
 <script lang="ts">
+import { onMounted, reactive } from 'vue'
+import helpers from '../../helpers'
 
 export default {
   name: 'InformeMensualActual',
   setup() {
-    const concepts: string[] = [
-        "IGLESIAS",
-        "Grupos pequeños",
-        "Contactos misioneros",
-        "Estudios acumulados",
-        "Nuevos estudios",
-        "Bautismos",
-        "Total de personas estudiando",
-        "Total de estudios mensuales",
-        "Total de bautismos alcanzados",
-        "Invitados en la campaña de GP",
-        "Invitados en la campaña de iglesia",
-    ]
-    const churches: string[] = [
-        "Centenario",
-        "Familias en Crecimiento",
-        "Las Flores",
-        "Volcanes",
-        "Donaji",
-        "Jardín",
-        "7 Regiones",
-        "San Luis Beltran",
-        "Zogocho",
-        "Huayapam",
-        "Yatareni",
-        "Tres Cruces",
-    ]
+    const { handleErrors, handleMultipleRequests } = helpers()
+
+    interface Concept {
+      id: number,
+      concept: string,
+      total_week?: number,
+      total_by_concept?: number,
+    }
+
+    interface Churche {
+      id: number,
+      name: string,
+      concept: Concept
+    }
+
+    let concepts: Concept[] = reactive<Concept[]>([]);
+
+    let churches: Churche[] = reactive<Churche[]>([]);
+    let previousMonth: Churche[] = reactive<Churche[]>([]);
+    let districtTotal: Churche[] = reactive<Churche[]>([]);
+
+    const getData = async () => {
+      try {
+        const responses = await handleMultipleRequests([`/getConcepts/`,
+         `/getForEachChurchTheSumOfAllTheWeeksOfTheMonthOpened/`])
+
+        concepts.push({
+          id: 0,
+          concept: 'IGLESIAS'
+        });
+
+        responses[0].concepts.map(function (concept: Concept) {
+          concepts.splice(concepts.length, 0, concept);
+        })
+
+        responses[1].churches.map(function (churche: Churche) {
+          if(churche.name == 'Total distrital') {
+            districtTotal.splice(districtTotal.length, 0, churche);
+          } else if(churche.name == 'Anterior') {
+            previousMonth.splice(previousMonth.length, 0, churche);
+          } else {
+            churches.splice(churches.length, 0, churche);
+          }
+        })
+      } catch (error) {
+          handleErrors(error)
+      }
+    }
+
+    onMounted(() => {
+      getData()
+    })
 
     return {
       concepts,
       churches,
+      previousMonth,
+      districtTotal
     }
   }
 }
@@ -45,48 +74,21 @@ export default {
   <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
     <thead>
       <tr class="is-light">
-        <th v-for="(concept, index) in concepts" :key="index" v-text="concept"></th>
+        <th v-for="(concept, index) in concepts" :key="index" v-text="concept.concept"></th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="(church, index) in churches" :key="index">
-        <td v-text="church"></td>
-        <td>1</td>
-        <td>1</td>
-        <td>1</td>
-        <td>1</td>
-        <td>1</td>
-        <td>1</td>
-        <td>1</td>
-        <td>1</td>
-        <td>1</td>
-        <td>1</td>
+        <td v-text="church.name"></td>
+        <td v-for="(concept, indexConcept) in church.concept" :key="indexConcept" v-text="concept.total_week"></td>
       </tr>
-      <tr class="is-light">
-        <td>Anterior</td>
-        <td>2</td>
-        <td>2</td>
-        <td>2</td>
-        <td>2</td>
-        <td>2</td>
-        <td>2</td>
-        <td>2</td>
-        <td>2</td>
-        <td>2</td>
-        <td>2</td>
+      <tr v-for="(church, index) in previousMonth" :key="index" class="is-light">
+        <td v-text="church.name"></td>
+        <td v-for="(concept, indexConcept) in church.concept" :key="indexConcept" v-text="concept.total_by_concept"></td>
       </tr>
-      <tr class="is-light">
-        <td>Total distrital</td>
-        <td>3</td>
-        <td>3</td>
-        <td>3</td>
-        <td>3</td>
-        <td>3</td>
-        <td>3</td>
-        <td>3</td>
-        <td>3</td>
-        <td>3</td>
-        <td>3</td>
+      <tr v-for="(church, index) in districtTotal" :key="index" class="is-light">
+        <td v-text="church.name"></td>
+        <td v-for="(concept, indexConcept) in church.concept" :key="indexConcept" v-text="concept.total_by_concept"></td>
       </tr>
     </tbody>
   </table>
