@@ -554,8 +554,8 @@ describe('Componente CapturarInformeActual', () => {
     cy.get(".table tbody tr:nth-child(2)").find("td:nth-child(11)").find("input[type='number']").should('not.be.disabled')
 
     // Clic, para que aparezca el menú
-    // cy.get(".js-burger").click()
-    // // Cerrar sesión
-    // cy.get(".button").contains("Cerrar").click()
+    cy.get(".js-burger").click()
+    // Cerrar sesión
+    cy.get(".button").contains("Cerrar").click()
   })
 })
