@@ -136,9 +136,12 @@ describe('Componente CapturarInformeActual', () => {
     })
   })
 
+  /*
+    De la "Secretaria de iglesia" que pertenece a la iglesia "Centerio", realizar lo siguiente.
+  */
   it('De la fila "Primera semana", ingresar por cada concepto el valor de 20, guardamos los datos"', () => {
-    cy.get('form').get("input[type='email']").type('secretariadeiglesia@gmail.com')
-    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia2@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia2')
 
     cy.get('form').contains('Ingresar').click()
 
@@ -173,8 +176,8 @@ describe('Componente CapturarInformeActual', () => {
   })
 
   it('Agregar una segunda fila (Segunda semana), ingresar por cada concepto el valor de 30, guardamos los datos', () => {
-    cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
-    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia2@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia2')
 
     cy.get('form').contains('Ingresar').click()
 
@@ -213,8 +216,8 @@ describe('Componente CapturarInformeActual', () => {
   })
 
   it('Agregar una tercera fila (Tercera semana), ingresar por cada concepto el valor de 40, guardamos los datos', () => {
-    cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
-    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia2@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia2')
 
     cy.get('form').contains('Ingresar').click()
 
@@ -253,8 +256,8 @@ describe('Componente CapturarInformeActual', () => {
   })
 
   it('Agregar una cuarta fila (Cuarta semana), ingresar por cada concepto el valor de 50, guardamos los datos', () => {
-    cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
-    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia2@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia2')
 
     cy.get('form').contains('Ingresar').click()
 
@@ -293,8 +296,8 @@ describe('Componente CapturarInformeActual', () => {
   })
 
   it('Agregar una quinta fila, no debe de aparecer ningula fila más', () => {
-    cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
-    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia2@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia2')
 
     cy.get('form').contains('Ingresar').click()
 
@@ -319,8 +322,8 @@ describe('Componente CapturarInformeActual', () => {
   })
 
   it('Terminar la "Primera semana", deben de deshabilitarse todos los campos de esa fila', () => {
-    cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
-    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia2@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia2')
 
     cy.get('form').contains('Ingresar').click()
 
@@ -357,8 +360,8 @@ describe('Componente CapturarInformeActual', () => {
   })
 
   it('Terminar la "Segunda semana", deben de deshabilitarse todos los campos de esa fila', () => {
-    cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
-    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia2@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia2')
 
     cy.get('form').contains('Ingresar').click()
 
@@ -395,8 +398,8 @@ describe('Componente CapturarInformeActual', () => {
   })
 
   it('Terminar la "Tercera semana", deben de deshabilitarse todos los campos de esa fila', () => {
-    cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
-    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia2@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia2')
 
     cy.get('form').contains('Ingresar').click()
 
@@ -433,8 +436,8 @@ describe('Componente CapturarInformeActual', () => {
   })
 
   it('Terminar la "Cuarta semana", deben de deshabilitarse todos los campos de esa fila', () => {
-    cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
-    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia2@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia2')
 
     cy.get('form').contains('Ingresar').click()
 
@@ -471,8 +474,8 @@ describe('Componente CapturarInformeActual', () => {
   })
 
   it('Ir al componente "Inicio" y regresamos a "Capturar informe actual", todos los botones por cada fila deben decir "Habilitar semana"', () => {
-    cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
-    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia2@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia2')
 
     cy.get('form').contains('Ingresar').click()
 
@@ -500,8 +503,8 @@ describe('Componente CapturarInformeActual', () => {
   })
 
   it('Habilitar la segunda semana, guardar cambios, me voy al componente "Informe por mes" y regreso, la segunda semana debe seguir habilitada', () => {
-    cy.get('form').get("input[type='email']") .type('secretariadeiglesia@gmail.com')
-    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+    cy.get('form').get("input[type='email']") .type('secretariadeiglesia2@gmail.com')
+    cy.get('form').get("input[type='password']").type('secretariaiglesia2')
 
     cy.get('form').contains('Ingresar').click()
 
