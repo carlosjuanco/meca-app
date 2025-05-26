@@ -15,7 +15,8 @@
       type Datamodal = {
         title: string
         message: { [key: string]: any }
-        url: string
+        url: string,
+        iconType: string,
       }
 
       interface Nameweek {
@@ -45,7 +46,8 @@
       let data_internal_notification: Datamodal = reactive({
         title: '',
         message: {},
-        url: ''
+        url: '',
+        iconType: 'Informacion',
       })
 
       const total_weeks: string[] = [
