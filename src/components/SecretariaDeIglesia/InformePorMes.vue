@@ -23,14 +23,16 @@ export default {
     type Datamodal = {
       title: string
       message: { [key: string]: any }
-      url: string
+      url: string,
+      iconType: string,
     }
 
     let show_internal_notification = ref(false)
     let data_internal_notification: Datamodal = reactive({
       title: '',
       message: {},
-      url: ''
+      url: '',
+      iconType: 'Advertencia'
     })
     let years = ref<number[]>([]);
     let months = reactive<Month[]>([]);
