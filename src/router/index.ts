@@ -66,7 +66,7 @@ const routes = [
         path: '/InformeMesX',
         component: AppHome,
         children: [{
-            path: '/InformeMesX', name: 'Informe mes x',
+            path: '/:month_id', name: 'Informe mes x',
             components: {
                 default: InformeMesX,
                 sidebar: InformeMesX

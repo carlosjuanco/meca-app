@@ -120,8 +120,7 @@ export default {
 
     const open_informeMesX = (mes: Month) => {
       if(mes.haveInformation) {
-        console.log('raquela', mes)
-        router.replace({ name: 'Informe mes x' }) 
+        router.replace({ name: "Informe mes x", params:{ month_id: mes.id} })
       } else {
         data_internal_notification.title = 'Advertencia'
         data_internal_notification.message = { message: 'Todavía no hay información para este mes' }
