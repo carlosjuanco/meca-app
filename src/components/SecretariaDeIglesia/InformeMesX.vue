@@ -32,7 +32,7 @@ export default {
       terminate_or_enable: string,
     }
 
-    const total_weeks = [
+    const totalWeeks = [
       "Primera semana",
       "Segunda semana",
       "Tercera semana",
@@ -155,7 +155,7 @@ export default {
 
     return {
         concepts,
-        total_weeks,
+        totalWeeks,
         weeksAdded,
         churche_concepts,
         name_weeks,
@@ -189,10 +189,10 @@ export default {
               </tr>
             </thead>
             <tbody>
-              <template v-for="(total_week, index) in weeksAdded" :key="index">
+              <template v-for="(totalWeek, index) in weeksAdded" :key="index">
                 <tr>
                   <th>
-                    <span v-text="total_weeks[index]"></span>
+                    <span v-text="totalWeeks[index]"></span>
                   </th>
                   <td v-for="(concept, index_concept) in churche_concepts[name_weeks[index].name]" :key="index_concept">
                     <input type="number" v-model="concept.value"

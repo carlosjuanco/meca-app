@@ -10,8 +10,8 @@ export default {
     interface Concept {
       id: number,
       concept: string,
-      total_week?: number,
-      total_by_concept?: number,
+      totalWeek?: number,
+      totalByConcept?: number,
     }
 
     interface Churche {
@@ -96,15 +96,15 @@ export default {
     <tbody>
       <tr v-for="(church, index) in churches" :key="index">
         <td v-text="church.name"></td>
-        <td v-for="(concept, indexConcept) in church.concept" :key="indexConcept" v-text="concept.total_week"></td>
+        <td v-for="(concept, indexConcept) in church.concept" :key="indexConcept" v-text="concept.totalWeek"></td>
       </tr>
       <tr v-for="(church, index) in previousMonth" :key="index" class="is-light">
         <td v-text="church.name"></td>
-        <td v-for="(concept, indexConcept) in church.concept" :key="indexConcept" v-text="concept.total_by_concept"></td>
+        <td v-for="(concept, indexConcept) in church.concept" :key="indexConcept" v-text="concept.totalByConcept"></td>
       </tr>
       <tr v-for="(church, index) in districtTotal" :key="index" class="is-light">
         <td v-text="church.name"></td>
-        <td v-for="(concept, indexConcept) in church.concept" :key="indexConcept" v-text="concept.total_by_concept"></td>
+        <td v-for="(concept, indexConcept) in church.concept" :key="indexConcept" v-text="concept.totalByConcept"></td>
       </tr>
     </tbody>
   </table>
