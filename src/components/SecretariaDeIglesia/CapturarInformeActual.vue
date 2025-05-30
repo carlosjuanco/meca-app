@@ -10,7 +10,7 @@
     setup() {
       const store = useStore()
       const { handleRequest, handleErrors, handleMultipleRequests } = helpers()
-      const name_iglesia: string = store.getters.user.church_to_which_it_belongs
+      const nameIglesia: string = store.getters.user.churchToWhichItBelongs
 
       type Datamodal = {
         title: string
@@ -316,7 +316,7 @@
       })
 
       return {
-        name_iglesia,
+        nameIglesia,
         concepts,
         total_weeks,
         churche_concepts,
@@ -337,7 +337,7 @@
 
 <template>
     <div class="table-container">
-      <p class="title is-1 has-text-centered mt-1" v-text="`Iglesia ${name_iglesia}`"> </p>
+      <p class="title is-1 has-text-centered mt-1" v-text="`Iglesia ${nameIglesia}`"> </p>
       <table class="table is-link">
         <thead>
           <tr>
