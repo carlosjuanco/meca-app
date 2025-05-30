@@ -16,14 +16,14 @@ type Pages = {
 }
 
 type State = {
-    api_token: string;
+    apiToken: string;
     user: User;
     pages: Pages;
 }
 
 // Define the initial state
 const state: State = {
-    api_token: localStorage.getItem('api_token') || '',
+    apiToken: localStorage.getItem('apiToken') || '',
     user: {id: 0, name: '', email:''},
     pages: {id: 0, name: '', name_component: ''},
 };
@@ -31,8 +31,8 @@ const state: State = {
 export default createStore({
     state,
     mutations: {
-        SET_API_TOKEN (state, api_token) {
-            state.api_token = api_token
+        SET_API_TOKEN (state, apiToken) {
+            state.apiToken = apiToken
         },
         SET_USER (state, user) {
             state.user = user
@@ -44,13 +44,13 @@ export default createStore({
     actions: {
         async login ({ commit }, data:Data):Promise<void> {
             const response = await axios.post('/login', data)
-            const api_token = response.data.api_token
+            const apiToken = response.data.apiToken
 
-            localStorage.setItem('api_token', api_token)
+            localStorage.setItem('apiToken', apiToken)
 
-            axios.defaults.headers.common['Authorization'] = `Bearer ${api_token}`
+            axios.defaults.headers.common['Authorization'] = `Bearer ${apiToken}`
 
-            commit('SET_API_TOKEN', api_token)
+            commit('SET_API_TOKEN', apiToken)
             commit('SET_USER', response.data.user)
             commit('SET_PAGES', response.data.user.role.pages)
         },
@@ -66,7 +66,7 @@ export default createStore({
             dispatch('destroySession')
         },
         destroySession ({ commit }) {
-            localStorage.removeItem('api_token')
+            localStorage.removeItem('apiToken')
 
             delete axios.defaults.headers.common['Authorization']
 
@@ -77,7 +77,7 @@ export default createStore({
     },
     modules: {},
     getters: {
-        api_token: state => state.api_token,
+        apiToken: state => state.apiToken,
         pages: state => state.pages,
         user: state => state.user,
     }
