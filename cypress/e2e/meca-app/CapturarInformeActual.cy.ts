@@ -50,7 +50,7 @@ describe('Componente CapturarInformeActual', () => {
       expect(response.status).to.eq(200)
       expect(response).to.have.property('headers')
 
-      let token: string = response.body.api_token
+      let token: string = response.body.apiToken
 
       // Ocupar el token
       cy.request({
@@ -77,7 +77,7 @@ describe('Componente CapturarInformeActual', () => {
         // Desaparecer menú
         cy.get(".js-burger").click()
         // ¿Pertenecesi a la iglesia "Las flores"?
-        cy.get(".title").contains(`Iglesia ${user.church_to_which_it_belongs}`)
+        cy.get(".title").contains(`Iglesia ${user.churchToWhichItBelongs}`)
 
         // Clic, para que aparezca el menú
         cy.get(".js-burger").click()
@@ -96,7 +96,7 @@ describe('Componente CapturarInformeActual', () => {
       expect(response.status).to.eq(200)
       expect(response).to.have.property('headers')
 
-      let token: string = response.body.api_token
+      let token: string = response.body.apiToken
 
       cy.request({
         method: 'GET',

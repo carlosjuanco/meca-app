@@ -13,7 +13,7 @@ describe('Componente AperturaDeMes', () => {
     .then((response) => {
       expect(response.status).to.eq(200)
       expect(response).to.have.property('headers')
-      cy.wrap(response.body.api_token).as('authToken');
+      cy.wrap(response.body.apiToken).as('authToken');
     })
 
     // Ocupar el token

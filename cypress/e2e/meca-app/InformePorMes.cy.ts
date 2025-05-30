@@ -18,7 +18,7 @@ describe('Componente InformePorMes', () => {
       expect(response.status).to.eq(200)
       expect(response).to.have.property('headers')
 
-      let token: string = response.body.api_token
+      let token: string = response.body.apiToken
 
       // Ocupar el token
       cy.request({
