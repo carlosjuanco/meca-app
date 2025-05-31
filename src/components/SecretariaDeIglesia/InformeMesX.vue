@@ -1,14 +1,16 @@
 <script lang="ts">
 import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
 import helpers from '../../helpers'
 
 export default {
   name: 'InformeMesX',
   setup() {
     const route = useRoute();
+    const store = useStore()
     const { handleErrors, handleRequest } = helpers()
-
+    const nameIglesia: string = store.getters.user.churchToWhichItBelongs
     let month_id = ref(route.params.month_id)
 
     interface Concept {
@@ -154,6 +156,7 @@ export default {
     })
 
     return {
+        nameIglesia,
         concepts,
         totalWeeks,
         weeksAdded,
@@ -167,7 +170,7 @@ export default {
 <template>
     <div class="columns">
         <div class="column is-four-fifths">
-          
+          <p class="title is-1 has-text-centered mt-1" v-text="`Iglesia ${nameIglesia}`"> </p>
         </div>
         <div class="column">
             <button class="button is-info is-large pt-3 pb-3 is-fullwidth"
