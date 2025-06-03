@@ -9,7 +9,7 @@ export default {
   setup() {
     const route = useRoute();
     const store = useStore()
-    const { handleErrors, handleRequest } = helpers()
+    const { handleErrors, handleRequest, getFile } = helpers()
     const nameIglesia: string = store.getters.user.churchToWhichItBelongs
     let month_id = ref(route.params.month_id)
 
@@ -65,7 +65,7 @@ export default {
     const monthlyReportOfTheChurchSecretary = async () => {
       try {
         const responses = await handleRequest('put', `/monthlyReportOfTheChurchSecretary/`, {}, Number(month_id.value))
-        window.open(`http://localhost:8082/storage/${responses.file}`, '_blank')
+        getFile(responses.file)
       } catch (error) {
         handleErrors(error)
       }
