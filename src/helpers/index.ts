@@ -106,6 +106,10 @@ const helpers = () => {
       return responses.map(r => r.data);
     }
 
+    const getFile = (url: string) => {
+        window.open(`${process.env.VUE_APP_API_URL.replace('/api', '')}/storage/${url}`, '_blank')
+    }
+
 
     return {
         handleRequest,
@@ -113,7 +117,8 @@ const helpers = () => {
         logout,
         getInformationUser,
         setForm,
-        handleMultipleRequests
+        handleMultipleRequests,
+        getFile,
     }
 }
 
