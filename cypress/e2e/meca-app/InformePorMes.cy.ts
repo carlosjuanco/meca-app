@@ -115,25 +115,53 @@ describe('Componente InformePorMes', () => {
     cy.get(".fas.fa-exclamation-triangle.fa-10x").click()
   })
 
-  it('Afirmar que al hacer clic para el mes de "Mayo", se apertuera el componente "InformeMesX"', () => {
-    cy.get('form').get("input[type='email']").type('secretariadeiglesia@gmail.com')
-    cy.get('form').get("input[type='password']").type('secretariaiglesia')
+  it('Afirmar que al hacer clic para el mes de "Junio", se apertuera el componente "InformeMesX"', () => {
+    // De la prueba unitaria anterior, la voy a modificar, para que busque el mes abierto.
+    cy.request('POST', 'http://localhost:8082/api/login', {
+      email: 'secretariadedistrito@gmail.com',
+      password: 'secretariadistrito'
+    })
+    .then((response) => {
+      expect(response.status).to.eq(200)
+      expect(response).to.have.property('headers')
 
-    cy.get('form').contains('Ingresar').click()
+      let token: string = response.body.apiToken
 
-    // Verificar que ya exista el menú inicio
-    cy.get('a').contains("Inicio")
-    // Hacer clic para que se despliegue el menú
-    cy.get(".js-burger").click()
-    // Clic en el menú "Informe por mes"
-    cy.get("a").contains("Informe por mes").click()
-    // Desaparecer menú
-    cy.get(".js-burger").click()
+      // Ocupar el token, para obtener todos los meses
+      cy.request({
+        method: 'GET',
+        url: 'http://localhost:8082/api/getMonths',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).then((responseWithToken) => {
+        expect(responseWithToken.status).to.eq(200);
+        expect(responseWithToken).to.have.property('headers')
 
-    // El sub-componente "red para los meses del año", que contiene 12 botones.
-    cy.get(".columns .column button").contains("Mayo").click()
+        let months = responseWithToken.body.months
 
-    // Clic en el modal interno
-    cy.get(".button").contains("Exportar en PDF")
+        let monthOpen = months.find((month) => month.status == 'Abierto')
+
+        cy.get('form').get("input[type='email']").type('secretariadeiglesia@gmail.com')
+        cy.get('form').get("input[type='password']").type('secretariaiglesia')
+
+        cy.get('form').contains('Ingresar').click()
+
+        // Verificar que ya exista el menú inicio
+        cy.get('a').contains("Inicio")
+        // Hacer clic para que se despliegue el menú
+        cy.get(".js-burger").click()
+        // Clic en el menú "Informe por mes"
+        cy.get("a").contains("Informe por mes").click()
+        // Desaparecer menú
+        cy.get(".js-burger").click()
+
+        // El sub-componente "red para los meses del año", que contiene 12 botones.
+        cy.get(".columns .column button").contains(monthOpen.month).click()
+
+        // Clic en el modal interno
+        cy.get(".button").contains("Exportar en PDF")
+      })
+    })
   })
 })
