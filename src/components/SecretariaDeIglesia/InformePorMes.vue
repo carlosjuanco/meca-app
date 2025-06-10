@@ -34,8 +34,8 @@ export default {
       url: '',
       iconType: 'Advertencia'
     })
-    let years = ref<number[]>([]);
-    let months = reactive<Month[]>([]);
+    let years = ref<number[]>([])
+    let months = reactive<Month[]>([])
     const grid: { rows: number, columns: number } = {
       rows: 3,
       columns: 4
@@ -128,7 +128,6 @@ export default {
 
         show_internal_notification.value = true
       }
-      
     }
 
     onMounted(() => {
