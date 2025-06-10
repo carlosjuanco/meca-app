@@ -66,7 +66,7 @@ const routes = [
         path: '/InformeMesX',
         component: AppHome,
         children: [{
-            path: '/InformeMesX', name: 'Informe mes x',
+            path: '/:month_id', name: 'Informe mes x',
             components: {
                 default: InformeMesX,
                 sidebar: InformeMesX
@@ -99,7 +99,7 @@ const routes = [
         path: '/InformeMesSeleccionado',
         component: AppHome,
         children: [{
-            path: '/InformeMesSeleccionado', name: 'Informe mes seleccionado',
+            path: '/:month_id', name: 'Informe mes seleccionado',
             components: {
                 default: InformeMesSeleccionado,
                 sidebar: InformeMesSeleccionado

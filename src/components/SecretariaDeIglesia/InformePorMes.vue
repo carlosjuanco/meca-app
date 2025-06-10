@@ -34,8 +34,8 @@ export default {
       url: '',
       iconType: 'Advertencia'
     })
-    let years = ref<number[]>([]);
-    let months = reactive<Month[]>([]);
+    let years = ref<number[]>([])
+    let months = reactive<Month[]>([])
     const grid: { rows: number, columns: number } = {
       rows: 3,
       columns: 4
@@ -120,8 +120,7 @@ export default {
 
     const open_informeMesX = (mes: Month) => {
       if(mes.haveInformation) {
-        console.log('raquela', mes)
-        router.replace({ name: 'Informe mes x' }) 
+        router.replace({ name: "Informe mes x", params:{ month_id: mes.id} })
       } else {
         data_internal_notification.title = 'Advertencia'
         data_internal_notification.message = { message: 'Todavía no hay información para este mes' }
@@ -129,7 +128,6 @@ export default {
 
         show_internal_notification.value = true
       }
-      
     }
 
     onMounted(() => {

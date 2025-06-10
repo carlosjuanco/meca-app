@@ -9,7 +9,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css'
 
 const api_token: string | null = localStorage.getItem('api_token')
 
-axios.defaults.baseURL = 'http://localhost:8080/api'
+axios.defaults.baseURL = process.env.VUE_APP_API_URL
 axios.defaults.withCredentials = true
 
 if (api_token) {

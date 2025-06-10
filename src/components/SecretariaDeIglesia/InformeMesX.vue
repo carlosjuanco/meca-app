@@ -1,89 +1,186 @@
 <script lang="ts">
-    import { Field, Form, ErrorMessage, FieldArray } from 'vee-validate'
-    import * as yup from 'yup'
+import { onMounted, reactive, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+import helpers from '../../helpers'
 
-	export default {
-        name: 'InformeMesX',
-        components: {
-            Form,
-            Field,
-            ErrorMessage,
-            FieldArray
-        },
-        setup() {
-            const concepts = [
-            "",
-            "GRUPOS PEQUEÑOS",
-            "CONTACTOS MISIONEROS",
-            "ESTUDIOS ACUMULADOS",
-            "NUEVOS ESTUDIOS",
-            "BAUTISMOS",
-            "TOTAL DE PERSONAS ESTUDIANDO",
-            "TOTAL DE ESTUDIOS MENSUALES",
-            "TOTAL DE BAUTISMOS ALCANZADOS",
-            "INVITADOS EN LA CAMPAÑA DE GP",
-            "INVITADOS EN LA CAMPAÑA DE IGLESIA",
-            ""
-          ]
-            const total_weeks = [
-            "Primera semana",
-            "Segunda semana",
-            "Tercera semana",
-            "Cuarta semana"
-          ]
-          
-            const initialData = {
-            weeks: [{
-              concept1: 0,
-              concept2: 0,
-              concept3: 0,
-              concept4: 0,
-              concept5: 0,
-              concept6: 0,
-              concept7: 0,
-              concept8: 0,
-              concept9: 0,
-              concept10: 0
-            }]
-          }
+export default {
+  name: 'InformeMesX',
+  setup() {
+    const route = useRoute();
+    const store = useStore()
+    const { handleErrors, handleRequest, getFile } = helpers()
+    const nameIglesia: string = store.getters.user.churchToWhichItBelongs
+    let month_id = ref(route.params.month_id)
 
-            const schema = yup.object().shape({
-            weeks: yup.array().of(
-              yup.object().shape({
-                concept1:yup.number(),
-                concept2:yup.number(),
-                concept3:yup.number(),
-                concept4:yup.number(),
-                concept5:yup.number(),
-                concept6:yup.number(),
-                concept7:yup.number(),
-                concept8:yup.number(),
-                concept9:yup.number(),
-                concept10:yup.number()
-              })
-            ).strict(),
-          })
-            return {
-                concepts,
-                total_weeks,
-                initialData,
-                schema
-            }
-        }
+    interface Concept {
+      id: number,
+      concept: string,
     }
+
+    interface Weeks {
+      id: number
+      value: number,
+      concept_id: number,
+      churche_id: number,
+      month_id: number,
+      human_id: number,
+      week: number,
+      status: 'Cerrado' | 'Abierto',
+    }
+
+    interface Nameweek {
+      name: string,
+      terminate_or_enable: string,
+    }
+
+    const totalWeeks = [
+      "Primera semana",
+      "Segunda semana",
+      "Tercera semana",
+      "Cuarta semana"
+    ]
+
+    let concepts = reactive<Concept[]>([{
+      id: 0,
+      concept: '',
+    }])
+    let name_weeks = reactive<Nameweek[]>([
+      { name: "primeraSemana", terminate_or_enable: 'Terminar semana' },
+      { name: "segundaSemana", terminate_or_enable: 'Terminar semana' },
+      { name: "terceraSemana", terminate_or_enable: 'Terminar semana' },
+      { name: "cuartaSemana", terminate_or_enable: 'Terminar semana' },
+    ])
+    type SemanaClave = 'primeraSemana' | 'segundaSemana' | 'terceraSemana' | 'cuartaSemana';
+    type Mes = Partial<Record<SemanaClave, Weeks[]>>
+    let churche_concepts = reactive<Mes>({})
+    const weeksAdded = ref(Object.keys(churche_concepts).length)
+
+    /*
+      Exportar en PDF los datos de las semanas capturas.
+
+      return void
+    */
+
+    const monthlyReportOfTheChurchSecretary = async () => {
+      try {
+        const responses = await handleRequest('put', `/monthlyReportOfTheChurchSecretary/`, {}, Number(month_id.value))
+        getFile(responses.file)
+      } catch (error) {
+        handleErrors(error)
+      }
+    }
+
+    /*
+      Deshabilitar o habilitar los campos, si deshabilitamos significa que terminamos la semana.
+      Si habilitamos, nos hizo falta algo.
+
+      @semana: SemanaClave Solo recibe los posibles valores "'primeraSemana' | 'segundaSemana' | 'terceraSemana' | 'cuartaSemana'"
+        también puede recibir un valor undefined.
+      @terminate_or_enable: string Recibe dos posibles valores "'Habilitar semana' | 'Terminar semana'".
+
+      return void
+    */
+
+    const endOfTheWeek = (semana: SemanaClave | undefined, terminate_or_enable: string) => {
+      if(typeof semana == "string"){
+        name_weeks.forEach((week: Nameweek) => {
+          if(week.name == semana) {
+            week.terminate_or_enable = terminate_or_enable == 'Terminar semana' ? 'Habilitar semana' : 'Terminar semana'
+          }
+        })
+        churche_concepts[semana]!.forEach((week: Weeks) => {
+          if(terminate_or_enable == 'Terminar semana'){
+            week.status = 'Cerrado'
+          } else {
+            week.status = 'Abierto'
+          }
+        })
+      } 
+    }
+
+    /*
+      Obtener todos los conceptos      
+
+      -Asignamos todos los conceptos obtenidos, a la variable "concepts", para que sea reactivo.
+
+      return void
+    */
+    const getConcepts = async () => {
+      try {
+        const responses = await handleRequest('get', `/getConcepts/`)
+        responses.concepts.map(function (concept: Concept) {
+          concepts.splice(concepts.length, 0, concept);
+        })
+      } catch (error) {
+        handleErrors(error)
+      }
+    }
+
+    /*
+      Obtener todos los conceptos que le pertenecen a una iglesia en específico, de un mes en especifico
+
+      -Asignamos todo los registros obtenidos de la tabla "churche_concept_month_human" a la 
+        variable "churche_concepts".
+        -Deshabilitar todas las semanas
+        -Obtenemos la longitud del arreglo "churche_concepts" y se lo establecemos a la variable 
+          "weeksAdded"
+
+      return void
+    */
+    const getChurcheWithConceptsWithMonth = async () => {
+      try {
+        const responses = await handleRequest('put',`/getChurcheWithConceptsWithMonth`, {}, Number(month_id.value))
+
+        if(responses.churcheConceptMonthHuman.length > 0) {
+          let semana: SemanaClave = 'primeraSemana'
+          responses.churcheConceptMonthHuman.map(function (churcheConceptMonthHuman: Weeks) {
+            semana = name_weeks[churcheConceptMonthHuman.week - 1].name as SemanaClave
+            if (!churche_concepts[semana]) {
+              churche_concepts[semana] = [];
+            }
+
+            churche_concepts[semana]!.splice(churche_concepts[semana]!.length, 0, churcheConceptMonthHuman);
+            endOfTheWeek(semana, 'Terminar semana')
+          })      
+          weeksAdded.value = Object.keys(churche_concepts).length      
+        }
+      } catch (error) {
+          handleErrors(error)
+      }
+    }
+
+    onMounted(() => {
+      getConcepts()
+      getChurcheWithConceptsWithMonth()
+    })
+
+    return {
+        nameIglesia,
+        concepts,
+        totalWeeks,
+        weeksAdded,
+        churche_concepts,
+        name_weeks,
+        monthlyReportOfTheChurchSecretary,
+    }
+  }
+}
 </script>
 <template>
     <div class="columns">
         <div class="column is-four-fifths">
-          
+          <p class="title is-1 has-text-centered mt-1" v-text="`Iglesia ${nameIglesia}`"> </p>
         </div>
         <div class="column">
-            <button class="button is-info is-large pt-3 pb-3 is-fullwidth">
+            <button class="button is-info is-large pt-3 pb-3 is-fullwidth"
+              @click="monthlyReportOfTheChurchSecretary()"
+            >
                 <span class="icon is-small">
                   <i class="fa-solid fa-file-pdf"></i>
                 </span>
                 <span>Exportar en PDF</span>
-              </button>
+            </button>
         </div>
     </div>
     <div class="table-container mt-6">
@@ -91,57 +188,24 @@
           <table class="table is-link">
             <thead>
               <tr>
-                <th v-for="(concept, index) in concepts" :key="index" v-text="concept"></th>
+                <th v-for="(concept, index) in concepts" :key="index" v-text="concept.concept"></th>
               </tr>
             </thead>
             <tbody>
-              <FieldArray name="weeks" v-slot="{ fields }">
-                <tr v-for="(field, index) in fields" :key="field.key">
-                    <th v-text="total_weeks[index]"></th>
-                    <td>
-                      <Field :name="`weeks[${index}].concept1`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept1`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept2`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept2`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept3`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept3`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept4`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept4`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept5`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept5`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept6`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept6`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept7`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept7`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept8`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept8`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept9`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept9`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                      <Field :name="`weeks[${index}].concept10`" type="number" class="input is-family-monospace has-text-centered"/>
-                      <ErrorMessage :name="`weeks[${index}].concept10`" :class="{'tag is-warning': true }"/>
-                    </td>
-                    <td>
-                    </td>
+              <template v-for="(totalWeek, index) in weeksAdded" :key="index">
+                <tr>
+                  <th>
+                    <span v-text="totalWeeks[index]"></span>
+                  </th>
+                  <td v-for="(concept, index_concept) in churche_concepts[name_weeks[index].name]" :key="index_concept">
+                    <input type="number" v-model="concept.value"
+                      min="0" max="1000"
+                      disabled
+                      class="input is-family-monospace has-text-centered"
+                    />
+                  </td>
                 </tr>
-              </FieldArray>
+              </template>
             </tbody>
           </table>
       </Form>
