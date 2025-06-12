@@ -7,7 +7,7 @@ import helpers from '../../helpers'
 export default {
   name: 'InformeMesX',
   setup() {
-    const route = useRoute();
+    const route = useRoute()
     const store = useStore()
     const { handleErrors, handleRequest, getFile } = helpers()
     const nameIglesia: string = store.getters.user.churchToWhichItBelongs
