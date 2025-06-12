@@ -5,6 +5,14 @@ describe('Componente InformeMesSeleccionado', () => {
     cy.visit('http://localhost:8083/')
   })
 
+  /*
+    Cree otro archivo porque al ejecutar la prueba de "Afirmar que la iglesia "Jardín" por cada concepto tiene el valor 23"
+    dentro del archivo "8-InformeMesSeleccionado.cy.ts" me marcaba error, y revisando no tiene, solo se me ocurrio que son
+    demasiadas solicitudes, pero tampoco marca ese error, porque si me ha tocado en el archivo de prueba 
+    "2-AperturaDeMes.cy.ts", que me marque ese error.
+    Incluso corriendo los archivos consecutivamente, cuando llega aquí debo cerrar y abrir de nuevo cypress, para que corra
+    correctamente.
+  */
   it('Afirmar que la iglesia "Jardín" por cada concepto tiene el valor 23', () => {
     cy.request('POST', 'http://localhost:8082/api/login', {
       email: 'secretariadedistrito@gmail.com',
