@@ -100,7 +100,7 @@ export default {
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                La intersección de iglesia y conceptos, es lo que capturo cada <span class="tag is-light">secretaria de iglesia</span>.
+                <p>La intersección de iglesia y conceptos, es lo que capturo cada usuario con el rol <span class="tag is-light">Secretaria de iglesia</span></p>.
               </a>
               <a class="panel-block">
                 <span class="panel-icon">
@@ -118,7 +118,7 @@ export default {
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                La fila con la etiqueta <span class="tag is-light">anterior</span> es el total por cada columna del mes anterior.
+                La fila con la etiqueta <span class="tag is-light">Anterior</span> es el total por cada columna del mes anterior.
               </a>
               <a class="panel-block">
                 <span class="panel-icon">
