@@ -79,7 +79,13 @@ export default {
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                Que pueda seleccionar que mes desea ver el informe mensual.
+                Que se pueda seleccionar el mes para ver el informe mensual.
+              </a>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Verificar que solo los usuarios con el rol "Secretaría de distrito", tengan acceso a este componente.
               </a>
           </article>
       </div>
