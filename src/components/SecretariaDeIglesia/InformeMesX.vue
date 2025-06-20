@@ -80,6 +80,17 @@
                 </span>
                 Visualizar lo capturado del mes correspondiente.
               </a>
+          </article>
+      </div>
+      <div class="column">
+          <article class="panel is-link">
+              <p class="panel-heading">Funcionalidad</p>
+              <a class="panel-block">
+                <span class="panel-icon">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                Obtener la información de la intersección de iglesias y conceptos.
+              </a>
               <a class="panel-block">
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
@@ -91,17 +102,6 @@
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
                 La etiqueta <span class="tag is-light">2025</span> cambiará de acuerdo al año correspondiente.
-              </a>
-          </article>
-      </div>
-      <div class="column">
-          <article class="panel is-link">
-              <p class="panel-heading">Funcionalidad</p>
-              <a class="panel-block">
-                <span class="panel-icon">
-                  <i class="fas fa-book" aria-hidden="true"></i>
-                </span>
-                Obtener la información de la intersección de iglesias y conceptos.
               </a>
           </article>
       </div>
