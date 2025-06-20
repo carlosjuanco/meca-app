@@ -94,7 +94,15 @@
             <tbody>
               <FieldArray name="weeks" v-slot="{ fields, push }">
                 <tr v-for="(field, index) in fields" :key="field.key">
-                    <th v-text="total_weeks[index]"></th>
+                    <th>
+                      <span v-text="total_weeks[index]"></span>
+                      <span>
+                        <button class="button" 
+                          @click="push({ concept1: 0, concept2: 0, concept3: 0, concept4: 0, concept5: 0,
+                          concept6: 0, concept7: 0, concept8: 0, concept9: 0, concept10: 0 })"
+                          >Nueva semana</button>
+                      </span>
+                    </th>
                     <td>
                       <Field :name="`weeks[${index}].concept1`" type="number" class="input is-family-monospace has-text-centered"/>
                       <ErrorMessage :name="`weeks[${index}].concept1`" :class="{'tag is-warning': true }"/>
@@ -135,14 +143,6 @@
                       <Field :name="`weeks[${index}].concept10`" type="number" class="input is-family-monospace has-text-centered"/>
                       <ErrorMessage :name="`weeks[${index}].concept10`" :class="{'tag is-warning': true }"/>
                     </td>
-                    <td v-if="index == 0">
-                      <button class="button" 
-                        @click="push({ concept1: 0, concept2: 0, concept3: 0, concept4: 0, concept5: 0,
-                        concept6: 0, concept7: 0, concept8: 0, concept9: 0, concept10: 0 })"
-                        >Nueva semana</button>
-                    </td>
-                    <td v-else>
-                    </td>
                 </tr>
               </FieldArray>
             </tbody>
@@ -158,13 +158,13 @@
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                Si el periodo de capturar ya termino, entonces no puede capturar ningun dato.
+                Si el periodo de captura termina, no podrá capturar ningún dato.
               </a>
               <a class="panel-block">
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                Cuando creé la segunda semana, se deshabilitara todos los input de la primera semana, así sucesivamente.
+                Cuando haga clic en el botón “Nueva semana”, se creará una nueva fila.
               </a>
             </article>
       </div>
