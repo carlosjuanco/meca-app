@@ -78,7 +78,7 @@
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                Que pueda seleccionar que mes quiere ver lo que capturo.
+                Que pueda seleccionar un mes para ver lo que capturó.
               </a>
           </article>
       </div>
