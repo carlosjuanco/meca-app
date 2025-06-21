@@ -79,7 +79,7 @@ export default {
                 <span class="panel-icon">
                   <i class="fas fa-book" aria-hidden="true"></i>
                 </span>
-                Que se pueda seleccionar el mes para ver el informe mensual.
+                Que pueda seleccionar un mes para ver el informe mensual.
               </a>
               <a class="panel-block">
                 <span class="panel-icon">
