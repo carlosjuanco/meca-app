@@ -12,6 +12,11 @@ export default {
     const { handleErrors, handleRequest, getFile } = helpers()
     const nameIglesia: string = store.getters.user.churchToWhichItBelongs
     let month_id = ref(route.params.month_id)
+    const months: string[] = [
+      "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ]
+    let nameMonth = ref(months[Number(month_id.value) - 1])
 
     interface Concept {
       id: number,
@@ -163,6 +168,7 @@ export default {
         churche_concepts,
         name_weeks,
         monthlyReportOfTheChurchSecretary,
+        nameMonth,
     }
   }
 }
@@ -171,6 +177,7 @@ export default {
     <div class="columns">
         <div class="column is-four-fifths">
           <p class="title is-1 has-text-centered mt-1" v-text="`Iglesia ${nameIglesia}`"> </p>
+          <p class="subtitle is-2 has-text-centered mt-1" v-text="`Mes de ${nameMonth}`"></p>
         </div>
         <div class="column">
             <button class="button is-info is-large pt-3 pb-3 is-fullwidth"
