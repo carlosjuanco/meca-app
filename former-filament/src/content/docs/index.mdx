@@ -5,32 +5,163 @@ template: splash
 hero:
   tagline: Para el sistema web de la Iglesia Adventista del Séptimo día.
   image:
-    file: ../../assets/houston.webp
-  actions:
-    - text: Example Guide
-      link: /guides/example/
-      icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
-      variant: minimal
+    file: ../../assets/logotipo_sin_letra.png
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+export const value = "localhost:8083";
+export const url = "http://localhost:8083";
 
-## Next steps
+import { Card } from '@astrojs/starlight/components';
+import './custom-counter.css';
 
-<CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
-</CardGrid>
+<Card>
+	<h2 style="text-align: center;">Índice</h2>
+	<ol class="custom-counter">
+		<li>
+			<a href="#secretaría-de-distrito">Secretaría de distrito</a>
+			<ol>
+				<li><a href="#iniciar-sesión">Iniciar sesión</a></li>
+				<li><a href="#partes-del-sistema">Partes del sistema</a></li>
+				<li><a href="#cierre-de-un-mes">Cierre de un mes</a></li>
+				<li><a href="#aperturar-un-mes">Aperturar un mes</a></li>
+				<li><a href="#cerrar-sesión">Cerrar sesión</a></li>
+			</ol>
+		</li>
+		<li>
+			<a href="#secretaría-de-iglesia">Secretaría de iglesia</a>
+			<ol>
+				<li>
+					<a href="#iniciar-sesion-con-la-secretaria-de-iglesia">
+						Iniciar sesión
+					</a>
+				</li>
+				<li>
+					<a href="#partes-del-sistema-con-la-secretaria-de-iglesia">
+						Partes del sistema
+					</a>
+				</li>
+				<li>
+					<a href="#capturar-informacion-del-mes-aperturado">
+						Capturar información del mes aperturado
+					</a>
+				</li>
+				<li>
+					<a href="#ver-mi-informacion-capturada">
+						Ver mi información capturada
+					</a>
+				</li>
+			</ol>
+		</li>
+	</ol>
+</Card>
+
+<h1 id="secretaría-de-distrito" style={{ textAlign: "center" }}>Secretaría de distrito</h1>
+
+## Iniciar sesión
+
+Diríjase a <a href={url} target='_blank'>{value}</a>, usted vera el sistema funcionando si ve lo mismo que la imágen siguiente.
+<div style={{ textAlign: "center" }}>
+  <img src="/AccesoAlSistema.png" alt="Texto" width="500" />
+</div>
+
+En el campo **Correo** ingrese el correo proporcionado por los creadores del sistema, ahora para el campo **Contraseña** ingrese su contraseña proporcionado por los creadores del sistema.
+
+## Partes del sistema
+<div style={{ textAlign: "center" }}>
+  <img src="/PartesDelSistema.png" alt="Texto" width="850" />
+</div>
+
+## Cierre de un mes
+
+Hacer clic en la opción **Apertura de mes** del **menú del sistema**, se mostrará la siguiente pantalla.
+<div style={{ textAlign: "center" }}>
+  <img src="/AperturaDeMes.png" alt="Texto" width="850" />
+</div>
+Vamos a cerrar el mes de **Julio**, para esto primero identificamos en la **Red para apertura de mes** al mes, hacer clic en **Cerrado**, inmediamente veremos que todos los meses se habilitan.
+<div style={{ textAlign: "center" }}>
+  <img src="/CerrarUnMes.png" alt="Texto" width="600" />
+</div>
+
+## Aperturar un mes
+
+Hacer clic del **menú del sistema** en la opción **Apertura de mes**, se mostrara la siguiente pantalla.
+<div style={{ textAlign: "center" }}>
+  <img src="/AperturaDeMes.png" alt="Texto" width="850" />
+</div>
+Vamos a aperturar el mes de **Agosto**, para esto identificamos en la **Red para apertura de mes** el mes, hacer clic en **Abierto**,
+inmediatamente todos los demás meses quedaran deshabilitados.
+<div style={{ textAlign: "center" }}>
+  <img src="/AperturarUnMes.png" alt="Texto" width="600" />
+</div>
+
+## Cerrar sesión
+
+Nos dirigimos del lado derecho donde se encuentra el **Menú del sistema**, vemos el texto **Cerrar**, hacer clic.
+<div style={{ textAlign: "center" }}>
+  <img src="/CerrarSesion.png" alt="Texto" width="600" />
+</div>
+<br></br>
+<br></br>
+<p>Inmediamente se nos mostrara el inicio de sesión.</p>
+<div style={{ textAlign: "center" }}>
+  <img src="/AccesoAlSistema.png" alt="Texto" width="500" />
+</div>
+
+<h1 id="secretaría-de-iglesia" style={{ textAlign: "center" }}>Secretaría de iglesia</h1>
+
+<h2 id="iniciar-sesion-con-la-secretaria-de-iglesia">
+  Iniciar sesión
+</h2>
+
+Diríjase a <a href={url} target='_blank'>{value}</a>, usted vera el sistema funcionando si ve lo mismo que la imágen siguiente.
+<div style={{ textAlign: "center" }}>
+  <img src="/AccesoAlSistema.png" alt="Texto" width="500" />
+</div>
+
+En el campo **Correo** ingrese el correo proporcionado por los creadores del sistema, ahora para el campo **Contraseña** ingrese su contraseña proporcionado.
+
+<h2 id="partes-del-sistema-con-la-secretaria-de-iglesia">
+  Partes del sistema
+</h2>
+<div style={{ textAlign: "center" }}>
+  <img src="/PartesDelSistemaSecretariaIglesia.png" alt="Texto" width="850" />
+</div>
+
+<h2 id="capturar-informacion-del-mes-aperturado">
+  Capturar información del mes aperturado
+</h2>
+Hacer clic del **menú del sistema** en la opción **Capturar informe actual**, se mostrara la siguiente pantalla.
+
+<div style={{ textAlign: "center" }}>
+  <img src="/CapturarInformeActual.png" alt="Texto" width="850" />
+</div>
+
+Por cada concepto vamos ingresando la cantidad de personas que realizaron dicha actividad, clic en **Guardar** para que no se nos pierdan los datos.
+
+Si necesitamos una segunda semana, hacer clic en el texto **Nueva semana** esto creará una segunda fila.
+
+<div style={{ textAlign: "center" }}>
+  <img src="/NuevaSemana.png" alt="Texto" width="800" />
+</div>
+
+Ahora ingresamos las personas correspondiente por cada concepto y guardamos.
+
+Si queremos una tercera o cuarta semana seguimos los mismos pasos.
+
+<h2 id="ver-mi-informacion-capturada">
+  Ver mi información capturada
+</h2>
+
+Hacer clic en la opción **Informe por mes** del **menú del sistema**, se mostrará la siguiente pantalla.
+
+<div style={{ textAlign: "center" }}>
+  <img src="/InformePorMes.png" alt="Texto" width="850" />
+</div>
+
+Seleccionamos el mes de **Agosto** que tiene datos e inmediatamente se nos muestra los datos.
+
+<div style={{ textAlign: "center" }}>
+  <img src="/InformeMesX.png" alt="Texto" width="850" />
+</div>
+
+En el caso que deseemos ver nuestros datos en un archivo PDF, hacer clic en el texto **Exportar en PDF**.
