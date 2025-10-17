@@ -23,8 +23,13 @@ type State = {
 }
 
 // Define the initial state
+const apiToken = localStorage.getItem('apiToken') || ''
+
+if (apiToken) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${apiToken}`
+}
 const state: State = {
-    apiToken: localStorage.getItem('apiToken') || '',
+    apiToken,
     user: {id: 0, name: '', email:''},
     pages: {id: 0, name: '', name_component: ''},
     monthOpen: '',
@@ -35,6 +40,7 @@ export default createStore({
     mutations: {
         SET_API_TOKEN (state, apiToken) {
             state.apiToken = apiToken
+            axios.defaults.headers.common['Authorization'] = `Bearer ${apiToken}`
         },
         SET_USER (state, user) {
             state.user = user
