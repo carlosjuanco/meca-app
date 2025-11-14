@@ -11,6 +11,32 @@
     url: string
   }
 
+  interface Permissions {
+    Visualizar_la_pagina: boolean
+    Ver_la_pagina_en_el_menu: boolean
+  }
+
+  // Definimos la estructura de "pivot"
+  interface Pivot {
+    role_id: number
+    page_id: number
+    permissions: Permissions
+  }
+
+  // Definimos la estructura principal de cada página
+  interface Page {
+    id: number
+    name: string
+    name_component: string
+    page_id: number | null
+    human_id: number
+    pivot: Pivot
+  }
+
+  // Si deseas manejar el arreglo completo
+  type Pages = Page[]
+
+
 	export default defineComponent ({
     name: 'AppHome',
     components: { ModalNotification },
@@ -18,8 +44,9 @@
       const store = useStore()
       const router = useRouter()
       const { handleErrors } = helpers()
+      const pages = ref<Pages>(store.getters.pages)
       
-      let pages = store.getters.pages.filter((page: { [key: string]: any }) => JSON.parse(page.pivot.permissions).Ver_la_pagina_en_el_menu)
+      pages.value = pages.value.filter(page => page.pivot.permissions.Ver_la_pagina_en_el_menu)
       
       let name_user = store.getters.user.name
       let show_modal_notification = ref(false)
