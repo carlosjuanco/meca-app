@@ -11,6 +11,32 @@
     url: string
   }
 
+  interface Permissions {
+    Visualizar_la_pagina: boolean
+    Ver_la_pagina_en_el_menu: boolean
+  }
+
+  // Definimos la estructura de "pivot"
+  interface Pivot {
+    role_id: number
+    page_id: number
+    permissions: Permissions
+  }
+
+  // Definimos la estructura principal de cada página
+  interface Page {
+    id: number
+    name: string
+    name_component: string
+    page_id: number | null
+    human_id: number
+    pivot: Pivot
+  }
+
+  // Si deseas manejar el arreglo completo
+  type Pages = Page[]
+
+
 	export default defineComponent ({
     name: 'AppHome',
     components: { ModalNotification },
@@ -18,8 +44,11 @@
       const store = useStore()
       const router = useRouter()
       const { handleErrors } = helpers()
+      const pages = ref<Pages>(store.getters.pages)
       
-      let pages = store.getters.pages
+      pages.value = pages.value.filter(page => page.pivot.permissions.Ver_la_pagina_en_el_menu)
+      
+      let name_user = store.getters.user.name
       let show_modal_notification = ref(false)
       let data_modal_notification: Datamodal = reactive({
         title: '',
@@ -28,6 +57,8 @@
       })
 
       let show_navbar = ref(false)
+
+      router.replace({ name: "Bienvenido usuario", params:{ name_user: name_user} })
 
       const logout = async () => {
           try {
@@ -48,13 +79,22 @@
         show_navbar.value = show_navbar.value ? false : true
       }
 
+      const go_to_route = (page:string): void => {
+        if(page === "Inicio"){
+          router.replace({ name: "Bienvenido usuario", params:{ name_user: name_user} })
+        }else {
+          router.replace({ name: page })
+        }
+      }
+
       return {
         pages, 
         logout, 
         show_modal_notification, 
         data_modal_notification,
         show_menu,
-        show_navbar
+        show_navbar,
+        go_to_route
       }
     }
 	})
@@ -76,7 +116,16 @@
 
       <div id="navbarExampleTransparentExample" :class="{'navbar-menu': true, 'is-active': show_navbar}">
         <div class="navbar-start">
-          <router-link v-for="page in pages" :key="page" :to="page.name_component" class="navbar-item">{{ page.name }}</router-link>
+          <router-link v-for="page in pages" :key="page.name_component"
+                       :to="page.name_component"
+                       custom>
+            <a
+              @click="go_to_route(page.name)"
+              class="navbar-item"
+            >
+              {{ page.name }}
+            </a>
+          </router-link>
         </div>
 
         <div class="navbar-end">
