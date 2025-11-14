@@ -2,7 +2,7 @@ import InformeMesX from './InformeMesX.vue'
 
 describe('Componente InformeMesX', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8083/')
+    cy.visit('http://localhost:8084/')
   })
 
   it('¿Esta corriendo el sistema?', () => {

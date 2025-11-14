@@ -2,7 +2,7 @@ import InformeMesSeleccionado from './InformeMesSeleccionado.vue'
 
 describe('Componente InformeMesSeleccionado', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8083/')
+    cy.visit('http://localhost:8084/')
   })
 
   it('¿Esta corriendo el sistema?', () => {

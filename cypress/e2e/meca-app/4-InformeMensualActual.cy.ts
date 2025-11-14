@@ -3,7 +3,7 @@ import InformeMensualActual from './InformeMensualActual.vue'
 describe('Componente InformeMensualActual', () => {
   beforeEach(() => {
     // Para realizar bien esta prueba unitaria eliminar toda la informacion de la tabla "churche_concept_month_human"
-    cy.visit('http://localhost:8083/')
+    cy.visit('http://localhost:8084/')
   })
 
   it('De la iglesia "Las Flores", por cada concepto debe estar la cantidad 206', () => {

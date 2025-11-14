@@ -2,7 +2,7 @@ import AperturaDeMes from './AperturaDeMes.vue'
 
 describe('Componente AperturaDeMes', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8083/')
+    cy.visit('http://localhost:8084/')
 
     // Login y guardar el token en un alias
     // Enlace: https://docs.cypress.io/app/core-concepts/variables-and-aliases#Aliases-are-reset-before-each-test

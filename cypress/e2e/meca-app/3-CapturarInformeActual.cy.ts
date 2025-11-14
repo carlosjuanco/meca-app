@@ -3,7 +3,7 @@ import CapturarInformeActual from './CapturarInformeActual.vue'
 describe('Componente CapturarInformeActual', () => {
   beforeEach(() => {
     // Para realizar bien esta prueba unitaria eliminar toda la informacion de la tabla "churche_concept_month_human"
-    cy.visit('http://localhost:8083/')
+    cy.visit('http://localhost:8084/')
   })
 
   it('¿Esta corriendo el sistema?', () => {

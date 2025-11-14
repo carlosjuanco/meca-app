@@ -2,7 +2,7 @@ import InformePorMeses from './InformePorMeses.vue'
 
 describe('Componente InformePorMeses', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:8083/')
+    cy.visit('http://localhost:8084/')
   })
 
   it('¿Esta corriendo el sistema?', () => {
