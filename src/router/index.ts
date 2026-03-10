@@ -5,6 +5,7 @@ import HelloWord from "@/components/HelloWorld.vue"
 import WelcomeUser from "@/components/WelcomeUser.vue"
 import AppLogin from "@/views/AppLogin.vue"
 import AppHome from "@/views/AppHome.vue"
+import AppComunidad from "@/components/Administrative/AppComunidad.vue"
 
 const routes = [
     {
@@ -33,6 +34,17 @@ const routes = [
             }
         }]
     },
+    {
+        path: '/AppComunidad',
+        component: AppHome,
+        children: [{
+            path: '/AppComunidad', name: 'Comunidades',
+            components: {
+                default: AppComunidad,
+                sidebar: AppComunidad
+            }
+        }]
+    }
 ]
 
 const router = createRouter({
