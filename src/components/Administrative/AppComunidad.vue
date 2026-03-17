@@ -1,15 +1,35 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref, reactive } from 'vue'
+import ComunidadForm from './ComunidadForm.vue'
 
 export default defineComponent({
-  name: 'AppComunidad'
-});
+  name: 'AppComunidad',
+  components: { ComunidadForm },
+  setup () {
+    interface Form {
+      id: number
+    }
+    let showForm = ref(false)
+    let formData = reactive<Form>({
+      id: 0
+    });
+    const viewForm = () => {
+      showForm.value = true
+    }
+    return {
+      showForm,
+      formData,
+      viewForm
+    }
+  }
+})
 </script>
 
 <template>
   <div class="columns">
     <div class="column">
-      <button class="button is-primary is-fullwidth">
+      <button class="button is-primary is-fullwidth"
+        @click="viewForm()">
         <span class="icon">
           <i class="fas fa-plus"></i>
         </span>
@@ -17,4 +37,9 @@ export default defineComponent({
       </button>
     </div>
   </div>
+  <comunidad-form
+    :show="showForm"
+    :data="formData"
+    @close="showForm = false"
+  ></comunidad-form>
 </template>
