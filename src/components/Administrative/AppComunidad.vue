@@ -28,7 +28,7 @@ export default defineComponent({
 <template>
   <div class="columns">
     <div class="column">
-      <button class="button is-primary is-fullwidth"
+      <button class="button is-link is-fullwidth"
         @click="viewForm()">
         <span class="icon">
           <i class="fas fa-plus"></i>
