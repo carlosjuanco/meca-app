@@ -37,6 +37,61 @@ export default defineComponent({
       </button>
     </div>
   </div>
+  <div class="columns">
+    <div class="column">
+      <div class="field has-addons">
+        <div class="control is-expanded">
+          <input class="input" type="text" placeholder="Buscar comunidad">
+        </div>
+        <div class="control">
+          <button class="button is-info">
+            Buscar
+          </button>
+        </div>
+        <p class="control">
+          <span class="select">
+            <select>
+              <option>10</option>
+              <option>20</option>
+              <option>30</option>
+              <option>Todos</option>
+            </select>
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered is-striped">
+      <thead>
+        <tr class="is-primary">
+          <th class="has-text-left">
+              Nombre de la comunidad
+          </th>
+          <th>
+              Operaciones
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="has-text-left is-vcentered">Santa María Peñoles</td>
+          <td class="is-vcentered">
+            <button type="button" class="button is-link">
+              <span class="icon">
+                <i class="fas fa-edit"></i>
+              </span>
+            </button>
+            <button type="button" class="button is-danger">
+              <span class="icon">
+                <i class="fas fa-trash"></i>
+              </span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <comunidad-form
     :show="showForm"
     :data="formData"

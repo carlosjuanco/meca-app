@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import helpers from '../../helpers'
 
 export default defineComponent ({
   name: 'ComunidadForm',
@@ -14,30 +13,14 @@ export default defineComponent ({
       let form = ref({
           errors: {},
           data: {
-              name: '',
-              boss: '',
-              code: '',
-              print_label: 0,
-              copies: 0
+            community: '',
           }
       })
       
-      const { handleRequest, handleErrors } = helpers()
-
       const save = async () => {
           loading.value = true
-
-          try {
-              await handleRequest('post', '/banks', form.value.data, props.data.id)
-
-              emit('close')
-          }
-          catch (error) {
-              form.value.errors = handleErrors(error)
-          }
-          finally {
-              loading.value = false
-          }
+          loading.value = false
+          emit('close')
       }
 
       return { form, save, loading }
@@ -59,22 +42,21 @@ export default defineComponent ({
         </p>
         <button class="delete" aria-label="close" @click="$emit('close')"></button>
       </header>
-      <form @submit.prevent="save">
         <section class="modal-card-body">
           <div class="field">
             <label class="label">
               Comunidad
             </label>
             <div class="control">
-              <input type="text" :class="{'input': true, 'is-danger': form.errors.name}" v-model="form.data.name">
+              <input type="text" :class="{'input': true, 'is-danger': form.errors.community}" v-model="form.data.community">
             </div>
 
-            <strong class="help is-danger" v-text="form.errors.name" v-if="form.errors.name"></strong>
+            <strong class="help is-danger" v-text="form.errors.community" v-if="form.errors.community"></strong>
           </div>
         </section>
         <footer class="modal-card-foot">
           <div class="buttons">
-            <button type="submit" :class="{'button is-link': true, 'is-loading': loading}">
+            <button @click="save" :class="{'button is-link': true, 'is-loading': loading}">
               <template v-if="data.id">
                 Actualizar
               </template>
@@ -88,7 +70,6 @@ export default defineComponent ({
             </button>
           </div>
         </footer>
-      </form>
     </div>
   </div>
 </template>
