@@ -3,6 +3,7 @@
   import { useStore } from 'vuex'
   import { useRouter } from 'vue-router'
   import ModalNotification from '../components/ModalNotification.vue'
+  import ModalDelete from '../components/ModalDelete.vue'
   import helpers from '../helpers'
 
   type Datamodal = {
@@ -33,7 +34,7 @@
 
 	export default defineComponent ({
     name: 'AppHome',
-    components: { ModalNotification },
+    components: { ModalNotification, ModalDelete },
     setup() {
       const store = useStore()
       const router = useRouter()
@@ -49,6 +50,7 @@
         message: {},
         url: ''
       })
+      let showModalDelete = ref(false)
 
       let show_navbar = ref(false)
 
@@ -81,14 +83,21 @@
         }
       }
 
+      const destroy = () => {
+        console.info('Estoy llegando a la funcion destroy')
+        showModalDelete.value = true
+      }
+
       return {
         pages, 
         logout, 
         show_modal_notification, 
         data_modal_notification,
+        showModalDelete,
         show_menu,
         show_navbar,
-        go_to_route
+        go_to_route,
+        destroy
       }
     }
 	})
@@ -146,5 +155,9 @@
       :data="data_modal_notification"
       @close="show_modal_notification = false"
     ></modal-notification>
+    <modal-delete
+      :show="showModalDelete"
+      @close="showModalDelete = false"
+    ></modal-delete>
   </div>
 </template>

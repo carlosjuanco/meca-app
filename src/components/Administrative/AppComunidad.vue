@@ -5,7 +5,9 @@ import ComunidadForm from './ComunidadForm.vue'
 export default defineComponent({
   name: 'AppComunidad',
   components: { ComunidadForm },
-  setup () {
+  emits: ['destroy'],
+  props: {},
+  setup (props, { emit }) {
     interface Form {
       id: number
     }
@@ -13,13 +15,20 @@ export default defineComponent({
     let formData = reactive<Form>({
       id: 0
     });
+
     const viewForm = () => {
       showForm.value = true
+    }
+
+    const deleteCommunity = () => {
+      console.info('Sin estoy dando clic')
+      emit('destroy')
     }
     return {
       showForm,
       formData,
-      viewForm
+      viewForm,
+      deleteCommunity
     }
   }
 })
@@ -82,7 +91,7 @@ export default defineComponent({
                 <i class="fas fa-edit"></i>
               </span>
             </button>
-            <button type="button" class="button is-danger">
+            <button type="button" class="button is-danger" @click="deleteCommunity()">
               <span class="icon">
                 <i class="fas fa-trash"></i>
               </span>
