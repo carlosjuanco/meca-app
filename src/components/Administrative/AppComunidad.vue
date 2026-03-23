@@ -1,15 +1,20 @@
 <script lang="ts">
 import { defineComponent, ref, reactive } from 'vue'
+import { useStore } from 'vuex'
 import ComunidadForm from './ComunidadForm.vue'
 
 export default defineComponent({
   name: 'AppComunidad',
   components: { ComunidadForm },
-  emits: ['destroy'],
-  props: {},
-  setup (props, { emit }) {
+  setup () {
+    const store = useStore()
     interface Form {
       id: number
+    }
+    type DataFromTheEliminationModel = {
+      id: number;
+      description: string;
+      showModalDelete: boolean;
     }
     let showForm = ref(false)
     let formData = reactive<Form>({
@@ -20,10 +25,10 @@ export default defineComponent({
       showForm.value = true
     }
 
-    const deleteCommunity = () => {
-      console.info('Sin estoy dando clic')
-      emit('destroy')
+    const deleteCommunity = (data: DataFromTheEliminationModel) => {
+      store.dispatch('openModalDelete', data)
     }
+    
     return {
       showForm,
       formData,
@@ -91,7 +96,8 @@ export default defineComponent({
                 <i class="fas fa-edit"></i>
               </span>
             </button>
-            <button type="button" class="button is-danger" @click="deleteCommunity()">
+            <button type="button" class="button is-danger" 
+              @click="deleteCommunity({ id: 0, description: 'Santa María Peñoles', showModalDelete: true })">
               <span class="icon">
                 <i class="fas fa-trash"></i>
               </span>
