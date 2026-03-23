@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { defineComponent, ref, reactive} from 'vue'
+  import { defineComponent, ref, reactive, watch } from 'vue'
   import { useStore } from 'vuex'
   import { useRouter } from 'vue-router'
   import ModalNotification from '../components/ModalNotification.vue'
@@ -50,7 +50,8 @@
         message: {},
         url: ''
       })
-      let showModalDelete = ref(false)
+      let showModalDelete = ref<boolean>(store.getters.dataFromTheEliminationModel.showModalDelete)
+      let descriptionModalDelete = ref<string>('')
 
       let show_navbar = ref(false)
 
@@ -83,21 +84,21 @@
         }
       }
 
-      const destroy = () => {
-        console.info('Estoy llegando a la funcion destroy')
-        showModalDelete.value = true
-      }
+      watch(() => store.getters.dataFromTheEliminationModel.showModalDelete, (show: boolean) => {
+        showModalDelete.value = show
+        descriptionModalDelete.value = store.getters.dataFromTheEliminationModel.description
+      })
 
       return {
         pages, 
         logout, 
         show_modal_notification, 
         data_modal_notification,
-        showModalDelete,
         show_menu,
         show_navbar,
         go_to_route,
-        destroy
+        showModalDelete,
+        descriptionModalDelete,
       }
     }
 	})
@@ -157,6 +158,7 @@
     ></modal-notification>
     <modal-delete
       :show="showModalDelete"
+      :description="descriptionModalDelete"
       @close="showModalDelete = false"
     ></modal-delete>
   </div>
