@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, reactive } from 'vue'
+import { defineComponent, ref, reactive, watch } from 'vue'
 import { useStore } from 'vuex'
 import ComunidadForm from './ComunidadForm.vue'
 
@@ -15,25 +15,41 @@ export default defineComponent({
       id: number;
       description: string;
       showModalDelete: boolean;
+      acceptDelete: boolean;
     }
+    type CommunityData = {
+      id: number;
+      name: string;
+    }
+
     let showForm = ref(false)
     let formData = reactive<Form>({
       id: 0
-    });
+    })
+    let communities = reactive<CommunityData[]>([
+      { id: 1, name: 'Santa María Peñoles'},
+      { id: 2, name: 'Corral de piedras'},
+    ])
 
     const viewForm = () => {
       showForm.value = true
     }
 
-    const deleteCommunity = (data: DataFromTheEliminationModel) => {
-      store.dispatch('openModalDelete', data)
+    const openModalDelete = (data: DataFromTheEliminationModel) => {
+      store.dispatch('modalDelete', data)
     }
+
+    watch(() => store.getters.dataFromTheEliminationModel.acceptDelete, (show: boolean) => {
+      // descriptionModalDelete.value = store.getters.dataFromTheEliminationModel.description
+      console.info(show)
+    })
     
     return {
       showForm,
       formData,
       viewForm,
-      deleteCommunity
+      communities,
+      openModalDelete,
     }
   }
 })
@@ -88,22 +104,24 @@ export default defineComponent({
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="has-text-left is-vcentered">Santa María Peñoles</td>
-          <td class="is-vcentered">
-            <button type="button" class="button is-link" @click="viewForm()">
-              <span class="icon">
-                <i class="fas fa-edit"></i>
-              </span>
-            </button>
-            <button type="button" class="button is-danger" 
-              @click="deleteCommunity({ id: 0, description: 'Santa María Peñoles', showModalDelete: true })">
-              <span class="icon">
-                <i class="fas fa-trash"></i>
-              </span>
-            </button>
-          </td>
-        </tr>
+        <template v-for="(community, index) in communities" :key="index">
+          <tr>
+            <td class="has-text-left is-vcentered" v-text="community.name"></td>
+            <td class="is-vcentered">
+              <button type="button" class="button is-link" @click="viewForm()">
+                <span class="icon">
+                  <i class="fas fa-edit"></i>
+                </span>
+              </button>
+              <button type="button" class="button is-danger" 
+                @click="openModalDelete({ id: community.id, description: community.name, showModalDelete: true })">
+                <span class="icon">
+                  <i class="fas fa-trash"></i>
+                </span>
+              </button>
+            </td>
+          </tr>
+        </template>
       </tbody>
       <tfoot>
         <tr class="has-background-white-bis">
