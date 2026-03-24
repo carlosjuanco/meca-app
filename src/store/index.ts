@@ -19,6 +19,7 @@ type DataFromTheEliminationModel = {
     id: number;
     description: string;
     showModalDelete: boolean;
+    acceptDelete: boolean;
 }
 
 type State = {
@@ -38,7 +39,8 @@ const state: State = {
     apiToken,
     user: {id: 0, name: '', email:''},
     pages: {id: 0, name: '', name_component: ''},
-    dataFromTheEliminationModel: { id: 0, description: '', showModalDelete: false }
+    dataFromTheEliminationModel: { id: 0, description: '', 
+        showModalDelete: false, acceptDelete: false }
 };
 
 export default createStore({
@@ -91,10 +93,7 @@ export default createStore({
             commit('SET_PAGES', [])
             commit('SET_USER', {})
         },
-        openModalDelete({ commit }, data:DataFromTheEliminationModel) {
-            commit('SET_SHOW_MODAL_DELETE', data)
-        },
-        closeModalDelete({ commit }, data:DataFromTheEliminationModel) {
+        modalDelete({ commit }, data:DataFromTheEliminationModel) {
             commit('SET_SHOW_MODAL_DELETE', data)
         },
     },

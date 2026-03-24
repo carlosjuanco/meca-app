@@ -11,25 +11,32 @@ export default defineComponent ({
   setup() {
     const store = useStore()
 
-    const closeModal = () => {
+    const closeModalDelete = () => {
       store.getters.dataFromTheEliminationModel.showModalDelete = false
 
-      store.dispatch('closeModalDelete', store.getters.dataFromTheEliminationModel)
+      store.dispatch('modalDelete', store.getters.dataFromTheEliminationModel)
     }
 
-    return { closeModal }
+    const acceptDelete = () => {
+      store.getters.dataFromTheEliminationModel.acceptDelete = true
+      store.getters.dataFromTheEliminationModel.showModalDelete = false
+
+      store.dispatch('modalDelete', store.getters.dataFromTheEliminationModel)
+    }
+
+    return { closeModalDelete, acceptDelete }
   }
 })
 </script>
 <template>
-  <div :class="{'modal': true, 'is-active': show}">
-    <div class="modal-background" @click="closeModal()"></div>
+  <div :class="{'modal': true, 'is-active': show }">
+    <div class="modal-background" @click="closeModalDelete()"></div>
     <div class="modal-content">
       <div class="box">
         <article class="media">
           <div class="media-left">
-            <figure class="image is-64x64 animate__animated animate__flash animate__infinite">
-              <img src="../assets/advertencia.png" alt="Image">
+            <figure :class="{'image is-64x64': true, 'animate__animated animate__flash animate__infinite': show }">
+              <img src="../assets/figuraPregunta.png" alt="Image">
             </figure>
           </div>
           <div class="media-content">
@@ -39,10 +46,10 @@ export default defineComponent ({
               </p>
             </div>
             <div class="buttons">
-              <button @click="save" :class="{'button is-link': true}">
+              <button :class="{'button is-link': true}" @click="acceptDelete()">
                   Aceptar
               </button>
-              <button type="button" class="button" @click="closeModal()">
+              <button type="button" class="button" @click="closeModalDelete()">
                 Cancelar
               </button>
             </div>
@@ -50,6 +57,6 @@ export default defineComponent ({
         </article>
       </div>
     </div>
-    <button class="modal-close is-large" aria-label="close" @click="closeModal()"></button>
+    <button class="modal-close is-large" aria-label="close" @click="closeModalDelete()"></button>
   </div>
 </template>
