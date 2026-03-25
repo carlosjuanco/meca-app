@@ -17,24 +17,28 @@ export default defineComponent({
     type CommunityData = {
       id: number;
       name: string;
+      animateDisappearRow: boolean;
+      hideRow: boolean;
     }
 
     let showForm = ref(false)
     let formData: CommunityData = reactive({
       id: 0,
-      name: ''
+      name: '',
+      animateDisappearRow: false,
+      hideRow: false
     })
     let communities = reactive<CommunityData[]>([
-      { id: 1, name: 'Santa María Peñoles'},
-      { id: 2, name: 'Corral de piedras'},
+      { id: 1, name: 'Santa María Peñoles', animateDisappearRow: false, hideRow: false },
+      { id: 2, name: 'Corral de piedras', animateDisappearRow: false, hideRow: false },
     ])
+    // let animateDisappearRow = ref(false)
 
     const viewForm = (community: CommunityData | null) => {
       if(!community) {
-        Object.assign(formData, { id: 0, name: ''})
+        Object.assign(formData, { id: 0, name: '', animateDisappearRow: false, hideRow: false })
       }
       Object.assign(formData, community)
-      console.info('Que tiene formData.name', formData.name)
         
       showForm.value = true
     }
@@ -43,9 +47,17 @@ export default defineComponent({
       store.dispatch('modalDelete', data)
     }
 
-    watch(() => store.getters.dataFromTheEliminationModel.acceptDelete, (show: boolean) => {
-      // descriptionModalDelete.value = store.getters.dataFromTheEliminationModel.description
-      console.info(show)
+    const endsAnimationOfDisappearingRow = async (community: CommunityData) => {
+      community.hideRow = true
+    }
+
+    watch(() => store.getters.dataFromTheEliminationModel.acceptDelete, (acceptDelete: boolean) => {
+      if(acceptDelete) {
+        let row = communities.find(community => community.id === store.getters.dataFromTheEliminationModel.id)
+        if(row) {
+          row.animateDisappearRow = true
+        }
+      }
     })
     
     return {
@@ -54,6 +66,7 @@ export default defineComponent({
       viewForm,
       communities,
       openModalDelete,
+      endsAnimationOfDisappearingRow,
     }
   }
 })
@@ -109,7 +122,9 @@ export default defineComponent({
       </thead>
       <tbody>
         <template v-for="(community, index) in communities" :key="index">
-          <tr :class="`fila-${index}`">
+          <tr :class="{ 'animate__bounceOut': community.animateDisappearRow,
+            'is-hidden': community.hideRow }"
+            @animationend="endsAnimationOfDisappearingRow(community)">
             <td class="has-text-left is-vcentered" v-text="community.name"></td>
             <td class="is-vcentered">
               <button type="button" class="button is-link" @click="viewForm(community)">
