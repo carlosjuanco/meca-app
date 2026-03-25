@@ -32,8 +32,7 @@ export default defineComponent({
       { id: 1, name: 'Santa María Peñoles', animateDisappearRow: false, hideRow: false },
       { id: 2, name: 'Corral de piedras', animateDisappearRow: false, hideRow: false },
     ])
-    // let animateDisappearRow = ref(false)
-
+    
     const viewForm = (community: CommunityData | null) => {
       if(!community) {
         Object.assign(formData, { id: 0, name: '', animateDisappearRow: false, hideRow: false })
