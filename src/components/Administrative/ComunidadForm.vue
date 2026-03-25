@@ -1,10 +1,11 @@
 <script lang="ts">
-import { defineComponent, ref, reactive, watch, PropType } from 'vue'
+import { defineComponent, ref, reactive, watchEffect, PropType } from 'vue'
 
 type CommunityData = {
   id: number;
   name: string;
 }
+
 export default defineComponent ({
   name: 'ComunidadForm',
   emits: ['close'],
@@ -17,9 +18,10 @@ export default defineComponent ({
   },
   setup (props, { emit }) {
     let loading = ref(false)
-    const form = reactive<CommunityData>(
-      structuredClone(props.data)
-    )
+    const form = reactive<CommunityData>({
+      id: 0,
+      name: ''
+    })
     
     const save = async () => {
         loading.value = true
@@ -27,8 +29,10 @@ export default defineComponent ({
         emit('close')
     }
 
-    watch(() => props.data, (newData) => {
-      Object.assign(form, structuredClone(newData))
+    watchEffect(() => {
+      if (props.data) {
+        Object.assign(form, props.data)
+      }
     })
 
     return { form, save, loading }

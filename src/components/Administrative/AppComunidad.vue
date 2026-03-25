@@ -30,10 +30,11 @@ export default defineComponent({
     ])
 
     const viewForm = (community: CommunityData | null) => {
-      if(community) {
-        formData.id = community.id
-        formData.name = community.name
+      if(!community) {
+        Object.assign(formData, { id: 0, name: ''})
       }
+      Object.assign(formData, community)
+      console.info('Que tiene formData.name', formData.name)
         
       showForm.value = true
     }
@@ -108,7 +109,7 @@ export default defineComponent({
       </thead>
       <tbody>
         <template v-for="(community, index) in communities" :key="index">
-          <tr>
+          <tr :class="`fila-${index}`">
             <td class="has-text-left is-vcentered" v-text="community.name"></td>
             <td class="is-vcentered">
               <button type="button" class="button is-link" @click="viewForm(community)">
