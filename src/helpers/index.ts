@@ -69,16 +69,6 @@ const helpers = () => {
         return form
     }
 
-    const fillOutForm = (fields: Fields, data: Data) => {
-        Object.keys(fields).map(k => {
-            if (k != '_method') {
-                form[k] = data[k] ? data[k] : ''
-            }
-        })
-
-        return form
-    }
-
     const handleRequest = async (method: string, url: string, data?: Data, id?: number) => {
         if (url.endsWith('/')) {
             url = url.slice(0, -1)
