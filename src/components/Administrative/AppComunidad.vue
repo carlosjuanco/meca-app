@@ -8,9 +8,6 @@ export default defineComponent({
   components: { ComunidadForm },
   setup () {
     const store = useStore()
-    interface Form {
-      id: number
-    }
     type DataFromTheEliminationModel = {
       id: number;
       description: string;
@@ -23,15 +20,21 @@ export default defineComponent({
     }
 
     let showForm = ref(false)
-    let formData = reactive<Form>({
-      id: 0
+    let formData: CommunityData = reactive({
+      id: 0,
+      name: ''
     })
     let communities = reactive<CommunityData[]>([
       { id: 1, name: 'Santa María Peñoles'},
       { id: 2, name: 'Corral de piedras'},
     ])
 
-    const viewForm = () => {
+    const viewForm = (community: CommunityData | null) => {
+      if(community) {
+        formData.id = community.id
+        formData.name = community.name
+      }
+        
       showForm.value = true
     }
 
@@ -108,7 +111,7 @@ export default defineComponent({
           <tr>
             <td class="has-text-left is-vcentered" v-text="community.name"></td>
             <td class="is-vcentered">
-              <button type="button" class="button is-link" @click="viewForm()">
+              <button type="button" class="button is-link" @click="viewForm(community)">
                 <span class="icon">
                   <i class="fas fa-edit"></i>
                 </span>

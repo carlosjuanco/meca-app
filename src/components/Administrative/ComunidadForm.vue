@@ -1,29 +1,37 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, reactive, watch, PropType } from 'vue'
 
+type CommunityData = {
+  id: number;
+  name: string;
+}
 export default defineComponent ({
   name: 'ComunidadForm',
   emits: ['close'],
   props: {
-      show: Boolean,
-      data: Object
+    show: Boolean,
+    data: {
+      type: Object as PropType<CommunityData>,
+      required: true
+    }
   },
   setup (props, { emit }) {
-      let loading = ref(false)
-      let form = ref({
-          errors: {},
-          data: {
-            community: '',
-          }
-      })
-      
-      const save = async () => {
-          loading.value = true
-          loading.value = false
-          emit('close')
-      }
+    let loading = ref(false)
+    const form = reactive<CommunityData>(
+      structuredClone(props.data)
+    )
+    
+    const save = async () => {
+        loading.value = true
+        loading.value = false
+        emit('close')
+    }
 
-      return { form, save, loading }
+    watch(() => props.data, (newData) => {
+      Object.assign(form, structuredClone(newData))
+    })
+
+    return { form, save, loading }
   }
 })
 </script>
@@ -48,10 +56,9 @@ export default defineComponent ({
               Comunidad
             </label>
             <div class="control">
-              <input type="text" :class="{'input': true, 'is-danger': form.errors.community}" v-model="form.data.community">
+              <input type="text" 
+                :class="{'input': true }" v-model="form.name">
             </div>
-
-            <strong class="help is-danger" v-text="form.errors.community" v-if="form.errors.community"></strong>
           </div>
         </section>
         <footer class="modal-card-foot">
