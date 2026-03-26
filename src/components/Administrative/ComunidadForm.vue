@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, reactive, watchEffect, PropType } from 'vue'
+import { defineComponent, ref, reactive, watchEffect, PropType, watch, nextTick } from 'vue'
 
 type CommunityData = {
   id: number;
@@ -22,6 +22,7 @@ export default defineComponent ({
       id: 0,
       name: ''
     })
+    const inputName = ref<HTMLInputElement | null>(null)
     
     const save = async () => {
         loading.value = true
@@ -35,7 +36,14 @@ export default defineComponent ({
       }
     })
 
-    return { form, save, loading }
+    watch(() => props.show, async (newVal) => {
+      if (newVal) {
+        await nextTick()
+        inputName.value?.focus()
+      }
+    })
+
+    return { form, save, loading, inputName }
   }
 })
 </script>
@@ -61,7 +69,7 @@ export default defineComponent ({
             </label>
             <div class="control">
               <input type="text" 
-                :class="{'input': true }" v-model="form.name">
+                :class="{'input': true }" v-model="form.name" ref="inputName"/>
             </div>
           </div>
         </section>
