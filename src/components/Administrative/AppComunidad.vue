@@ -7,33 +7,45 @@ export default defineComponent({
   name: 'AppComunidad',
   components: { ComunidadForm },
   setup () {
+    // Store
     const store = useStore()
+
+    // Describir la forma del objeto del modal eliminación
     type DataFromTheEliminationModel = {
       id: number;
       description: string;
       showModalDelete: boolean;
       acceptDelete: boolean;
     }
-    type CommunityData = {
+
+    // Describir la forma del objeto para almacenar los datos
+    type DescribeTheShapeOfTheDataObject = {
       id: number;
       name: string;
       animateDisappearRow: boolean;
       hideRow: boolean;
     }
 
+    // Inicializar la variable showForm en false
     let showForm = ref(false)
-    let formData: CommunityData = reactive({
+    
+    // Inicializar los datos del formulario 
+    let formData: DescribeTheShapeOfTheDataObject = reactive({
       id: 0,
       name: '',
       animateDisappearRow: false,
       hideRow: false
     })
-    let communities = reactive<CommunityData[]>([
+    /*
+        Inicializar communities con dos registros de ejemplos
+    */
+    let communities = reactive<DescribeTheShapeOfTheDataObject[]>([
       { id: 1, name: 'Santa María Peñoles', animateDisappearRow: false, hideRow: false },
       { id: 2, name: 'Corral de piedras', animateDisappearRow: false, hideRow: false },
     ])
     
-    const viewForm = (community: CommunityData | null) => {
+    // Muestrar el modal para registrar o editar
+    const viewForm = (community: DescribeTheShapeOfTheDataObject | null) => {
       if(!community) {
         Object.assign(formData, { id: 0, name: '', animateDisappearRow: false, hideRow: false })
       }
@@ -42,14 +54,27 @@ export default defineComponent({
       showForm.value = true
     }
 
+    /*
+      Mandamos a llamar al método modalDelete, para abrir la modal
+        para eliminar.
+    */
     const openModalDelete = (data: DataFromTheEliminationModel) => {
       store.dispatch('modalDelete', data)
     }
 
-    const endsAnimationOfDisappearingRow = async (community: CommunityData) => {
+    /*
+      Identificar en que momento se termina la animación
+        cuando termina la animacion ocultamos realmente la fila
+    */
+    const endsAnimationOfDisappearingRow = async (community: DescribeTheShapeOfTheDataObject) => {
       community.hideRow = true
     }
 
+    /*
+      Observamos store.getters.dataFromTheEliminationModel.acceptDelete, para determinar si acepto
+        eliminar, si fue el caso, entonces, comenzamos a eliminar para que se muestra que esta 
+        siendo eliminado.
+    */
     watch(() => store.getters.dataFromTheEliminationModel.acceptDelete, (acceptDelete: boolean) => {
       if(acceptDelete) {
         let row = communities.find(community => community.id === store.getters.dataFromTheEliminationModel.id)
