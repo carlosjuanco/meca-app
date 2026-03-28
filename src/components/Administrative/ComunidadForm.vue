@@ -2,7 +2,7 @@
 import { defineComponent, ref, reactive, watchEffect, PropType, watch, nextTick } from 'vue'
 
 // Describir la forma del objeto para recibir los datos, desde un componente padre
-type CommunityData = {
+type DescribeTheShapeOfTheDataObject = {
   id: number;
   name: string;
 }
@@ -13,7 +13,7 @@ export default defineComponent ({
   props: {
     show: Boolean,
     data: {
-      type: Object as PropType<CommunityData>,
+      type: Object as PropType<DescribeTheShapeOfTheDataObject>,
       required: true
     }
   },
@@ -21,13 +21,13 @@ export default defineComponent ({
     let loading = ref(false)
 
     // Inicializar la variable form, con datos vacios
-    const form = reactive<CommunityData>({
+    const form = reactive<DescribeTheShapeOfTheDataObject>({
       id: 0,
       name: ''
     })
 
     //  Variable que me sirve para establecer el foco al primer elemento del formulario
-    const inputName = ref<HTMLInputElement | null>(null)
+    const firstInput = ref<HTMLInputElement | null>(null)
     
     // Realiza una peticion al servidor para guardar los datos
     const save = async () => {
@@ -50,11 +50,11 @@ export default defineComponent ({
     watch(() => props.show, async (newVal) => {
       if (newVal) {
         await nextTick()
-        inputName.value?.focus()
+        firstInput.value?.focus()
       }
     })
 
-    return { form, save, loading, inputName }
+    return { form, save, loading, firstInput }
   }
 })
 </script>
@@ -80,7 +80,7 @@ export default defineComponent ({
             </label>
             <div class="control">
               <input type="text" 
-                :class="{'input': true }" v-model="form.name" ref="inputName"/>
+                :class="{'input': true }" v-model="form.name" ref="firstInput"/>
             </div>
           </div>
         </section>
