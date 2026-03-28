@@ -53,10 +53,11 @@ export default defineComponent({
       return void
     */
     const viewForm = (row: DataModel | null) => {
-      if(!row) {
-        Object.assign(formData, { id: 0, name: '', animateDisappearRow: false, hideRow: false })
+      Object.assign(formData, { id: 0, name: '', animateDisappearRow: false, hideRow: false })
+
+      if(row) {
+        Object.assign(formData, row) 
       }
-      Object.assign(formData, row)
         
       showForm.value = true
     }
@@ -161,18 +162,18 @@ export default defineComponent({
           <th class="has-text-left">
               Nombre de la comunidad
           </th>
-          <th>
+          <th class="is-vcentered">
               Operaciones
           </th>
         </tr>
       </thead>
       <tbody>
         <template v-for="(stranger, index) in data" :key="index">
-          <tr :class="{ 'animate__bounceOut': stranger.animateDisappearRow,
+          <tr :class="{ 'animate__animated animate__bounceOut': stranger.animateDisappearRow,
             'is-hidden': stranger.hideRow }"
             @animationend="endsAnimationOfDisappearingRow(stranger)">
             <td class="has-text-left is-vcentered" v-text="stranger.name"></td>
-            <td class="is-vcentered">
+            <td>
               <button type="button" class="button is-link" @click="viewForm(stranger)">
                 <span class="icon">
                   <i class="fas fa-edit"></i>
