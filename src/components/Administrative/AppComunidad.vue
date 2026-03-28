@@ -28,7 +28,7 @@ export default defineComponent({
 
     // Inicializar la variable showForm en false
     let showForm = ref(false)
-    
+
     // Inicializar los datos del formulario 
     let formData: DescribeTheShapeOfTheDataObject = reactive({
       id: 0,
@@ -44,7 +44,13 @@ export default defineComponent({
       { id: 2, name: 'Corral de piedras', animateDisappearRow: false, hideRow: false },
     ])
     
-    // Muestrar el modal para registrar o editar
+    /*
+      Muestrar el modal para registrar o editar
+
+      @commnuty de tipo DescribeTheShapeOfTheDataObject
+
+      return void
+    */
     const viewForm = (community: DescribeTheShapeOfTheDataObject | null) => {
       if(!community) {
         Object.assign(formData, { id: 0, name: '', animateDisappearRow: false, hideRow: false })
@@ -57,6 +63,10 @@ export default defineComponent({
     /*
       Mandamos a llamar al método modalDelete, para abrir la modal
         para eliminar.
+
+      @data de tipo DataFromTheEliminationModel
+
+      return void
     */
     const openModalDelete = (data: DataFromTheEliminationModel) => {
       store.dispatch('modalDelete', data)
@@ -65,6 +75,10 @@ export default defineComponent({
     /*
       Identificar en que momento se termina la animación
         cuando termina la animacion ocultamos realmente la fila
+
+      @commnuty de tipo DescribeTheShapeOfTheDataObject
+
+      return void
     */
     const endsAnimationOfDisappearingRow = async (community: DescribeTheShapeOfTheDataObject) => {
       community.hideRow = true
@@ -74,6 +88,10 @@ export default defineComponent({
       Observamos store.getters.dataFromTheEliminationModel.acceptDelete, para determinar si acepto
         eliminar, si fue el caso, entonces, comenzamos a eliminar para que se muestra que esta 
         siendo eliminado.
+
+      @acceptDelete de tipo boolean
+
+      return void
     */
     watch(() => store.getters.dataFromTheEliminationModel.acceptDelete, (acceptDelete: boolean) => {
       if(acceptDelete) {
@@ -97,6 +115,7 @@ export default defineComponent({
 </script>
 
 <template>
+  <!-- Botón principal -->
   <div class="columns">
     <div class="column">
       <button class="button is-link is-fullwidth"
@@ -108,6 +127,7 @@ export default defineComponent({
       </button>
     </div>
   </div>
+  <!-- Búsqueda -->
   <div class="columns">
     <div class="column">
       <div class="field has-addons">
@@ -132,6 +152,7 @@ export default defineComponent({
       </div>
     </div>
   </div>
+  <!-- Tabla -->
   <div class="table-container">
     <table class="table is-fullwidth is-bordered is-striped">
       <thead>
@@ -169,6 +190,7 @@ export default defineComponent({
       <tfoot>
         <tr class="has-background-white-bis">
           <td colspan="2">
+            <!-- Paginador -->
             <nav class="pagination" role="navigation" aria-label="pagination">
               <a href="#" class="pagination-previous">Antes</a>
               <a href="#" class="pagination-next">Siguiente</a>
@@ -206,6 +228,8 @@ export default defineComponent({
       </tfoot>
     </table>
   </div>
+
+  <!-- Modal del formulario -->
   <comunidad-form
     :show="showForm"
     :data="formData"

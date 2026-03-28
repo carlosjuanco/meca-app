@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref, reactive, watchEffect, PropType, watch, nextTick } from 'vue'
 
+// Describir la forma del objeto para recibir los datos, desde un componente padre
 type CommunityData = {
   id: number;
   name: string;
@@ -18,24 +19,34 @@ export default defineComponent ({
   },
   setup (props, { emit }) {
     let loading = ref(false)
+
+    // Inicializar la variable form, con datos vacios
     const form = reactive<CommunityData>({
       id: 0,
       name: ''
     })
+
+    //  Variable que me sirve para establecer el foco al primer elemento del formulario
     const inputName = ref<HTMLInputElement | null>(null)
     
+    // Realiza una peticion al servidor para guardar los datos
     const save = async () => {
         loading.value = true
         loading.value = false
         emit('close')
     }
 
+    // Observa a props.data, pero como reemplamos lo de adentro, por eso uso watchEffect
     watchEffect(() => {
       if (props.data) {
         Object.assign(form, props.data)
       }
     })
 
+    /*
+      Miro a props.show, si cambia de valor y es verdadero, entonces ponemos el foco
+        al primer elemento del formulario
+    */
     watch(() => props.show, async (newVal) => {
       if (newVal) {
         await nextTick()
