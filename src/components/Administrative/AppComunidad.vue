@@ -36,10 +36,11 @@ export default defineComponent({
       animateDisappearRow: false,
       hideRow: false
     })
+
     /*
-        Inicializar communities con dos registros de ejemplos
+        Inicializar data con dos registros de ejemplos
     */
-    let communities = reactive<DescribeTheShapeOfTheDataObject[]>([
+    let data = reactive<DescribeTheShapeOfTheDataObject[]>([
       { id: 1, name: 'Santa María Peñoles', animateDisappearRow: false, hideRow: false },
       { id: 2, name: 'Corral de piedras', animateDisappearRow: false, hideRow: false },
     ])
@@ -47,15 +48,15 @@ export default defineComponent({
     /*
       Muestrar el modal para registrar o editar
 
-      @commnuty de tipo DescribeTheShapeOfTheDataObject
+      @stranger de tipo DescribeTheShapeOfTheDataObject
 
       return void
     */
-    const viewForm = (community: DescribeTheShapeOfTheDataObject | null) => {
-      if(!community) {
+    const viewForm = (stranger: DescribeTheShapeOfTheDataObject | null) => {
+      if(!stranger) {
         Object.assign(formData, { id: 0, name: '', animateDisappearRow: false, hideRow: false })
       }
-      Object.assign(formData, community)
+      Object.assign(formData, stranger)
         
       showForm.value = true
     }
@@ -76,12 +77,12 @@ export default defineComponent({
       Identificar en que momento se termina la animación
         cuando termina la animacion ocultamos realmente la fila
 
-      @commnuty de tipo DescribeTheShapeOfTheDataObject
+      @stranger de tipo DescribeTheShapeOfTheDataObject
 
       return void
     */
-    const endsAnimationOfDisappearingRow = async (community: DescribeTheShapeOfTheDataObject) => {
-      community.hideRow = true
+    const endsAnimationOfDisappearingRow = async (stranger: DescribeTheShapeOfTheDataObject) => {
+      stranger.hideRow = true
     }
 
     /*
@@ -95,7 +96,7 @@ export default defineComponent({
     */
     watch(() => store.getters.dataFromTheEliminationModel.acceptDelete, (acceptDelete: boolean) => {
       if(acceptDelete) {
-        let row = communities.find(community => community.id === store.getters.dataFromTheEliminationModel.id)
+        let row = data.find(stranger => stranger.id === store.getters.dataFromTheEliminationModel.id)
         if(row) {
           row.animateDisappearRow = true
         }
@@ -106,7 +107,7 @@ export default defineComponent({
       showForm,
       formData,
       viewForm,
-      communities,
+      data,
       openModalDelete,
       endsAnimationOfDisappearingRow,
     }
@@ -166,19 +167,19 @@ export default defineComponent({
         </tr>
       </thead>
       <tbody>
-        <template v-for="(community, index) in communities" :key="index">
-          <tr :class="{ 'animate__bounceOut': community.animateDisappearRow,
-            'is-hidden': community.hideRow }"
-            @animationend="endsAnimationOfDisappearingRow(community)">
-            <td class="has-text-left is-vcentered" v-text="community.name"></td>
+        <template v-for="(stranger, index) in data" :key="index">
+          <tr :class="{ 'animate__bounceOut': stranger.animateDisappearRow,
+            'is-hidden': stranger.hideRow }"
+            @animationend="endsAnimationOfDisappearingRow(stranger)">
+            <td class="has-text-left is-vcentered" v-text="stranger.name"></td>
             <td class="is-vcentered">
-              <button type="button" class="button is-link" @click="viewForm(community)">
+              <button type="button" class="button is-link" @click="viewForm(stranger)">
                 <span class="icon">
                   <i class="fas fa-edit"></i>
                 </span>
               </button>
               <button type="button" class="button is-danger" 
-                @click="openModalDelete({ id: community.id, description: community.name, showModalDelete: true })">
+                @click="openModalDelete({ id: stranger.id, description: stranger.name, showModalDelete: true })">
                 <span class="icon">
                   <i class="fas fa-trash"></i>
                 </span>
