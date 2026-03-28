@@ -19,7 +19,7 @@ export default defineComponent({
     }
 
     // Describir la forma del objeto para almacenar los datos
-    type DescribeTheShapeOfTheDataObject = {
+    type DataModel = {
       id: number;
       name: string;
       animateDisappearRow: boolean;
@@ -30,7 +30,7 @@ export default defineComponent({
     let showForm = ref(false)
 
     // Inicializar los datos del formulario 
-    let formData: DescribeTheShapeOfTheDataObject = reactive({
+    let formData: DataModel = reactive({
       id: 0,
       name: '',
       animateDisappearRow: false,
@@ -40,7 +40,7 @@ export default defineComponent({
     /*
         Inicializar data con dos registros de ejemplos
     */
-    let data = reactive<DescribeTheShapeOfTheDataObject[]>([
+    let data = reactive<DataModel[]>([
       { id: 1, name: 'Santa María Peñoles', animateDisappearRow: false, hideRow: false },
       { id: 2, name: 'Corral de piedras', animateDisappearRow: false, hideRow: false },
     ])
@@ -48,15 +48,15 @@ export default defineComponent({
     /*
       Muestrar el modal para registrar o editar
 
-      @stranger de tipo DescribeTheShapeOfTheDataObject
+      @row de tipo DataModel
 
       return void
     */
-    const viewForm = (stranger: DescribeTheShapeOfTheDataObject | null) => {
-      if(!stranger) {
+    const viewForm = (row: DataModel | null) => {
+      if(!row) {
         Object.assign(formData, { id: 0, name: '', animateDisappearRow: false, hideRow: false })
       }
-      Object.assign(formData, stranger)
+      Object.assign(formData, row)
         
       showForm.value = true
     }
@@ -65,24 +65,24 @@ export default defineComponent({
       Mandamos a llamar al método modalDelete, para abrir la modal
         para eliminar.
 
-      @data de tipo DataFromTheEliminationModel
+      @eliminate de tipo DataFromTheEliminationModel
 
       return void
     */
-    const openModalDelete = (data: DataFromTheEliminationModel) => {
-      store.dispatch('modalDelete', data)
+    const openModalDelete = (eliminate: DataFromTheEliminationModel) => {
+      store.dispatch('modalDelete', eliminate)
     }
 
     /*
       Identificar en que momento se termina la animación
         cuando termina la animacion ocultamos realmente la fila
 
-      @stranger de tipo DescribeTheShapeOfTheDataObject
+      @row de tipo DataModel
 
       return void
     */
-    const endsAnimationOfDisappearingRow = async (stranger: DescribeTheShapeOfTheDataObject) => {
-      stranger.hideRow = true
+    const endsAnimationOfDisappearingRow = async (row: DataModel) => {
+      row.hideRow = true
     }
 
     /*
