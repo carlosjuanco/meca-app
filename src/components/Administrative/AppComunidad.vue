@@ -30,7 +30,7 @@ export default defineComponent({
     let showForm = ref(false)
 
     // Inicializar los datos del formulario 
-    let formData: DataModel = reactive({
+    let formData = reactive<DataModel>({
       id: 0,
       name: '',
       animateDisappearRow: false,
@@ -52,7 +52,7 @@ export default defineComponent({
 
       return void
     */
-    const viewForm = (row: DataModel | null) => {
+    const viewForm = (row: DataModel | null): void => {
       Object.assign(formData, { id: 0, name: '', animateDisappearRow: false, hideRow: false })
 
       if(row) {
@@ -70,7 +70,7 @@ export default defineComponent({
 
       return void
     */
-    const openModalDelete = (eliminate: DataFromTheEliminationModel) => {
+    const openModalDelete = (eliminate: DataFromTheEliminationModel): void => {
       store.dispatch('modalDelete', eliminate)
     }
 
@@ -98,6 +98,7 @@ export default defineComponent({
     watch(() => store.getters.dataFromTheEliminationModel.acceptDelete, (acceptDelete: boolean) => {
       if(acceptDelete) {
         let row = data.find(stranger => stranger.id === store.getters.dataFromTheEliminationModel.id)
+
         if(row) {
           row.animateDisappearRow = true
         }
@@ -107,8 +108,8 @@ export default defineComponent({
     return {
       showForm,
       formData,
-      viewForm,
       data,
+      viewForm,
       openModalDelete,
       endsAnimationOfDisappearingRow,
     }
@@ -121,7 +122,7 @@ export default defineComponent({
   <div class="columns">
     <div class="column">
       <button class="button is-link is-fullwidth"
-        @click="viewForm()">
+        @click="viewForm(null)">
         <span class="icon">
           <i class="fas fa-plus"></i>
         </span>
@@ -130,28 +131,24 @@ export default defineComponent({
     </div>
   </div>
   <!-- Búsqueda -->
-  <div class="columns">
-    <div class="column">
-      <div class="field has-addons">
-        <div class="control is-expanded">
-          <input class="input" type="text" placeholder="Buscar comunidad">
-        </div>
-        <div class="control">
-          <button class="button is-info">
-            Buscar
-          </button>
-        </div>
-        <p class="control">
-          <span class="select">
-            <select>
-              <option>10</option>
-              <option>20</option>
-              <option>30</option>
-              <option>Todos</option>
-            </select>
-          </span>
-        </p>
-      </div>
+  <div class="field has-addons">
+    <div class="control is-expanded">
+      <input class="input" type="text" placeholder="Buscar comunidad">
+    </div>
+    <div class="control">
+      <button class="button is-info">
+        Buscar
+      </button>
+    </div>
+    <div class="control">
+      <span class="select">
+        <select>
+          <option>10</option>
+          <option>20</option>
+          <option>30</option>
+          <option>Todos</option>
+        </select>
+      </span>
     </div>
   </div>
   <!-- Tabla -->
@@ -168,10 +165,12 @@ export default defineComponent({
         </tr>
       </thead>
       <tbody>
-        <template v-for="(stranger, index) in data" :key="index">
-          <tr :class="{ 'animate__animated animate__bounceOut': stranger.animateDisappearRow,
-            'is-hidden': stranger.hideRow }"
-            @animationend="endsAnimationOfDisappearingRow(stranger)">
+        <template v-for="(stranger) in data" :key="stranger.id">
+          <tr
+            v-show="!stranger.hideRow" 
+            :class="{ 'animate__animated animate__bounceOut': stranger.animateDisappearRow }"
+            @animationend="endsAnimationOfDisappearingRow(stranger)"
+          >
             <td class="has-text-left is-vcentered" v-text="stranger.name"></td>
             <td>
               <button type="button" class="button is-link" @click="viewForm(stranger)">
@@ -179,8 +178,14 @@ export default defineComponent({
                   <i class="fas fa-edit"></i>
                 </span>
               </button>
+
               <button type="button" class="button is-danger" 
-                @click="openModalDelete({ id: stranger.id, description: stranger.name, showModalDelete: true })">
+                @click="openModalDelete({ 
+                  id: stranger.id, 
+                  description: stranger.name, 
+                  showModalDelete: true 
+                })"
+              >
                 <span class="icon">
                   <i class="fas fa-trash"></i>
                 </span>
