@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref, reactive, watchEffect, PropType, watch, nextTick } from 'vue'
 
-// Describir la forma del objeto para recibir los datos, desde un componente padre
-type DescribeTheShapeOfTheDataObject = {
+// Describir la forma del objeto para almacenar los datos
+type DataModel = {
   id: number;
   name: string;
 }
@@ -13,7 +13,7 @@ export default defineComponent ({
   props: {
     show: Boolean,
     data: {
-      type: Object as PropType<DescribeTheShapeOfTheDataObject>,
+      type: Object as PropType<DataModel>,
       required: true
     }
   },
@@ -21,7 +21,7 @@ export default defineComponent ({
     let loading = ref(false)
 
     // Inicializar la variable form, con datos vacios
-    const form = reactive<DescribeTheShapeOfTheDataObject>({
+    const form = reactive<DataModel>({
       id: 0,
       name: ''
     })
@@ -29,7 +29,7 @@ export default defineComponent ({
     //  Variable que me sirve para establecer el foco al primer elemento del formulario
     const firstInput = ref<HTMLInputElement | null>(null)
     
-    // Realiza una peticion al servidor para guardar los datos
+    // Realiza una petición al servidor para guardar los datos
     const save = async () => {
         loading.value = true
         loading.value = false
@@ -59,9 +59,11 @@ export default defineComponent ({
 })
 </script>
 <template>
+  <!-- Modal card -->
   <div :class="{'modal': true, 'is-active': show}">
     <div class="modal-background"></div>
     <div class="modal-card">
+      <!-- Cabecera del modal -->
       <header class="modal-card-head">
         <p class="modal-card-title">
           <template v-if="data.id">
@@ -73,33 +75,35 @@ export default defineComponent ({
         </p>
         <button class="delete" aria-label="close" @click="$emit('close')"></button>
       </header>
-        <section class="modal-card-body">
-          <div class="field">
-            <label class="label">
-              Comunidad
-            </label>
-            <div class="control">
-              <input type="text" 
-                :class="{'input': true }" v-model="form.name" ref="firstInput"/>
-            </div>
+      <!-- Cuerpo del modal -->
+      <section class="modal-card-body">
+        <div class="field">
+          <label class="label">
+            Comunidad
+          </label>
+          <div class="control">
+            <input type="text" 
+              :class="{'input': true }" v-model="form.name" ref="firstInput"/>
           </div>
-        </section>
-        <footer class="modal-card-foot">
-          <div class="buttons">
-            <button @click="save" :class="{'button is-link': true, 'is-loading': loading}">
-              <template v-if="data.id">
-                Actualizar
-              </template>
-              <template v-else>
-                Guardar
-              </template>
-            </button>
-            <button type="button" class="button" 
-              @click="$emit('close')" v-if="loading == false">
-              Cancelar
-            </button>
-          </div>
-        </footer>
+        </div>
+      </section>
+      <!-- Pie del modal -->
+      <footer class="modal-card-foot">
+        <div class="buttons">
+          <button @click="save" :class="{'button is-link': true, 'is-loading': loading}">
+            <template v-if="data.id">
+              Actualizar
+            </template>
+            <template v-else>
+              Guardar
+            </template>
+          </button>
+          <button type="button" class="button" 
+            @click="$emit('close')" v-if="loading == false">
+            Cancelar
+          </button>
+        </div>
+      </footer>
     </div>
   </div>
 </template>
