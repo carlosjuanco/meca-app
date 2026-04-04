@@ -6,6 +6,7 @@ import WelcomeUser from "@/components/WelcomeUser.vue"
 import AppLogin from "@/views/AppLogin.vue"
 import AppHome from "@/views/AppHome.vue"
 import AppComunidad from "@/components/Administrative/AppComunidad.vue"
+import AppEscuela from "@/components/Administrative/AppEscuela.vue"
 
 const routes = [
     {
@@ -42,6 +43,17 @@ const routes = [
             components: {
                 default: AppComunidad,
                 sidebar: AppComunidad
+            }
+        }]
+    },
+    {
+        path: '/AppEscuela',
+        component: AppHome,
+        children: [{
+            path: '/AppEscuela', name: 'Escuelas',
+            components: {
+                default: AppEscuela,
+                sidebar: AppEscuela
             }
         }]
     }
