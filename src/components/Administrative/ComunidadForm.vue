@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, reactive, watchEffect, PropType, watch, nextTick } from 'vue'
+import { defineComponent, reactive, ref, watchEffect, PropType, watch, nextTick } from 'vue'
 
 // Describir la forma del objeto para almacenar los datos
 type DataModel = {
@@ -11,7 +11,10 @@ export default defineComponent ({
   name: 'ComunidadForm',
   emits: ['close'],
   props: {
-    show: Boolean,
+    show: {
+      type: Boolean,
+      required: true
+    },
     data: {
       type: Object as PropType<DataModel>,
       required: true
@@ -21,16 +24,13 @@ export default defineComponent ({
     let loading = ref(false)
 
     // Inicializar la variable form, con datos vacios
-    const form = reactive<DataModel>({
-      id: 0,
-      name: ''
-    })
+    const form = reactive({} as DataModel)
 
     //  Variable que me sirve para establecer el foco al primer elemento del formulario
     const firstInput = ref<HTMLInputElement | null>(null)
     
     // Realiza una petición al servidor para guardar los datos
-    const save = async () => {
+    const save = () => {
         loading.value = true
         loading.value = false
         emit('close')
@@ -61,17 +61,17 @@ export default defineComponent ({
 <template>
   <!-- Modal card -->
   <div :class="{'modal': true, 'is-active': show}">
-    <div class="modal-background"></div>
+    <div class="modal-background" @click="$emit('close')"></div>
     <div class="modal-card">
       <!-- Cabecera del modal -->
       <header class="modal-card-head">
         <p class="modal-card-title">
-          <template v-if="data.id">
+          <span v-if="data.id">
             Editar comunidad
-          </template>
-          <template v-else>
+          </span>
+          <span v-else>
             Nueva comunidad
-          </template>
+          </span>
         </p>
         <button class="delete" aria-label="close" @click="$emit('close')"></button>
       </header>
@@ -83,23 +83,25 @@ export default defineComponent ({
           </label>
           <div class="control">
             <input type="text" 
-              :class="{'input': true }" v-model="form.name" ref="firstInput"/>
+              class="input" 
+              v-model="form.name"
+              ref="firstInput"/>
           </div>
         </div>
       </section>
       <!-- Pie del modal -->
       <footer class="modal-card-foot">
         <div class="buttons">
-          <button @click="save" :class="{'button is-link': true, 'is-loading': loading}">
-            <template v-if="data.id">
+          <button @click="save" class="button is-link">
+            <span v-if="data.id">
               Actualizar
-            </template>
-            <template v-else>
+            </span>
+            <span v-else>
               Guardar
-            </template>
+            </span>
           </button>
           <button type="button" class="button" 
-            @click="$emit('close')" v-if="loading == false">
+            @click="$emit('close')">
             Cancelar
           </button>
         </div>
