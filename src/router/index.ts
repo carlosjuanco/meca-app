@@ -7,6 +7,7 @@ import AppLogin from "@/views/AppLogin.vue"
 import AppHome from "@/views/AppHome.vue"
 import AppComunidad from "@/components/Administrative/AppComunidad.vue"
 import AppEscuela from "@/components/Administrative/AppEscuela.vue"
+import AppProfesor from "@/components/Administrative/AppProfesor.vue"
 
 const routes = [
     {
@@ -54,6 +55,17 @@ const routes = [
             components: {
                 default: AppEscuela,
                 sidebar: AppEscuela
+            }
+        }]
+    },
+    {
+        path: '/AppProfesor',
+        component: AppHome,
+        children: [{
+            path: '/AppProfesor', name: 'Profesores',
+            components: {
+                default: AppProfesor,
+                sidebar: AppProfesor
             }
         }]
     }
