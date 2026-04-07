@@ -2,11 +2,13 @@
 import { defineComponent, reactive, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import ProfesorForm from './ProfesorForm.vue'
+import ProfesorInformacion from './ProfesorInformacion.vue'
 
 export default defineComponent({
   name: 'AppProfesor',
   components: {
-    ProfesorForm
+    ProfesorForm,
+    ProfesorInformacion
   },
   setup() {
 
@@ -41,6 +43,7 @@ export default defineComponent({
     }
 
     const showForm = ref(false)
+    const showInformation = ref(false)
 
     const formData = reactive<DataModel>({
       id: 0,
@@ -133,6 +136,12 @@ export default defineComponent({
       showForm.value = true
     }
 
+    const viewInformation = (row: DataModel ): void => {
+      if (row) Object.assign(formData, row)
+
+      showInformation.value = true
+    }
+
     const openModalDelete = (eliminate: DataFromTheEliminationModel): void => {
       store.dispatch('modalDelete', eliminate)
     }
@@ -159,7 +168,9 @@ export default defineComponent({
       data,
       viewForm,
       openModalDelete,
-      endsAnimationOfDisappearingRow
+      endsAnimationOfDisappearingRow,
+      showInformation,
+      viewInformation
     }
   }
 })
@@ -234,7 +245,7 @@ export default defineComponent({
                 <span class="icon"><i class="fas fa-trash"></i></span>
               </button>
 
-              <button class="button is-info">
+              <button class="button is-info" @click="viewInformation(stranger)">
                 <span class="icon"><i class="fas fa-eye"></i></span>
               </button>
             </td>
@@ -268,6 +279,12 @@ export default defineComponent({
     :show="showForm"
     :data="formData"
     @close="showForm = false"
+  />
+
+  <ProfesorInformacion
+    :show="showInformation"
+    :data="formData"
+    @close="showInformation = false"
   />
 
 </template>
