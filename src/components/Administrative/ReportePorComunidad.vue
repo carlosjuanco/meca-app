@@ -1,12 +1,11 @@
 <script lang="ts">
-import { defineComponent, reactive, ref, watch } from 'vue'
-import { useStore } from 'vuex'
-import modalDetail from './modalDetail.vue'
+import { defineComponent, reactive, ref } from 'vue'
+import ModalDetail from './ModalDetail.vue'
 
 export default defineComponent({
-  name: 'AppProfesor',
+  name: 'ReportePorComunidad',
   components: {
-    modalDetail
+    ModalDetail
   },
   setup() {
 
@@ -36,7 +35,6 @@ export default defineComponent({
       earlyChildhoodEducation: string
       initialKey: string
       earlyChildhoodEducationTeachers: string
-      earlyChildhoodEducationNumbersProgressive: number
       initialStaff: PersonalModel[]
       // Albergues
       schoolDormitories: string
@@ -76,7 +74,6 @@ export default defineComponent({
         earlyChildhoodEducation: '',
         initialKey: '20DIN',
         earlyChildhoodEducationTeachers: '',
-        earlyChildhoodEducationNumbersProgressive: 0,
         initialStaff: [{
           id: 1,
           name: 'Gloria',
@@ -119,7 +116,6 @@ export default defineComponent({
         earlyChildhoodEducation: '',
         initialKey: '',
         earlyChildhoodEducationTeachers: '',
-        earlyChildhoodEducationNumbersProgressive: 0,
         initialStaff: [{
           id: 1,
           name: 'Lenin',
@@ -141,10 +137,12 @@ export default defineComponent({
     const detail = (row: DataModel ): void => {
       if (row) Object.assign(formData, row)
 
+      console.info('Ver la informacion de formData', formData)
+
       showModal.value = true
     }
 
-    return { data, showModal, detail }
+    return { data, formData, showModal, detail }
   }
 })
 </script>
@@ -191,7 +189,6 @@ export default defineComponent({
               <p v-text="stranger.initialKey"></p>
             </td>
             <td v-text="stranger.earlyChildhoodEducationTeachers"></td>
-            <td v-text="stranger.earlyChildhoodEducationNumbersProgressive"></td>
             <td>
               <p v-text="stranger.schoolDormitories"></p>
               <p v-text="stranger.keyHostels"></p>

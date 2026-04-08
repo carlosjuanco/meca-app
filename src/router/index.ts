@@ -8,6 +8,7 @@ import AppHome from "@/views/AppHome.vue"
 import AppComunidad from "@/components/Administrative/AppComunidad.vue"
 import AppEscuela from "@/components/Administrative/AppEscuela.vue"
 import AppProfesor from "@/components/Administrative/AppProfesor.vue"
+import ReportePorComunidad from "@/components/Administrative/ReportePorComunidad.vue"
 
 const routes = [
     {
@@ -66,6 +67,17 @@ const routes = [
             components: {
                 default: AppProfesor,
                 sidebar: AppProfesor
+            }
+        }]
+    },
+    {
+        path: '/ReportePorComunidad',
+        component: AppHome,
+        children: [{
+            path: '/ReportePorComunidad', name: 'Reporte por comunidad',
+            components: {
+                default: ReportePorComunidad,
+                sidebar: ReportePorComunidad
             }
         }]
     }

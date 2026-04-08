@@ -1,5 +1,12 @@
 <script lang="ts">
-import { defineComponent, reactive, ref, watchEffect, PropType } from 'vue'
+import { defineComponent, reactive, watchEffect, PropType } from 'vue'
+
+type PersonalModel = {
+  id: number
+  name: string
+  lastNameFather: string
+  lastNameMother: string
+}
 
 type DataModel = {
   id: number
@@ -9,20 +16,23 @@ type DataModel = {
   primaryKey: string
   elementarySchoolTeachers: string
   progressivePrimarySchoolNumbers: number
+  primaryStaff: PersonalModel[]
   // preescolares
   preschools: string
   preschoolKey: string
   preschoolTeachers: string
   preschoolNumberProgression: number
+  preschoolStaff: PersonalModel[]
   // Educación inicial
   earlyChildhoodEducation: string
   initialKey: string
   earlyChildhoodEducationTeachers: string
-  earlyChildhoodEducationNumbersProgressive: number
+  initialStaff: PersonalModel[]
   // Albergues
   schoolDormitories: string
   keyHostels: string
   schoolDormitoryDirectors: string
+  shelterStaff: PersonalModel[]
 }
 
 export default defineComponent({
@@ -34,14 +44,14 @@ export default defineComponent({
   emits: ['close'],
   setup(props, { emit }) {
 
-    let loading = ref(false)
     const form = reactive({} as DataModel)
 
     watchEffect(() => {
       if (props.data) Object.assign(form, props.data)
+        console.info('Ver la informacion de form', form)
     })
 
-    return { form, save, emit, loading }
+    return { form, emit }
   }
 })
 </script>
@@ -54,9 +64,9 @@ export default defineComponent({
   <div class="modal-card ver-reporte-por-comunidad">
 
     <header class="modal-card-head">
-      <p class="modal-card-title">
+      <p class="modal-card-title has-text-centered">
         <strong>Comunidad: </strong>
-        <span v-text="data.nameCommunity"></span>
+        <span v-text="form.nameCommunity"></span>
       </p>
       <button class="delete" @click="$emit('close')"></button>
     </header>
@@ -72,10 +82,10 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Primaria</label>
                   <label class="input has-background-light">
-                    Nombre: <span v-text="data.primarySchools"></span>
+                    Nombre: <span v-text="form.primarySchools"></span>
                   </label>
                   <label class="input has-background-light">
-                    Clave: <span v-text="data.primarySchools"></span>
+                    Clave: <span v-text="form.primaryKey"></span>
                   </label>
                 </div>
               </td>
@@ -83,10 +93,10 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Preescolar</label>
                   <label class="input has-background-light">
-                    Nombre: <span v-text="data.preschools"></span>
+                    Nombre: <span v-text="form.preschools"></span>
                   </label>
                   <label class="input has-background-light">
-                    Clave: <span v-text="data.preschoolKey"></span>
+                    Clave: <span v-text="form.preschoolKey"></span>
                   </label>
                 </div>
               </td>
@@ -94,10 +104,10 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Educación inicial</label>
                   <label class="input has-background-light">
-                    Nombre: <span v-text="data.earlyChildhoodEducation"></span>
+                    Nombre: <span v-text="form.earlyChildhoodEducation"></span>
                   </label>
                   <label class="input has-background-light">
-                    Clave: <span v-text="data.initialKey"></span>
+                    Clave: <span v-text="form.initialKey"></span>
                   </label>
                 </div>
               </td>
@@ -105,10 +115,10 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Albergues escolares</label>
                   <label class="input has-background-light">
-                    Nombre: <span v-text="data.schoolDormitories"></span>
+                    Nombre: <span v-text="form.schoolDormitories"></span>
                   </label>
                   <label class="input has-background-light">
-                    Clave: <span v-text="data.keyHostels"></span>
+                    Clave: <span v-text="form.keyHostels"></span>
                   </label>
                 </div>
               </td>
@@ -118,9 +128,9 @@ export default defineComponent({
             <tr>
               <td>
                 <div class="field">
-                  <label class="label">Directivo</label>
+                  <label class="label">Directivos</label>
                   <label class="input has-background-light"
-                    v-text="data.elementarySchoolTeachers">
+                    v-text="form.elementarySchoolTeachers">
                   </label>
                 </div>
               </td>
@@ -128,7 +138,7 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Directivos</label>
                   <label class="input has-background-light"
-                    v-text="data.preschoolTeachers">
+                    v-text="form.preschoolTeachers">
                   </label>
                 </div>
               </td>
@@ -136,7 +146,7 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Directivos</label>
                   <label class="input has-background-light"
-                    v-text="data.earlyChildhoodEducationTeachers">
+                    v-text="form.earlyChildhoodEducationTeachers">
                   </label>
                 </div>
               </td>
@@ -144,7 +154,7 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Jefes</label>
                   <label class="input has-background-light"
-                    v-text="data.schoolDormitoryDirectors">
+                    v-text="form.schoolDormitoryDirectors">
                   </label>
                 </div>
               </td>
@@ -154,34 +164,38 @@ export default defineComponent({
             <tr>
               <td>
                 <div class="field">
-                  <label class="label">Personal/label>
-                  <label class="input has-background-light"
-                    v-text="data.elementarySchoolTeachers">
-                  </label>
+                  <label class="label">Personal</label>
+                  <template v-for="stranger in form.primaryStaff" :key="stranger.id">
+                    <label class="input has-background-light" v-text="stranger.name">
+                    </label>
+                  </template>
                 </div>
               </td>
               <td>
                 <div class="field">
                   <label class="label">Personal</label>
-                  <label class="input has-background-light"
-                    v-text="data.preschoolTeachers">
-                  </label>
+                  <template v-for="stranger in form.preschoolStaff" :key="stranger.id">
+                    <label class="input has-background-light" v-text="stranger.name">
+                    </label>
+                  </template>
                 </div>
               </td>
               <td>
                 <div class="field">
                   <label class="label">Personal</label>
-                  <label class="input has-background-light"
-                    v-text="data.earlyChildhoodEducationTeachers">
-                  </label>
+                  <template v-for="stranger in form.initialStaff" :key="stranger.id">
+                    <label class="input has-background-light" v-text="stranger.name">
+                    </label>
+                  </template>
                 </div>
               </td>
               <td>
                 <div class="field">
                   <label class="label">Personal</label>
-                  <label class="input has-background-light"
-                    v-text="data.schoolDormitoryDirectors">
-                  </label>
+                  <template v-for="stranger in form.shelterStaff" :key="stranger.id">
+                    <label class="input has-background-light" v-text="stranger.name">
+                    </label>
+                  </template>
                 </div>
               </td>
 
