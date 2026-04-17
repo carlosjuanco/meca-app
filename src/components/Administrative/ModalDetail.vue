@@ -1,11 +1,23 @@
 <script lang="ts">
 import { defineComponent, reactive, watchEffect, PropType } from 'vue'
 
-type PersonalModel = {
+type TeacherDataModel = {
   id: number
   name: string
   lastNameFather: string
   lastNameMother: string
+  curp?: string
+  rfc?: string
+  sex?: string
+  budgetKey?: string
+  function?: string
+  school?: string
+  phone?: number
+  reason?: number
+  admissionDate?: string
+  studyProfile?: string
+  language?: string
+  languageVariant?: string
 }
 
 type DataModel = {
@@ -16,23 +28,23 @@ type DataModel = {
   primaryKey: string
   elementarySchoolTeachers: string
   progressivePrimarySchoolNumbers: number
-  primaryStaff: PersonalModel[]
+  primaryStaff: TeacherDataModel[]
   // preescolares
   preschools: string
   preschoolKey: string
   preschoolTeachers: string
   preschoolNumberProgression: number
-  preschoolStaff: PersonalModel[]
+  preschoolStaff: TeacherDataModel[]
   // Educación inicial
   earlyChildhoodEducation: string
   initialKey: string
   earlyChildhoodEducationTeachers: string
-  initialStaff: PersonalModel[]
+  initialStaff: TeacherDataModel[]
   // Albergues
   schoolDormitories: string
   keyHostels: string
   schoolDormitoryDirectors: string
-  shelterStaff: PersonalModel[]
+  shelterStaff: TeacherDataModel[]
 }
 
 export default defineComponent({
@@ -41,7 +53,7 @@ export default defineComponent({
     show: Boolean,
     data: Object as PropType<DataModel>
   },
-  emits: ['close'],
+  emits: ['close', 'openTeacherInformationModal'],
   setup(props, { emit }) {
 
     const form = reactive({} as DataModel)
@@ -129,33 +141,77 @@ export default defineComponent({
               <td>
                 <div class="field">
                   <label class="label">Directivos</label>
-                  <label class="input has-background-light"
-                    v-text="form.elementarySchoolTeachers">
-                  </label>
+                  
+                  <div class="field has-addons">
+                    <div class="control is-expanded">
+                      <label class="input has-background-light"
+                        v-text="form.elementarySchoolTeachers">
+                      </label>
+                    </div>
+                    <div class="control">
+                      <button class="button is-info"
+                        @click="$emit('openTeacherInformationModal', stranger)">
+                        <span class="icon"><i class="fas fa-eye"></i></span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </td>
               <td>
                 <div class="field">
                   <label class="label">Directivos</label>
-                  <label class="input has-background-light"
-                    v-text="form.preschoolTeachers">
-                  </label>
+                  
+                  <div class="field has-addons">
+                    <div class="control is-expanded">
+                      <label class="input has-background-light"
+                        v-text="form.preschoolTeachers">
+                      </label>
+                    </div>
+                    <div class="control">
+                      <button class="button is-info"
+                        @click="$emit('openTeacherInformationModal', stranger)">
+                        <span class="icon"><i class="fas fa-eye"></i></span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </td>
               <td>
                 <div class="field">
                   <label class="label">Directivos</label>
-                  <label class="input has-background-light"
-                    v-text="form.earlyChildhoodEducationTeachers">
-                  </label>
+                  
+                  <div class="field has-addons">
+                    <div class="control is-expanded">
+                      <label class="input has-background-light"
+                        v-text="form.earlyChildhoodEducationTeachers">
+                      </label>
+                    </div>
+                    <div class="control">
+                      <button class="button is-info"
+                        @click="$emit('openTeacherInformationModal', stranger)">
+                        <span class="icon"><i class="fas fa-eye"></i></span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </td>
               <td>
                 <div class="field">
                   <label class="label">Jefes</label>
-                  <label class="input has-background-light"
-                    v-text="form.schoolDormitoryDirectors">
-                  </label>
+                  
+                  <div class="field has-addons">
+                    <div class="control is-expanded">
+                      <label class="input has-background-light" 
+                        v-text="form.schoolDormitoryDirectors">
+                      </label>
+                    </div>
+                    <div class="control">
+                      <button class="button is-info"
+                        @click="$emit('openTeacherInformationModal', stranger)">
+                        <span class="icon"><i class="fas fa-eye"></i></span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </td>
 
@@ -173,7 +229,8 @@ export default defineComponent({
                         </label>
                       </div>
                       <div class="control">
-                        <button class="button is-info" @click="detail(stranger)">
+                        <button class="button is-info"
+                          @click="$emit('openTeacherInformationModal', stranger)">
                           <span class="icon"><i class="fas fa-eye"></i></span>
                         </button>
                       </div>
@@ -192,7 +249,8 @@ export default defineComponent({
                         </label>
                       </div>
                       <div class="control">
-                        <button class="button is-info" @click="detail(stranger)">
+                        <button class="button is-info"
+                          @click="$emit('openTeacherInformationModal', stranger)">
                           <span class="icon"><i class="fas fa-eye"></i></span>
                         </button>
                       </div>
@@ -211,7 +269,8 @@ export default defineComponent({
                         </label>
                       </div>
                       <div class="control">
-                        <button class="button is-info" @click="detail(stranger)">
+                        <button class="button is-info" 
+                          @click="$emit('openTeacherInformationModal', stranger)">
                           <span class="icon"><i class="fas fa-eye"></i></span>
                         </button>
                       </div>
@@ -230,7 +289,8 @@ export default defineComponent({
                         </label>
                       </div>
                       <div class="control">
-                        <button class="button is-info" @click="detail(stranger)">
+                        <button class="button is-info" 
+                          @click="$emit('openTeacherInformationModal', stranger)">
                           <span class="icon"><i class="fas fa-eye"></i></span>
                         </button>
                       </div>

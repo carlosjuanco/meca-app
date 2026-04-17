@@ -1,19 +1,33 @@
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue'
 import ModalDetail from './ModalDetail.vue'
+import ProfesorInformacion from './ProfesorInformacion.vue'
 
 export default defineComponent({
   name: 'ReportePorComunidad',
   components: {
-    ModalDetail
+    ModalDetail,
+    ProfesorInformacion
   },
   setup() {
 
-    type PersonalModel = {
+    type TeacherDataModel = {
       id: number
       name: string
       lastNameFather: string
       lastNameMother: string
+      curp?: string
+      rfc?: string
+      sex?: string
+      budgetKey?: string
+      function?: string
+      school?: string
+      phone?: number
+      reason?: number
+      admissionDate?: string
+      studyProfile?: string
+      language?: string
+      languageVariant?: string
     }
 
     type DataModel = {
@@ -24,28 +38,30 @@ export default defineComponent({
       primaryKey: string
       elementarySchoolTeachers: string
       progressivePrimarySchoolNumbers: number
-      primaryStaff: PersonalModel[]
+      primaryStaff: TeacherDataModel[]
       // preescolares
       preschools: string
       preschoolKey: string
       preschoolTeachers: string
       preschoolNumberProgression: number
-      preschoolStaff: PersonalModel[]
+      preschoolStaff: TeacherDataModel[]
       // Educación inicial
       earlyChildhoodEducation: string
       initialKey: string
       earlyChildhoodEducationTeachers: string
-      initialStaff: PersonalModel[]
+      initialStaff: TeacherDataModel[]
       // Albergues
       schoolDormitories: string
       keyHostels: string
       schoolDormitoryDirectors: string
-      shelterStaff: PersonalModel[]
+      shelterStaff: TeacherDataModel[]
     }
 
     const showModal = ref(false)
+    const showInformation = ref(false)
 
     const formData = reactive({} as DataModel)
+    const teacherFormData = reactive({} as TeacherDataModel)
 
     const data = reactive<DataModel[]>([
       {
@@ -66,7 +82,7 @@ export default defineComponent({
         preschoolTeachers: 'Julia A. Hernandez Santiago',
         preschoolNumberProgression: 0,
         preschoolStaff: [{
-          id: 1,
+          id: 2,
           name: 'Gloria',
           lastNameFather: 'Garcia',
           lastNameMother: 'Ramirez'
@@ -75,7 +91,7 @@ export default defineComponent({
         initialKey: '20DIN',
         earlyChildhoodEducationTeachers: '',
         initialStaff: [{
-          id: 1,
+          id: 3,
           name: 'Gloria',
           lastNameFather: 'Jimenez',
           lastNameMother: 'Jimenez'
@@ -84,7 +100,7 @@ export default defineComponent({
         keyHostels: '20TA10124A',
         schoolDormitoryDirectors: 'Casto Ines Sanchez',
         shelterStaff: [{
-          id: 1,
+          id: 4,
           name: 'Iris',
           lastNameFather: 'Garcia',
           lastNameMother: 'Garcia'
@@ -98,7 +114,7 @@ export default defineComponent({
         elementarySchoolTeachers: 'Eloy Rojas Perez',
         progressivePrimarySchoolNumbers: 2,
         primaryStaff: [{
-          id: 1,
+          id: 5,
           name: 'Vilma',
           lastNameFather: 'Ramirez',
           lastNameMother: 'Ramirez'
@@ -108,7 +124,7 @@ export default defineComponent({
         preschoolTeachers: 'Nashielly Martinez Vel',
         preschoolNumberProgression: 0,
         preschoolStaff: [{
-          id: 1,
+          id: 6,
           name: 'Ramon',
           lastNameFather: 'Garcia',
           lastNameMother: 'Ramirez'
@@ -117,7 +133,7 @@ export default defineComponent({
         initialKey: '',
         earlyChildhoodEducationTeachers: '',
         initialStaff: [{
-          id: 1,
+          id: 7,
           name: 'Lenin',
           lastNameFather: 'Jimenez',
           lastNameMother: 'Jimenez'
@@ -126,7 +142,7 @@ export default defineComponent({
         keyHostels: 'TA10293W',
         schoolDormitoryDirectors: 'Gustavo E. Rojas',
         shelterStaff: [{
-          id: 1,
+          id: 8,
           name: 'Denis',
           lastNameFather: 'Garcia',
           lastNameMother: 'Garcia'
@@ -142,7 +158,22 @@ export default defineComponent({
       showModal.value = true
     }
 
-    return { data, formData, showModal, detail }
+    const viewInformation = (row: TeacherDataModel ): void => {
+      console.info('3 meses sin garantia')
+      if (row) Object.assign(teacherFormData, row)
+
+      showInformation.value = true
+    }
+
+    return { 
+      data,
+      formData,
+      showModal,
+      detail,
+      showInformation,
+      viewInformation,
+      teacherFormData
+    }
   }
 })
 </script>
@@ -205,9 +236,19 @@ export default defineComponent({
       </tbody>
     </table>
   </div>
+
+  <!-- Modal de detalles -->
   <ModalDetail
     :show="showModal"
     :data="formData"
     @close="showModal = false"
+    @openTeacherInformationModal="viewInformation"
+  />
+
+  <!-- Modal de información de un profesor -->
+  <ProfesorInformacion
+    :show="showInformation"
+    :data="teacherFormData"
+    @close="showInformation = false"
   />
 </template>
