@@ -166,8 +166,18 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Personal</label>
                   <template v-for="stranger in form.primaryStaff" :key="stranger.id">
-                    <label class="input has-background-light" v-text="stranger.name">
-                    </label>
+                    
+                    <div class="field has-addons">
+                      <div class="control is-expanded">
+                        <label class="input has-background-light" v-text="stranger.name">
+                        </label>
+                      </div>
+                      <div class="control">
+                        <button class="button is-info" @click="detail(stranger)">
+                          <span class="icon"><i class="fas fa-eye"></i></span>
+                        </button>
+                      </div>
+                    </div>
                   </template>
                 </div>
               </td>
@@ -175,8 +185,18 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Personal</label>
                   <template v-for="stranger in form.preschoolStaff" :key="stranger.id">
-                    <label class="input has-background-light" v-text="stranger.name">
-                    </label>
+                    
+                    <div class="field has-addons">
+                      <div class="control is-expanded">
+                        <label class="input has-background-light" v-text="stranger.name">
+                        </label>
+                      </div>
+                      <div class="control">
+                        <button class="button is-info" @click="detail(stranger)">
+                          <span class="icon"><i class="fas fa-eye"></i></span>
+                        </button>
+                      </div>
+                    </div>
                   </template>
                 </div>
               </td>
@@ -184,8 +204,18 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Personal</label>
                   <template v-for="stranger in form.initialStaff" :key="stranger.id">
-                    <label class="input has-background-light" v-text="stranger.name">
-                    </label>
+                    
+                    <div class="field has-addons">
+                      <div class="control is-expanded">
+                        <label class="input has-background-light" v-text="stranger.name">
+                        </label>
+                      </div>
+                      <div class="control">
+                        <button class="button is-info" @click="detail(stranger)">
+                          <span class="icon"><i class="fas fa-eye"></i></span>
+                        </button>
+                      </div>
+                    </div>
                   </template>
                 </div>
               </td>
@@ -193,8 +223,18 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Personal</label>
                   <template v-for="stranger in form.shelterStaff" :key="stranger.id">
-                    <label class="input has-background-light" v-text="stranger.name">
-                    </label>
+                    
+                    <div class="field has-addons">
+                      <div class="control is-expanded">
+                        <label class="input has-background-light" v-text="stranger.name">
+                        </label>
+                      </div>
+                      <div class="control">
+                        <button class="button is-info" @click="detail(stranger)">
+                          <span class="icon"><i class="fas fa-eye"></i></span>
+                        </button>
+                      </div>
+                    </div>
                   </template>
                 </div>
               </td>
