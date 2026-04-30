@@ -1,14 +1,20 @@
 <script lang="ts">
-import { defineComponent, ref, reactive, watch } from 'vue'
+import { defineComponent, ref, reactive, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import helpers from '../../helpers'
+import TablePagination from '../TablePagination.vue'
 import ComunidadForm from './ComunidadForm.vue'
 
 export default defineComponent({
   name: 'AppComunidad',
-  components: { ComunidadForm },
+  components: {
+    ComunidadForm,
+    TablePagination
+  },
   setup () {
     // Store
     const store = useStore()
+    const { handleRequest, handleErrors } = helpers()
 
     // Describir la forma del objeto del modal eliminación
     type DataFromTheEliminationModel = {
@@ -22,8 +28,8 @@ export default defineComponent({
     type DataModel = {
       id: number;
       name: string;
-      animateDisappearRow: boolean;
-      hideRow: boolean;
+      animateDisappearRow?: boolean;
+      hideRow?: boolean;
     }
 
     // Inicializar la variable showForm en false
@@ -37,13 +43,10 @@ export default defineComponent({
       hideRow: false
     })
 
-    /*
-        Inicializar data con dos registros de ejemplos
-    */
-    let data = reactive<DataModel[]>([
-      { id: 1, name: 'Santa María Peñoles', animateDisappearRow: false, hideRow: false },
-      { id: 2, name: 'Corral de piedras', animateDisappearRow: false, hideRow: false },
-    ])
+    let data = reactive<DataModel[]>([])
+
+    // Inicializar los datos para la paginación
+    let pagination = ref({})
     
     /*
       Muestrar el modal para registrar o editar
@@ -104,7 +107,27 @@ export default defineComponent({
         }
       }
     })
-    
+
+    const getData = async (url:string) => {
+      try {
+          const responses = await handleRequest('get', url)
+
+          data.length = 0 // Limpias el array
+          /* 
+            Los tres puntos son el operador de propagación (spread operator). Su función es "expandir" o "desempaquetar" los elementos de un array
+          */
+          data.push(...responses.data) // Añades todos los nuevos elementos
+
+           pagination.value = responses
+        } catch (error) {
+            handleErrors(error)
+        }
+    }
+
+    onMounted(() => {
+      getData(`/communities/`)
+    })
+
     return {
       showForm,
       formData,
@@ -112,6 +135,8 @@ export default defineComponent({
       viewForm,
       openModalDelete,
       endsAnimationOfDisappearingRow,
+      getData,
+      pagination,
     }
   }
 })
@@ -198,38 +223,10 @@ export default defineComponent({
         <tr class="has-background-white-bis">
           <td colspan="2">
             <!-- Paginador -->
-            <nav class="pagination" role="navigation" aria-label="pagination">
-              <a href="#" class="pagination-previous">Antes</a>
-              <a href="#" class="pagination-next">Siguiente</a>
-              <ul class="pagination-list">
-                <li>
-                  <a href="#" class="pagination-link" aria-label="Goto page 1">1</a>
-                </li>
-                <li>
-                  <span class="pagination-ellipsis">&hellip;</span>
-                </li>
-                <li>
-                  <a href="#" class="pagination-link" aria-label="Goto page 45">45</a>
-                </li>
-                <li>
-                  <a
-                    class="pagination-link is-current"
-                    aria-label="Page 46"
-                    aria-current="page"
-                    >46</a
-                  >
-                </li>
-                <li>
-                  <a href="#" class="pagination-link" aria-label="Goto page 47">47</a>
-                </li>
-                <li>
-                  <span class="pagination-ellipsis">&hellip;</span>
-                </li>
-                <li>
-                  <a href="#" class="pagination-link" aria-label="Goto page 86">86</a>
-                </li>
-              </ul>
-            </nav>
+            <table-pagination
+              :pagination="pagination"
+              @getData="getData"
+            ></table-pagination>
           </td>
         </tr>
       </tfoot>
