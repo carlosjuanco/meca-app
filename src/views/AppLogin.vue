@@ -5,7 +5,7 @@
     import { useRouter } from 'vue-router'
     import helpers from '../helpers'
     import { Field, Form, ErrorMessage } from 'vee-validate'
-    import * as yup from 'yup'
+    import { object, string } from 'yup';
 
     type Datamodal = {
       title: string
@@ -25,10 +25,10 @@
             const store = useStore()
             const router = useRouter()
             const { handleErrors } = helpers()
-            const schema = yup.object({
-              email: yup.string().email('La estructura del correo no es válido.')
+            const schema = object({
+              email: string().email('La estructura del correo no es válido.')
               .required('El campo correo es obligatorio.'),
-              password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres')
+              password: string().min(6, 'La contraseña debe tener al menos 6 caracteres')
               .required('El campo contraseña es obligatorio.'),
             });
 
