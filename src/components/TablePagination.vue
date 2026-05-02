@@ -8,11 +8,15 @@ export default defineComponent ({
   },
   emits: ['getData'],
   setup (props, { emit }) {
-    const getData = link => {
-      console.info('que pedo', link.active)
-      console.info('No puedo parar', link.url)
+    // Describir la forma del objeto del link
+    type DataModelLink = {
+        url: string;
+        label: string;
+        active: boolean;
+    }
+
+    const getData = (link: DataModelLink) => {
       if (link.active == false) {
-        console.info('Walking', 'es real')
         emit('getData', link.url)
       }
     }
