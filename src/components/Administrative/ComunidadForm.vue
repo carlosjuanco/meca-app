@@ -1,14 +1,21 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, watchEffect, PropType, watch, nextTick } from 'vue'
+import { Field, Form, ErrorMessage } from 'vee-validate'
+import { object, string, number } from 'yup'
 
 // Describir la forma del objeto para almacenar los datos
 type DataModel = {
-  id: number;
+  id?: number;
   name: string;
 }
 
 export default defineComponent ({
   name: 'ComunidadForm',
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+  },
   emits: ['close'],
   props: {
     show: {
@@ -24,22 +31,30 @@ export default defineComponent ({
     let loading = ref(false)
 
     // Inicializar la variable form, con datos vacios
-    const form = reactive({} as DataModel)
+    const initialValues = reactive({} as DataModel)
+
+    // Declarar las reglas de negocio
+    const schema = object({
+      id: number(),
+      name: string().min(1, 'El nombre debe tener al menos 1 caracteres')
+        .max(25, 'El nombre debe tener como máximo 25 caracteres')
+        .required('El nombre es obligatorio.')
+    });
 
     //  Variable que me sirve para establecer el foco al primer elemento del formulario
     const firstInput = ref<HTMLInputElement | null>(null)
     
     // Realiza una petición al servidor para guardar los datos
-    const save = () => {
-        loading.value = true
-        loading.value = false
-        emit('close')
+    const save = (values: DataModel) => {
+      loading.value = true
+      loading.value = false
+      emit('close')
     }
 
     // Observa a props.data, pero como reemplamos lo de adentro, por eso uso watchEffect
     watchEffect(() => {
       if (props.data) {
-        Object.assign(form, props.data)
+        Object.assign(initialValues, props.data)
       }
     })
 
@@ -50,11 +65,13 @@ export default defineComponent ({
     watch(() => props.show, async (newVal) => {
       if (newVal) {
         await nextTick()
-        firstInput.value?.focus()
+        if(firstInput.value) {
+          firstInput.value.focus()
+        }
       }
     })
 
-    return { form, save, loading, firstInput }
+    return { initialValues, save, loading, firstInput, schema }
   }
 })
 </script>
@@ -75,37 +92,55 @@ export default defineComponent ({
         </p>
         <button class="delete" aria-label="close" @click="$emit('close')"></button>
       </header>
-      <!-- Cuerpo del modal -->
-      <section class="modal-card-body">
-        <div class="field">
-          <label class="label">
-            Comunidad
-          </label>
-          <div class="control">
-            <input type="text" 
-              class="input" 
-              v-model="form.name"
-              ref="firstInput"/>
+      <Form
+        :key="data?.id || 'new'" 
+        :validation-schema="schema" 
+        :initial-values="initialValues"
+        @submit="save"
+      >
+
+        <!-- Cuerpo del modal -->
+        <section class="modal-card-body">
+
+          <div class="field">
+            <label class="label">
+              Comunidad
+            </label>
+            <div class="control">
+              <Field name="name" v-slot="{ value, handleChange, handleBlur }">
+                <input 
+                  
+                  :value="value"
+                  @input="handleChange"
+                  @blur="handleBlur"
+                  ref="firstInput"
+                  type="text"
+                  :class="{ 'is-danger': false, 'input': true }"
+                  placeholder="Comunidad"
+                />
+              </Field>
+              <ErrorMessage name="name" class="tag is-warning"/>
+            </div>
           </div>
-        </div>
-      </section>
-      <!-- Pie del modal -->
-      <footer class="modal-card-foot">
-        <div class="buttons">
-          <button @click="save" class="button is-link">
-            <span v-if="data.id">
-              Actualizar
-            </span>
-            <span v-else>
-              Guardar
-            </span>
-          </button>
-          <button type="button" class="button" 
-            @click="$emit('close')">
-            Cancelar
-          </button>
-        </div>
-      </footer>
+        </section>
+        <!-- Pie del modal -->
+        <footer class="modal-card-foot">
+          <div class="buttons">
+            <button type="submit" class="button is-link">
+              <span v-if="data.id">
+                Actualizar
+              </span>
+              <span v-else>
+                Guardar
+              </span>
+            </button>
+            <button type="button" class="button" 
+              @click="$emit('close')">
+              Cancelar
+            </button>
+          </div>
+        </footer>
+      </Form>
     </div>
   </div>
 </template>
