@@ -50,14 +50,13 @@ export default defineComponent ({
     const save = async (values: DataModel) => {
       try {
         loading.value = true
+        let route: string = props.data.id ? '/communities' : '/communities/store'
 
-        const response = await handleRequest('post', '/communities/store', values)
-        console.info('Que respondes puto', response)
+        const response = await handleRequest('post', route, values, props.data.id)
         loading.value = false
         emit('close')
       }
       catch (error) {
-        console.info('Error grave', error)
       }
     }
 
