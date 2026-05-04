@@ -52,11 +52,13 @@ export default defineComponent ({
         loading.value = true
         let route: string = props.data.id ? '/communities' : '/communities/store'
 
-        const response = await handleRequest('post', route, values, props.data.id)
+        await handleRequest('post', route, values, props.data.id)
+
         loading.value = false
         emit('close')
       }
       catch (error) {
+        console.info(error)
       }
     }
 

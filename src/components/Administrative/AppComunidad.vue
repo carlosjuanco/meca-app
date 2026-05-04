@@ -32,6 +32,30 @@ export default defineComponent({
       hideRow?: boolean;
     }
 
+    // Describir la forma del objeto del paginador
+
+    type DataModelLink = {
+      url: string;
+      label: string;
+      active: boolean;
+    }
+
+    type PaginationModel = {
+      current_page: number;
+      data: DataModel[];
+      first_page_url: string;
+      from: number;
+      last_page: number;
+      last_page_url: string;
+      links: DataModelLink[];
+      next_page_url: string;
+      path: string;
+      per_page: number;
+      prev_page_url: string;
+      to: number;
+      total: number;
+    }
+
     // Inicializar la variable showForm en false
     let showForm = ref(false)
 
@@ -46,7 +70,7 @@ export default defineComponent({
     let data = reactive<DataModel[]>([])
 
     // Inicializar los datos para la paginación
-    let pagination = ref({})
+    let pagination = ref({} as PaginationModel)
     
     /*
       Muestrar el modal para registrar o editar
@@ -108,6 +132,10 @@ export default defineComponent({
       }
     })
 
+    const buildRoute = (): void => {
+      formData.id == 0 ? getData(`/communities/`) : getData(`${pagination.value.path}?page=${pagination.value.current_page}`)
+    }
+
     const getData = async (url:string) => {
       try {
           const responses = await handleRequest('get', url)
@@ -125,7 +153,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      getData(`/communities/`)
+      buildRoute()
     })
 
     return {
@@ -135,6 +163,7 @@ export default defineComponent({
       viewForm,
       openModalDelete,
       endsAnimationOfDisappearingRow,
+      buildRoute,
       getData,
       pagination,
     }
@@ -237,6 +266,6 @@ export default defineComponent({
   <comunidad-form
     :show="showForm"
     :data="formData"
-    @close="showForm = false, getData(`/communities/`)"
+    @close="showForm = false, buildRoute()"
   ></comunidad-form>
 </template>
