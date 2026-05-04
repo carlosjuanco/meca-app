@@ -237,6 +237,6 @@ export default defineComponent({
   <comunidad-form
     :show="showForm"
     :data="formData"
-    @close="showForm = false"
+    @close="showForm = false, getData(`/communities/`)"
   ></comunidad-form>
 </template>

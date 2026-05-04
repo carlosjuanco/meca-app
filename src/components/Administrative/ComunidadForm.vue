@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, watchEffect, PropType, watch, nextTick } from 'vue'
+import helpers from '../../helpers'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import { object, string, number } from 'yup'
 
@@ -28,6 +29,7 @@ export default defineComponent ({
     }
   },
   setup (props, { emit }) {
+    const { handleRequest } = helpers()
     let loading = ref(false)
 
     // Inicializar la variable form, con datos vacios
@@ -45,10 +47,18 @@ export default defineComponent ({
     const firstInput = ref<HTMLInputElement | null>(null)
     
     // Realiza una petición al servidor para guardar los datos
-    const save = (values: DataModel) => {
-      loading.value = true
-      loading.value = false
-      emit('close')
+    const save = async (values: DataModel) => {
+      try {
+        loading.value = true
+
+        const response = await handleRequest('post', '/communities/store', values)
+        console.info('Que respondes puto', response)
+        loading.value = false
+        emit('close')
+      }
+      catch (error) {
+        console.info('Error grave', error)
+      }
     }
 
     // Observa a props.data, pero como reemplamos lo de adentro, por eso uso watchEffect
@@ -126,7 +136,10 @@ export default defineComponent ({
         <!-- Pie del modal -->
         <footer class="modal-card-foot">
           <div class="buttons">
-            <button type="submit" class="button is-link">
+            <button type="submit" 
+              :class="{'button is-link': true, 'is-loading': loading }"
+              :disabled="loading == true"
+            >
               <span v-if="data.id">
                 Actualizar
               </span>
