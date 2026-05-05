@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, watchEffect, PropType, watch, nextTick } from 'vue'
 import helpers from '../../helpers'
+import InternalNotification from '../InternalNotification.vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import { object, string, number } from 'yup'
 
@@ -10,12 +11,21 @@ type DataModel = {
   name: string;
 }
 
+// Describir la forma del objeto para el modal interno
+type DataModelInternal = {
+  title: string
+  message: { [key: string]: any }
+  url: string,
+  iconType: string,
+}
+
 export default defineComponent ({
   name: 'ComunidadForm',
   components: {
     Form,
     Field,
     ErrorMessage,
+    InternalNotification
   },
   emits: ['close'],
   props: {
@@ -28,7 +38,7 @@ export default defineComponent ({
       required: true
     }
   },
-  setup (props, { emit }) {
+  setup (props) {
     const { handleRequest } = helpers()
     let loading = ref(false)
     // Crear un contador para la key
@@ -36,6 +46,15 @@ export default defineComponent ({
 
     // Inicializar la variable form, con datos vacios
     const initialValues = reactive({} as DataModel)
+
+    // Inicializar la variable dataInternalNotification con datos vacios
+    let dataInternalNotification: DataModelInternal = reactive({
+      title: '',
+      message: {},
+      url: '',
+      iconType: 'Informacion',
+    })
+    let showInternalNotification = ref(false)
 
     // Declarar las reglas de negocio
     const schema = object({
@@ -54,10 +73,13 @@ export default defineComponent ({
         loading.value = true
         let route: string = props.data.id ? '/communities' : '/communities/store'
 
-        await handleRequest('post', route, values, props.data.id)
+        const response = await handleRequest('post', route, values, props.data.id)
 
-        loading.value = false
-        emit('close')
+        dataInternalNotification.title = 'Información'
+        dataInternalNotification.message = { message: response.message }
+        dataInternalNotification.url = `/`
+
+        showInternalNotification.value = true
       }
       catch (error) {
         console.info(error)
@@ -87,7 +109,16 @@ export default defineComponent ({
       }
     })
 
-    return { initialValues, save, loading, modalKey, firstInput, schema }
+    return { 
+      initialValues,
+      save,
+      loading,
+      modalKey,
+      firstInput,
+      schema,
+      showInternalNotification,
+      dataInternalNotification
+    }
   }
 })
 </script>
@@ -162,4 +193,11 @@ export default defineComponent ({
       </Form>
     </div>
   </div>
+
+  <!-- Modal para la notificacion interna -->
+  <internal-notification
+    :show="showInternalNotification"
+    :data="dataInternalNotification"
+    @close="showInternalNotification = false, loading = false, $emit('close')"
+  ></internal-notification>
 </template>
