@@ -31,6 +31,8 @@ export default defineComponent ({
   setup (props, { emit }) {
     const { handleRequest } = helpers()
     let loading = ref(false)
+    // Crear un contador para la key
+    const modalKey = ref(0)
 
     // Inicializar la variable form, con datos vacios
     const initialValues = reactive({} as DataModel)
@@ -75,6 +77,9 @@ export default defineComponent ({
     */
     watch(() => props.show, async (newVal) => {
       if (newVal) {
+        // Incrementar la key cada vez que se abre el modal
+        modalKey.value++
+
         await nextTick()
         if(firstInput.value) {
           firstInput.value.focus()
@@ -82,7 +87,7 @@ export default defineComponent ({
       }
     })
 
-    return { initialValues, save, loading, firstInput, schema }
+    return { initialValues, save, loading, modalKey, firstInput, schema }
   }
 })
 </script>
@@ -104,7 +109,7 @@ export default defineComponent ({
         <button class="delete" aria-label="close" @click="$emit('close')"></button>
       </header>
       <Form
-        :key="data?.id || 'new'" 
+        :key="data?.id ? `edit-${data.id}` : `new-${modalKey}`" 
         :validation-schema="schema" 
         :initial-values="initialValues"
         @submit="save"

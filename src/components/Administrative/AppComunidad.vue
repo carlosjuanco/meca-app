@@ -62,9 +62,7 @@ export default defineComponent({
     // Inicializar los datos del formulario 
     let formData = reactive<DataModel>({
       id: 0,
-      name: '',
-      animateDisappearRow: false,
-      hideRow: false
+      name: ''
     })
 
     let data = reactive<DataModel[]>([])
@@ -80,7 +78,7 @@ export default defineComponent({
       return void
     */
     const viewForm = (row: DataModel | null): void => {
-      Object.assign(formData, { id: 0, name: '', animateDisappearRow: false, hideRow: false })
+      Object.assign(formData, { id: 0, name: '' })
 
       if(row) {
         Object.assign(formData, row) 
