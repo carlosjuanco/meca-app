@@ -58,18 +58,18 @@
       router.replace({ name: "Bienvenido usuario", params:{ name_user: name_user} })
 
       const logout = async () => {
-          try {
-              await store.dispatch('logout')
-              router.replace({ name: 'login' })
-          }
-          catch (error) {
-            data_modal_notification.title = 'Advertencia'
-            data_modal_notification.message = handleErrors(error) 
-            data_modal_notification.url = `/`
+        try {
+          await store.dispatch('logout')
+          router.replace({ name: 'login' })
+        }
+        catch (error) {
+          data_modal_notification.title = 'Advertencia'
+          data_modal_notification.message = handleErrors(error) 
+          data_modal_notification.url = `/`
 
-            show_modal_notification.value = true
-            console.log(error)
-          }
+          show_modal_notification.value = true
+          console.log(error)
+        }
       }
 
       const show_menu = () => {
