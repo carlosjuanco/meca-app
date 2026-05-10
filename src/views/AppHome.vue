@@ -34,7 +34,10 @@
 
 	export default defineComponent ({
     name: 'AppHome',
-    components: { ModalNotification, ModalDelete },
+    components: {
+      ModalNotification,
+      ModalDelete 
+    },
     setup() {
       const store = useStore()
       const router = useRouter()
@@ -151,11 +154,15 @@
     <section>
         <router-view name="sidebar"></router-view>
     </section>
+
+    <!-- Modal de notificasiones -->
     <modal-notification
       :show="showModalNotification"
       :data="dataModalNotification"
       @close="showModalNotification = false"
     ></modal-notification>
+
+    <!-- Modal eliminar -->
     <modal-delete
       :show="showModalDelete"
       :description="descriptionModalDelete"
