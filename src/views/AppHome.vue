@@ -44,8 +44,8 @@
       pages.value = pages.value.filter(page => JSON.parse(page.pivot.permissions).Ver_la_pagina_en_el_menu)
       
       let name_user = store.getters.user.name
-      let show_modal_notification = ref(false)
-      let data_modal_notification: Datamodal = reactive({
+      let showModalNotification = ref(false)
+      let dataModalNotification: Datamodal = reactive({
         title: '',
         message: {},
         url: ''
@@ -63,11 +63,11 @@
           router.replace({ name: 'login' })
         }
         catch (error) {
-          data_modal_notification.title = 'Advertencia'
-          data_modal_notification.message = handleErrors(error) 
-          data_modal_notification.url = `/`
+          dataModalNotification.title = 'Advertencia'
+          dataModalNotification.message = handleErrors(error) 
+          dataModalNotification.url = `/`
 
-          show_modal_notification.value = true
+          showModalNotification.value = true
           console.log(error)
         }
       }
@@ -92,8 +92,8 @@
       return {
         pages, 
         logout, 
-        show_modal_notification, 
-        data_modal_notification,
+        showModalNotification, 
+        dataModalNotification,
         show_menu,
         show_navbar,
         go_to_route,
@@ -152,9 +152,9 @@
         <router-view name="sidebar"></router-view>
     </section>
     <modal-notification
-      :show="show_modal_notification"
-      :data="data_modal_notification"
-      @close="show_modal_notification = false"
+      :show="showModalNotification"
+      :data="dataModalNotification"
+      @close="showModalNotification = false"
     ></modal-notification>
     <modal-delete
       :show="showModalDelete"
