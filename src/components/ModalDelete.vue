@@ -1,15 +1,18 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
+import helpers from '../helpers'
 
 export default defineComponent ({
   name: 'ModalDelete',
   props: {
-      show: Boolean,
-      description: String
+    show: Boolean,
+    description: String
   },
   setup() {
     const store = useStore()
+    const { handleRequest } = helpers()
+    let loading = ref(false)
 
     const closeModalDelete = () => {
       store.getters.dataFromTheEliminationModel.showModalDelete = false
@@ -17,14 +20,23 @@ export default defineComponent ({
       store.dispatch('modalDelete', store.getters.dataFromTheEliminationModel)
     }
 
-    const acceptDelete = () => {
-      store.getters.dataFromTheEliminationModel.acceptDelete = true
-      store.getters.dataFromTheEliminationModel.showModalDelete = false
-
-      store.dispatch('modalDelete', store.getters.dataFromTheEliminationModel)
+    const acceptDelete = async () => {
+      loading.value = true
+      try {
+        await handleRequest('delete', store.getters.dataFromTheEliminationModel.route)
+      }
+      catch (error) {
+        console.info(error)
+      }
+      finally {
+        loading.value = false
+        store.getters.dataFromTheEliminationModel.showModalDelete = false
+        store.getters.dataFromTheEliminationModel.wasItRemovedProperly = true
+        store.dispatch('modalDelete', store.getters.dataFromTheEliminationModel)
+      }
     }
 
-    return { closeModalDelete, acceptDelete }
+    return { closeModalDelete, acceptDelete, loading }
   }
 })
 </script>
@@ -46,7 +58,10 @@ export default defineComponent ({
               </p>
             </div>
             <div class="buttons">
-              <button :class="{'button is-link': true}" @click="acceptDelete()">
+              <button :class="{'button is-link': true, 'is-loading': loading }"
+                @click="acceptDelete()"
+                :disabled="loading == true"
+              >
                   Aceptar
               </button>
               <button type="button" class="button" @click="closeModalDelete()">

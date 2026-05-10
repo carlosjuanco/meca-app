@@ -19,7 +19,8 @@ type DataFromTheEliminationModel = {
     id: number;
     description: string;
     showModalDelete: boolean;
-    acceptDelete: boolean;
+    wasItRemovedProperly: boolean;
+    route: string;
 }
 
 type State = {
@@ -39,8 +40,13 @@ const state: State = {
     apiToken,
     user: {id: 0, name: '', email:''},
     pages: {id: 0, name: '', name_component: ''},
-    dataFromTheEliminationModel: { id: 0, description: '', 
-        showModalDelete: false, acceptDelete: false }
+    dataFromTheEliminationModel: { 
+        id: 0,
+        description: '', 
+        showModalDelete: false,
+        wasItRemovedProperly: false,
+        route: ''
+    }
 };
 
 export default createStore({
