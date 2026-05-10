@@ -16,12 +16,12 @@ export default defineComponent({
     const store = useStore()
     const { handleRequest, handleErrors } = helpers()
 
-    // Describir la forma del objeto del modal eliminación
+    // Definimos la estructura princpal del modal para eliminar
     type DataFromTheEliminationModel = {
       id: number;
       description: string;
       showModalDelete: boolean;
-      acceptDelete: boolean;
+      route?: string;
     }
 
     // Describir la forma del objeto para almacenar los datos
@@ -69,6 +69,9 @@ export default defineComponent({
 
     // Inicializar los datos para la paginación
     let pagination = ref({} as PaginationModel)
+
+    // Establecer la ruta del componente
+    const path = ref(`/communities/`)
     
     /*
       Muestrar el modal para registrar o editar
@@ -96,6 +99,8 @@ export default defineComponent({
       return void
     */
     const openModalDelete = (eliminate: DataFromTheEliminationModel): void => {
+      eliminate.route = `${path.value}${eliminate.id}`
+
       store.dispatch('modalDelete', eliminate)
     }
 
@@ -113,15 +118,15 @@ export default defineComponent({
 
     /*
       Observamos store.getters.dataFromTheEliminationModel.acceptDelete, para determinar si acepto
-        eliminar, si fue el caso, entonces, comenzamos a eliminar para que se muestra que esta 
+        eliminar, si fue el caso, entonces, comenzamos a eliminar para que se muestre que esta 
         siendo eliminado.
 
       @acceptDelete de tipo boolean
 
       return void
     */
-    watch(() => store.getters.dataFromTheEliminationModel.acceptDelete, (acceptDelete: boolean) => {
-      if(acceptDelete) {
+    watch(() => store.getters.dataFromTheEliminationModel.wasItRemovedProperly, (wasItRemovedProperly: boolean) => {
+      if(wasItRemovedProperly) {
         let row = data.find(stranger => stranger.id === store.getters.dataFromTheEliminationModel.id)
 
         if(row) {
@@ -131,7 +136,7 @@ export default defineComponent({
     })
 
     const buildRoute = (): void => {
-      formData.id == 0 ? getData(`/communities/`) : getData(`${pagination.value.path}?page=${pagination.value.current_page}`)
+      formData.id == 0 ? getData(path.value) : getData(`${pagination.value.path}?page=${pagination.value.current_page}`)
     }
 
     const getData = async (url:string) => {

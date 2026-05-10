@@ -156,7 +156,6 @@ export default defineComponent ({
             <div class="control">
               <Field name="name" v-slot="{ value, handleChange, handleBlur }">
                 <input 
-                  
                   :value="value"
                   @input="handleChange"
                   @blur="handleBlur"
