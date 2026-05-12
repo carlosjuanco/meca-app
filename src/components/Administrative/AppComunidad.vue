@@ -72,6 +72,9 @@ export default defineComponent({
 
     // Establecer la ruta del componente
     const path = ref(`/communities/`)
+
+    // Variable para realizar busquedas
+    let search = ref('')
     
     /*
       Muestrar el modal para registrar o editar
@@ -136,7 +139,7 @@ export default defineComponent({
     })
 
     const buildRoute = (): void => {
-      formData.id == 0 ? getData(path.value) : getData(`${pagination.value.path}?page=${pagination.value.current_page}`)
+      formData.id == 0 ? getData(`${path.value}${search.value}`) : getData(`${pagination.value.path}?page=${pagination.value.current_page}`)
     }
 
     const getData = async (url:string) => {
@@ -150,10 +153,17 @@ export default defineComponent({
           data.push(...responses.data) // Añades todos los nuevos elementos
 
            pagination.value = responses
+
+           formData.id = 0
         } catch (error) {
             handleErrors(error)
         }
     }
+
+    watch(() => search.value, () => {
+      console.info('eres única', search.value)
+      buildRoute()
+    })
 
     onMounted(() => {
       buildRoute()
@@ -169,6 +179,7 @@ export default defineComponent({
       buildRoute,
       getData,
       pagination,
+      search
     }
   }
 })
@@ -190,10 +201,12 @@ export default defineComponent({
   <!-- Búsqueda -->
   <div class="field has-addons">
     <div class="control is-expanded">
-      <input class="input" type="text" placeholder="Buscar comunidad">
+      <input class="input" type="text" placeholder="Buscar comunidad" v-model="search">
     </div>
     <div class="control">
-      <button class="button is-info">
+      <button class="button is-info"
+        @click="buildRoute()"
+      >
         Buscar
       </button>
     </div>
