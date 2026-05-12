@@ -82,10 +82,14 @@ export default defineComponent({
 
           -->
           <template v-if="data.message == 'Network Error' ">
-            <h4 :class="`subtitle is-4 has-text-centered mb-3 tag is-${icon[data.type]?.textColor} is-medium`"
-              v-text="data.message"
-            >
-            </h4>
+            <div class="columns is-mobile">
+              <div class="column is-three-fifths is-offset-one-fifth">
+                <h4 :class="`subtitle is-4 has-text-centered mb-3 tag is-${icon[data.type]?.textColor} is-medium`"
+                  v-text="data.message"
+                >
+                </h4>
+              </div>
+            </div>
           </template>
           <template v-else-if="data.message == 'Request failed with status code 422' ">
             <h4 v-for="item in data.errors" :key="item" 
