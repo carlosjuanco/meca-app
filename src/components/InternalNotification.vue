@@ -65,33 +65,38 @@ export default defineComponent({
           </div>
           <!--
             Casos
-            status: 200 
-              message: "¡Listo! Tus datos se guardaron bien."
-              Descripcion: Se guarda, modifica y se elimina correctamente.
-            status: ERR_NETWORK
-              message: "Network Error"
+            message: "Network Error"
               Descripcion: 
                 - Existe un error con la API.
                 - No hay conexion con la API.
                 - No hay internet en el lugar que se esta conectando al wifi.
-            status: 422
-              message: "Request failed with status code 422"
+            message: "Request failed with status code 422"
               Descripcion: Las validaciones estan regresando un mensaje, 
                 tengo que entrar en
-              response.data.errors: Este es un arreglo la llave es el nombre del campo
+              errors: Este es un arreglo la llave es el nombre del campo
                 El valor es el error que esta devolviendo.
+            message: "¡Listo! Tus datos se guardaron bien."
+              Descripcion: Se guarda, modifica y se elimina correctamente.
+                Pero de acuerdo al proyecto o en el futuro puedo cambiar ese mensaje
+                así que por el momento no lo pondre en la lista de casos dentro del if.
 
           -->
-          <template v-if="data.message === 'Network Error' ">
+          <template v-if="data.message == 'Network Error' ">
             <h4 :class="`subtitle is-4 has-text-centered mb-3 tag is-${icon[data.type]?.textColor} is-medium`"
               v-text="data.message"
             >
             </h4>
           </template>
-          <template v-elseif="data.message === 'Request failed with status code 422' ">
-            <h4 v-for="item in data.response?.data.errors" :key="item" 
+          <template v-else-if="data.message == 'Request failed with status code 422' ">
+            <h4 v-for="item in data.errors" :key="item" 
               :class="`subtitle is-4 has-text-centered mb-3 tag is-${icon[data.type]?.textColor} is-medium`" 
-              v-text="item"
+              v-text="item[0]"
+            >
+            </h4>
+          </template>
+          <template v-else>
+            <h4 :class="`subtitle is-4 has-text-centered mb-3 tag is-${icon[data.type]?.textColor} is-medium`"
+              v-text="data.message"
             >
             </h4>
           </template>
