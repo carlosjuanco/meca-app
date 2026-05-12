@@ -254,10 +254,10 @@ export default defineComponent({
     <table class="table is-fullwidth is-bordered is-striped">
       <thead>
         <tr class="is-primary">
-          <th class="has-text-left">
+          <th class="has-text-left" width="80%">
               Nombre de la comunidad
           </th>
-          <th class="is-vcentered">
+          <th class="is-vcentered" width="20%">
               Operaciones
           </th>
         </tr>
