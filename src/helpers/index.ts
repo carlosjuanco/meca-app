@@ -69,6 +69,19 @@ const helpers = () => {
         return form
     }
 
+    /*
+        response puede tener la siguiente estructura.
+
+        config:
+        data:
+        headers:
+        request:
+        status:
+        statusText:
+
+        return response
+    */
+
     const handleRequest = async (method: string, url: string, data?: Data, id?: number) => {
         if (url.endsWith('/')) {
             url = url.slice(0, -1)
@@ -81,13 +94,6 @@ const helpers = () => {
         }
 
         const response = await axios({ method, url, data })
-
-        if (response.data.message) {
-            // toast({
-            //     message: response.data.message,
-            //     type: 'is-success'
-            // })
-        }
 
         return response.data
     }
