@@ -16,14 +16,14 @@ export default defineComponent({
       textColor: string,
     }
 
-    interface IconType {
+    interface Type {
       Informacion: MessageType,
       Advertencia: MessageType,
     }
 
     let loading = ref(false)
-    let animation_modal_content = ref(true)
-    const icon = reactive<IconType>({
+    let animationModalContent = ref(true)
+    const icon = reactive<Type>({
       Informacion: {
         icon: "fas fa-circle-check fas",
         textColor: "success"
@@ -35,39 +35,66 @@ export default defineComponent({
     });
 
     const animationEndModalContent = async () => {
-      if(animation_modal_content.value == false) {
+      if(animationModalContent.value == false) {
         emit('close')
-        animation_modal_content.value = true
+        animationModalContent.value = true
       }
     }
 
-    return { loading, animation_modal_content, animationEndModalContent, icon }
+    return { loading, animationModalContent, animationEndModalContent, icon }
   }
 })
 </script>
 <template>
   <div :class="{'modal modal-fx-fadeInScale': true, 'is-active': show }">
-    <div @click="animation_modal_content = false" v-if="loading == false"></div>
+    <div @click="animationModalContent = false" v-if="loading == false"></div>
     <div :class="{'animate__animated': true,
-      'animate__bounceOut': animation_modal_content == false }"
+      'animate__bounceOut': animationModalContent == false }"
       @animationend="animationEndModalContent"
     >
       <div>
-        <section @click="animation_modal_content = false"
+        <section @click="animationModalContent = false"
           class="animate__animated animate__bounceIn"
         >
           <div class="columns is-mobile">
             <div class="column is-half is-offset-one-quarter">
-              <span :class="`icon is-large has-text-${icon[data.iconType]?.textColor} is-justify-content-space-between`">
-                  <i :class="`${icon[data.iconType]?.icon} fa-10x`"></i>
+              <span :class="`icon is-large has-text-${icon[data.type]?.textColor} is-justify-content-space-between`">
+                  <i :class="`${icon[data.type]?.icon} fa-10x`"></i>
               </span>
             </div>
           </div>
-          <h4 v-for="item in data.message" :key="item" 
-            :class="`subtitle is-4 has-text-centered mb-3 tag is-${icon[data.iconType]?.textColor} is-medium`" 
-            v-text="item"
-          >
-          </h4>
+          <!--
+            Casos
+            status: 200 
+              message: "¡Listo! Tus datos se guardaron bien."
+              Descripcion: Se guarda, modifica y se elimina correctamente.
+            status: ERR_NETWORK
+              message: "Network Error"
+              Descripcion: 
+                - Existe un error con la API.
+                - No hay conexion con la API.
+                - No hay internet en el lugar que se esta conectando al wifi.
+            status: 422
+              message: "Request failed with status code 422"
+              Descripcion: Las validaciones estan regresando un mensaje, 
+                tengo que entrar en
+              response.data.errors: Este es un arreglo la llave es el nombre del campo
+                El valor es el error que esta devolviendo.
+
+          -->
+          <template v-if="data.message === 'Network Error' ">
+            <h4 :class="`subtitle is-4 has-text-centered mb-3 tag is-${icon[data.type]?.textColor} is-medium`"
+              v-text="data.message"
+            >
+            </h4>
+          </template>
+          <template v-elseif="data.message === 'Request failed with status code 422' ">
+            <h4 v-for="item in data.response?.data.errors" :key="item" 
+              :class="`subtitle is-4 has-text-centered mb-3 tag is-${icon[data.type]?.textColor} is-medium`" 
+              v-text="item"
+            >
+            </h4>
+          </template>
         </section>
       </div>
     </div>
