@@ -73,8 +73,16 @@ export default defineComponent({
     // Establecer la ruta del componente
     const path = ref(`/communities/`)
 
-    // Variable para realizar busquedas
+    /*
+      Variable para realizar busquedas
+
+      Casos
+      -Cuando se comienza a buscar el páginador deja de funcionar
+    */
     let search = ref('')
+
+    // Variable para decidir cuantos registros mostrar
+    let paginate = ref('10')
     
     /*
       Muestrar el modal para registrar o editar
@@ -139,29 +147,48 @@ export default defineComponent({
     })
 
     const buildRoute = (): void => {
-      formData.id == 0 ? getData(`${path.value}${search.value}`) : getData(`${pagination.value.path}?page=${pagination.value.current_page}`)
+      /*
+        Casos
+        -Si el usuario elegi mostrar 'Todos' los registros entonces
+          debo establecer el valor de paginate.value = a el total de
+          todos los registros que existen en la base de datos, este
+          valor lo trae pagination.total.
+          No debe de haber problemas porque siempre que se seleccione
+          'Total' ya se hizo por primera vez una petición
+      */
+      paginate.value == 'Todos' ? paginate.value = pagination.value.total.toString() : paginate.value
+
+      pagination.value.data ? getData(`${path.value}${paginate.value}/${search.value}?page=${pagination.value.current_page}`) : getData(`${path.value}${paginate.value}/${search.value}`)
     }
 
     const getData = async (url:string) => {
       try {
-          const responses = await handleRequest('get', url)
+        const responses = await handleRequest('get', url)
 
-          data.length = 0 // Limpias el array
-          /* 
-            Los tres puntos son el operador de propagación (spread operator). Su función es "expandir" o "desempaquetar" los elementos de un array
-          */
-          data.push(...responses.data) // Añades todos los nuevos elementos
+        data.length = 0 // Limpias el array
+        /* 
+          Los tres puntos son el operador de propagación (spread operator). Su función es "expandir" o "desempaquetar" los elementos de un array
+        */
+        data.push(...responses.data) // Añades todos los nuevos elementos
 
-           pagination.value = responses
+        pagination.value = responses
 
-           formData.id = 0
-        } catch (error) {
-            handleErrors(error)
-        }
+        /*
+          Cada vez que guarde un registro por primera vez o edite un
+            reestablecer el id de la variable formData, para mostrar un 
+            nuevo formulario reconstruido, esto por reglas de vue js.
+        */
+        formData.id = 0
+      } catch (error) {
+          handleErrors(error)
+      }
     }
 
     watch(() => search.value, () => {
-      console.info('eres única', search.value)
+      buildRoute()
+    })
+
+    watch(() => paginate.value, () => {
       buildRoute()
     })
 
@@ -179,7 +206,8 @@ export default defineComponent({
       buildRoute,
       getData,
       pagination,
-      search
+      search,
+      paginate
     }
   }
 })
@@ -212,7 +240,7 @@ export default defineComponent({
     </div>
     <div class="control">
       <span class="select">
-        <select>
+        <select v-model="paginate">
           <option>10</option>
           <option>20</option>
           <option>30</option>
