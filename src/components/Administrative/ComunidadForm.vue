@@ -13,10 +13,9 @@ type DataModel = {
 
 // Describir la forma del objeto para el modal interno
 type DataModelInternal = {
-  title: string
-  message: { [key: string]: any }
-  url: string,
-  iconType: string,
+  message: string;
+  errors?: { [key: string]: any };
+  type: string;
 }
 
 export default defineComponent ({
@@ -38,7 +37,7 @@ export default defineComponent ({
       required: true
     }
   },
-  setup (props) {
+  setup (props, { emit }) {
     const { handleRequest } = helpers()
     let loading = ref(false)
     // Crear un contador para la key
@@ -48,12 +47,8 @@ export default defineComponent ({
     const initialValues = reactive({} as DataModel)
 
     // Inicializar la variable dataInternalNotification con datos vacios
-    let dataInternalNotification: DataModelInternal = reactive({
-      title: '',
-      message: {},
-      url: '',
-      iconType: 'Informacion',
-    })
+    let dataInternalNotification = reactive({} as DataModelInternal)
+
     let showInternalNotification = ref(false)
 
     // Declarar las reglas de negocio
@@ -75,14 +70,28 @@ export default defineComponent ({
 
         const response = await handleRequest('post', route, values, props.data.id)
 
-        dataInternalNotification.title = 'Información'
-        dataInternalNotification.message = { message: response.message }
-        dataInternalNotification.url = `/`
+        emit('close')
+
+        loading.value = false
+
+        // La palabra informacion va sin acento porque en el componente
+        // es una propiedad y las propiedad en ningun lenguaje llevan acento 
+        dataInternalNotification.type = 'Informacion'
+        dataInternalNotification.message = response.message
 
         showInternalNotification.value = true
-      }
-      catch (error) {
-        console.info(error)
+      } catch (error: any) {
+        emit('close')
+
+        loading.value = false
+
+        dataInternalNotification.type = 'Advertencia'
+        dataInternalNotification.message = error.message
+        // Si no existe response, eso significa que no es un error de API es un error
+        // Network Error
+        dataInternalNotification.errors = error.response ? error.response.data.errors : ''
+
+        showInternalNotification.value = true
       }
     }
 
@@ -197,6 +206,6 @@ export default defineComponent ({
   <internal-notification
     :show="showInternalNotification"
     :data="dataInternalNotification"
-    @close="showInternalNotification = false, loading = false, $emit('close')"
+    @close="showInternalNotification = false, loading = false"
   ></internal-notification>
 </template>
