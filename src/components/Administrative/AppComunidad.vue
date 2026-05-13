@@ -1,9 +1,9 @@
 <script lang="ts">
-import { defineComponent, ref, reactive, watch, onMounted } from 'vue'
+import { defineComponent, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import helpers from '../../helpers'
 import TablePagination from '../TablePagination.vue'
 import ComunidadForm from './ComunidadForm.vue'
+import { useComunidad } from '../composables/useComunidad'
 
 export default defineComponent({
   name: 'AppComunidad',
@@ -14,120 +14,29 @@ export default defineComponent({
   setup () {
     // Store
     const store = useStore()
-    const { handleRequest, handleErrors } = helpers()
-
-    // Definimos la estructura princpal del modal para eliminar
-    type DataFromTheEliminationModel = {
-      id: number;
-      description: string;
-      showModalDelete: boolean;
-      route?: string;
-    }
-
-    // Describir la forma del objeto para almacenar los datos
-    type DataModel = {
-      id: number;
-      name: string;
-      animateDisappearRow?: boolean;
-      hideRow?: boolean;
-    }
-
-    // Describir la forma del objeto del paginador
-
-    type DataModelLink = {
-      url: string;
-      label: string;
-      active: boolean;
-    }
-
-    type PaginationModel = {
-      current_page: number;
-      data: DataModel[];
-      first_page_url: string;
-      from: number;
-      last_page: number;
-      last_page_url: string;
-      links: DataModelLink[];
-      next_page_url: string;
-      path: string;
-      per_page: number;
-      prev_page_url: string;
-      to: number;
-      total: number;
-    }
-
-    // Inicializar la variable showForm en false
-    let showForm = ref(false)
-
-    // Inicializar los datos del formulario 
-    let formData = reactive<DataModel>({
-      id: 0,
-      name: ''
+    const {
+      showForm,
+      formData,
+      data,
+      pagination,
+      search,
+      itemsPerPage,
+      openForm,
+      confirmDelete,
+      handleRowDeletion,
+      onAnimationEnd,
+      refreshData,
+      fetchData
+    } = useComunidad(store)
+    
+    // Observar cambios en búsqueda y paginación
+    watch([() => search.value, () => itemsPerPage.value], () => {
+      refreshData()
     })
-
-    let data = reactive<DataModel[]>([])
-
-    // Inicializar los datos para la paginación
-    let pagination = ref({} as PaginationModel)
-
-    // Establecer la ruta del componente
-    const path = ref(`/communities/`)
-
-    /*
-      Variable para realizar busquedas
-
-      Casos
-      -Cuando se comienza a buscar el páginador deja de funcionar
-    */
-    let search = ref('')
-
-    // Variable para decidir cuantos registros mostrar
-    let paginate = ref('10')
     
     /*
-      Muestrar el modal para registrar o editar
+      Observar eliminación desde el store
 
-      @row de tipo DataModel
-
-      return void
-    */
-    const viewForm = (row: DataModel | null): void => {
-      Object.assign(formData, { id: 0, name: '' })
-
-      if(row) {
-        Object.assign(formData, row) 
-      }
-        
-      showForm.value = true
-    }
-
-    /*
-      Mandamos a llamar al método modalDelete, para abrir la modal
-        para eliminar.
-
-      @eliminate de tipo DataFromTheEliminationModel
-
-      return void
-    */
-    const openModalDelete = (eliminate: DataFromTheEliminationModel): void => {
-      eliminate.route = `${path.value}${eliminate.id}`
-
-      store.dispatch('modalDelete', eliminate)
-    }
-
-    /*
-      Identificar en que momento se termina la animación
-        cuando termina la animacion ocultamos realmente la fila
-
-      @row de tipo DataModel
-
-      return void
-    */
-    const endsAnimationOfDisappearingRow = async (row: DataModel) => {
-      row.hideRow = true
-    }
-
-    /*
       Observamos store.getters.dataFromTheEliminationModel.acceptDelete, para determinar si acepto
         eliminar, si fue el caso, entonces, comenzamos a eliminar para que se muestre que esta 
         siendo eliminado.
@@ -136,78 +45,32 @@ export default defineComponent({
 
       return void
     */
-    watch(() => store.getters.dataFromTheEliminationModel.wasItRemovedProperly, (wasItRemovedProperly: boolean) => {
-      if(wasItRemovedProperly) {
-        let row = data.find(stranger => stranger.id === store.getters.dataFromTheEliminationModel.id)
-
-        if(row) {
-          row.animateDisappearRow = true
+    watch(
+      () => store.getters.dataFromTheEliminationModel?.wasItRemovedProperly,
+      (wasRemovedProperly: boolean) => {
+        const removedId = store.getters.dataFromTheEliminationModel?.id
+        if (wasRemovedProperly && removedId) {
+          handleRowDeletion(wasRemovedProperly, removedId)
         }
       }
-    })
-
-    const buildRoute = (): void => {
-      /*
-        Casos
-        -Si el usuario elegi mostrar 'Todos' los registros entonces
-          debo establecer el valor de paginate.value = a el total de
-          todos los registros que existen en la base de datos, este
-          valor lo trae pagination.total.
-          No debe de haber problemas porque siempre que se seleccione
-          'Total' ya se hizo por primera vez una petición
-      */
-      paginate.value == 'Todos' ? paginate.value = pagination.value.total.toString() : paginate.value
-
-      pagination.value.data ? getData(`${path.value}${paginate.value}/${search.value}?page=${pagination.value.current_page}`) : getData(`${path.value}${paginate.value}/${search.value}`)
-    }
-
-    const getData = async (url:string) => {
-      try {
-        const responses = await handleRequest('get', url)
-
-        data.length = 0 // Limpias el array
-        /* 
-          Los tres puntos son el operador de propagación (spread operator). Su función es "expandir" o "desempaquetar" los elementos de un array
-        */
-        data.push(...responses.data) // Añades todos los nuevos elementos
-
-        pagination.value = responses
-
-        /*
-          Cada vez que guarde un registro por primera vez o edite un
-            reestablecer el id de la variable formData, para mostrar un 
-            nuevo formulario reconstruido, esto por reglas de vue js.
-        */
-        formData.id = 0
-      } catch (error) {
-          handleErrors(error)
-      }
-    }
-
-    watch(() => search.value, () => {
-      buildRoute()
-    })
-
-    watch(() => paginate.value, () => {
-      buildRoute()
-    })
-
+    )
+    
     onMounted(() => {
-      buildRoute()
+      refreshData()
     })
-
+    
     return {
       showForm,
       formData,
       data,
-      viewForm,
-      openModalDelete,
-      endsAnimationOfDisappearingRow,
-      buildRoute,
-      getData,
       pagination,
       search,
-      paginate
+      itemsPerPage,
+      openForm,
+      confirmDelete,
+      onAnimationEnd,
+      refreshData,
+      fetchData
     }
   }
 })
@@ -217,8 +80,7 @@ export default defineComponent({
   <!-- Botón principal -->
   <div class="columns">
     <div class="column">
-      <button class="button is-link is-fullwidth"
-        @click="viewForm(null)">
+      <button class="button is-link is-fullwidth" @click="openForm(null)">
         <span class="icon">
           <i class="fas fa-plus"></i>
         </span>
@@ -226,21 +88,25 @@ export default defineComponent({
       </button>
     </div>
   </div>
-  <!-- Búsqueda -->
+
+  <!-- Búsqueda y filtros -->
   <div class="field has-addons">
     <div class="control is-expanded">
-      <input class="input" type="text" placeholder="Buscar comunidad" v-model="search">
+      <input 
+        class="input" 
+        type="text" 
+        placeholder="Buscar comunidad" 
+        v-model="search"
+      >
     </div>
     <div class="control">
-      <button class="button is-info"
-        @click="buildRoute()"
-      >
+      <button class="button is-info" @click="refreshData()">
         Buscar
       </button>
     </div>
     <div class="control">
       <span class="select">
-        <select v-model="paginate">
+        <select v-model="itemsPerPage">
           <option>10</option>
           <option>20</option>
           <option>30</option>
@@ -249,47 +115,38 @@ export default defineComponent({
       </span>
     </div>
   </div>
-  <!-- Tabla -->
+
+  <!-- Tabla de datos -->
   <div class="table-container">
     <table class="table is-fullwidth is-bordered is-striped">
       <thead>
         <tr class="is-primary">
-          <th class="has-text-left" width="80%">
-              Nombre de la comunidad
-          </th>
-          <th class="is-vcentered" width="20%">
-              Operaciones
-          </th>
-        </tr>
+          <th class="has-text-left" width="80%">Nombre de la comunidad</th>
+          <th class="is-vcentered" width="20%">Operaciones</th>
+         </tr>
       </thead>
       <tbody>
-        <template v-for="(stranger) in data" :key="stranger.id">
+        <template v-for="comunidad in data" :key="comunidad.id">
           <tr
-            v-show="!stranger.hideRow" 
-            :class="{ 'animate__animated animate__bounceOut': stranger.animateDisappearRow }"
-            @animationend="endsAnimationOfDisappearingRow(stranger)"
+            v-show="!comunidad.hideRow" 
+            :class="{ 'animate__animated animate__bounceOut': comunidad.animateDisappearRow }"
+            @animationend="onAnimationEnd(comunidad)"
           >
-            <td class="has-text-left is-vcentered" v-text="stranger.name"></td>
+            <td class="has-text-left is-vcentered" v-text="comunidad.name"></td>
             <td>
-              <button type="button" class="button is-link" @click="viewForm(stranger)">
-                <span class="icon">
-                  <i class="fas fa-edit"></i>
-                </span>
+              <button type="button" class="button is-link" @click="openForm(comunidad)">
+                <span class="icon"><i class="fas fa-edit"></i></span>
               </button>
 
-              <button type="button" class="button is-danger" 
-                @click="openModalDelete({ 
-                  id: stranger.id, 
-                  description: stranger.name, 
-                  showModalDelete: true 
-                })"
+              <button 
+                type="button" 
+                class="button is-danger" 
+                @click="confirmDelete(comunidad)"
               >
-                <span class="icon">
-                  <i class="fas fa-trash"></i>
-                </span>
+                <span class="icon"><i class="fas fa-trash"></i></span>
               </button>
             </td>
-          </tr>
+           </tr>
         </template>
       </tbody>
       <tfoot>
@@ -298,10 +155,10 @@ export default defineComponent({
             <!-- Paginador -->
             <table-pagination
               :pagination="pagination"
-              @getData="getData"
-            ></table-pagination>
-          </td>
-        </tr>
+              @getData="fetchData"
+            />
+           </td>
+         </tr>
       </tfoot>
     </table>
   </div>
@@ -310,6 +167,6 @@ export default defineComponent({
   <comunidad-form
     :show="showForm"
     :data="formData"
-    @close="showForm = false, buildRoute()"
-  ></comunidad-form>
+    @close="showForm = false, refreshData()"
+  />
 </template>

@@ -4,19 +4,7 @@ import helpers from '../../helpers'
 import InternalNotification from '../InternalNotification.vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import { object, string, number } from 'yup'
-
-// Describir la forma del objeto para almacenar los datos
-type DataModel = {
-  id?: number;
-  name: string;
-}
-
-// Describir la forma del objeto para el modal interno
-type DataModelInternal = {
-  message: string;
-  errors?: { [key: string]: any };
-  type: string;
-}
+import type { DataModel, DataModelInternal } from '../types/comunidad'
 
 export default defineComponent ({
   name: 'ComunidadForm',
@@ -51,7 +39,7 @@ export default defineComponent ({
 
     let showInternalNotification = ref(false)
 
-    // Declarar las reglas de negocio
+     // Esquema de validación
     const schema = object({
       id: number(),
       name: string().min(1, 'El nombre debe tener al menos 1 caracteres')
@@ -64,15 +52,13 @@ export default defineComponent ({
     
     // Realiza una petición al servidor para guardar los datos
     const save = async (values: DataModel) => {
+      loading.value = true
       try {
-        loading.value = true
         let route: string = props.data.id ? '/communities' : '/communities/store'
 
         const response = await handleRequest('post', route, values, props.data.id)
 
         emit('close')
-
-        loading.value = false
 
         // La palabra informacion va sin acento porque en el componente
         // es una propiedad y las propiedad en ningun lenguaje llevan acento 
@@ -83,8 +69,6 @@ export default defineComponent ({
       } catch (error: any) {
         emit('close')
 
-        loading.value = false
-
         dataInternalNotification.type = 'Advertencia'
         dataInternalNotification.message = error.message
         // Si no existe response, eso significa que no es un error de API es un error
@@ -92,6 +76,8 @@ export default defineComponent ({
         dataInternalNotification.errors = error.response ? error.response.data.errors : ''
 
         showInternalNotification.value = true
+      } finally {
+        loading.value = false
       }
     }
 
@@ -207,5 +193,5 @@ export default defineComponent ({
     :show="showInternalNotification"
     :data="dataInternalNotification"
     @close="showInternalNotification = false, loading = false"
-  ></internal-notification>
+  />
 </template>
