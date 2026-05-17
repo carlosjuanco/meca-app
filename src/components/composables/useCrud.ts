@@ -51,7 +51,7 @@ export const useCrud = <T extends CrudItem>(
 
     selectedItem maneja el ítem actualmente seleccionado en el formulario para
       crear o editar registros.
-      
+
     Son los datos del formulario 
   */
   const selectedItem = reactive<T>({ id: 0 } as T)
@@ -125,7 +125,31 @@ export const useCrud = <T extends CrudItem>(
   // ============ Métodos públicos ============
   
   /**
-   * Obtiene datos del servidor
+    * Obtiene datos del servidor
+    * 
+    * ¿Qué es una Promise?
+    * Una Promise es un objeto que representa un valor que estará disponible ahora,
+    *  en el futuro o nunca. Es la forma que tiene JavaScript de manejar operaciones
+    *  asíncronas (como peticiones HTTP).
+    * 
+    * Analogía para entender Promises
+    *   Imagina que pides comida a domicilio:
+    * 
+    * Sin Promise (llamada telefónica y esperas sin hacer nada)
+    *  pedirComida()  // Te quedas pegado al teléfono 30 minutos sin hacer nada
+    * 
+    * Con Promise (pides y sigues con tu vida)
+    * const comidaPromise = pedirComida()  // Recibes un "número de orden"
+    *   comidaPromise.then(comida => {
+    *     console.log('Llegó la comida:', comida)
+    *   })
+    * Mientras tanto, puedes ver TV, trabajar, etc.
+    * 
+    * Promise<void> significa:
+    * 
+    * Promise : Esta función es asíncrona y retorna una Promise
+    * <void> : La Promise no retorna ningún valor útil 
+    *   (solo indica si terminó bien o mal)
    */
   const fetchItems = async (customUrl?: string): Promise<void> => {
     isLoading.value = true
@@ -134,14 +158,25 @@ export const useCrud = <T extends CrudItem>(
       const url = customUrl || buildApiUrl()
       const response = await handleRequest('get', url) as PaginationResponse<T>
       
-      // Limpiar y actualizar items
+      /**
+        * Reiniciar el array manteniendo la reactividad
+        * 
+        * Los tres puntos son el operador de propagación (spread operator).
+        *   Su función es "expandir" o "desempaquetar" los elementos de un array
+      */
       items.splice(0, items.length, ...response.data)
       
       if (enablePagination) {
         pagination.value = response
       }
       
-      // Resetear selección
+      /**
+        * Cada vez que guarde un registro por primera vez o edite uno
+        *   reestablecer el id de la variable formData, para mostrar un 
+        *   nuevo formulario reconstruido, esto por reglas de vue js.
+        * 
+        *  formData = selectedItem
+      */
       selectedItem.id = 0
     } catch (error) {
       handleErrors(error)
@@ -158,15 +193,15 @@ export const useCrud = <T extends CrudItem>(
   }
   
   /**
-   * Abre el formulario para crear o editar
+    * Abre el formulario para crear o editar
+    * 
+    * @item de tipo T
+    * 
+    * return void
    */
   const openForm = (item: T | null = null): void => {
-    // Resetear o copiar item
-    if (item) {
-      Object.assign(selectedItem, { ...item })
-    } else {
-      Object.assign(selectedItem, { id: 0, name: '' } as T)
-    }
+    // Si row viene vacio entonces mandamos un objeto vacio de tipo DataModel
+    Object.assign(selectedItem, item ? { ...item } : { id: 0 } as T)
     
     showForm.value = true
   }
