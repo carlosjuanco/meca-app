@@ -1,130 +1,84 @@
 <script lang="ts">
-import { defineComponent, reactive, ref, watch } from 'vue'
+import { defineComponent, watch, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import TablePagination from '../TablePagination.vue'
 import EscuelaForm from './EscuelaForm.vue'
+import { useEscuela } from '../composables/useEscuela'
 
 export default defineComponent({
   name: 'AppEscuela',
   components: {
-    EscuelaForm
+    EscuelaForm,
+    TablePagination
   },
   setup() {
 
     const store = useStore()
 
-    type DataModel = {
-      id: number
-      school: string
-      code: string
-      schoolType: string
-      location: string
-      progressiveNumber: string
-      animateDisappearRow: boolean
-      hideRow: boolean
-    }
+    // Todo viene del composable genérico
+    const {
+      showForm,
+      selectedItem: formData,  // Renombramos para claridad
+      items: data,
+      pagination,
+      search,
+      itemsPerPage,
+      // isEditing,
+      openForm,
+      confirmDelete,
+      handleDeleteAnimation,
+      onAnimationEnd,
+      refresh,
+      fetchItems
+    } = useEscuela(store)
 
-    type DataFromTheEliminationModel = {
-      id: number
-      description: string
-      showModalDelete: boolean
-      acceptDelete: boolean
-    }
+    /*
+      Observar eliminación desde el store
 
-    const showForm = ref(false)
+      Observamos store.getters.dataFromTheEliminationModel.acceptDelete, acepto eliminar y ya se 
+        eliminó en la base de datos, ahora eliminamos visualmente.
 
-    const formData = reactive<DataModel>({
-      id: 0,
-      school: '',
-      code: '',
-      schoolType: '',
-      location: '',
-      progressiveNumber: '',
-      animateDisappearRow: false,
-      hideRow: false
-    })
+      @acceptDelete de tipo boolean
 
-    const data = reactive<DataModel[]>([
-      {
-        id: 1,
-        school: "Redencion",
-        code: "20DPB0239T",
-        schoolType: "Primaria",
-        location: "San Juan Monteflor",
-        progressiveNumber: "1",
-        animateDisappearRow: false,
-        hideRow: false
-      },
-      {
-        id: 2,
-        school: "Jose Maria Morelos y Pavon",
-        code: "20DCC2082S",
-        schoolType: "Preescolar",
-        location: "Cañada de Hielo",
-        progressiveNumber: "3",
-        animateDisappearRow: false,
-        hideRow: false
-      }
-    ])
-
-    const viewForm = (row: DataModel | null): void => {
-      Object.assign(formData, {
-        id: 0,
-        school: '',
-        code: '',
-        schoolType: '',
-        location: '',
-        progressiveNumber: '',
-        animateDisappearRow: false,
-        hideRow: false
-      })
-
-      if (row) {
-        Object.assign(formData, row)
-      }
-
-      showForm.value = true
-    }
-
-    const openModalDelete = (eliminate: DataFromTheEliminationModel): void => {
-      store.dispatch('modalDelete', eliminate)
-    }
-
-    const endsAnimationOfDisappearingRow = async (row: DataModel) => {
-      row.hideRow = true
-    }
-
+      return void
+    */
     watch(
-      () => store.getters.dataFromTheEliminationModel.acceptDelete,
-      (acceptDelete: boolean) => {
-        if (acceptDelete) {
-          let row = data.find(
-            stranger => stranger.id === store.getters.dataFromTheEliminationModel.id
-          )
-
-          if (row) {
-            row.animateDisappearRow = true
+      () => store.getters.dataFromTheEliminationModel?.wasItRemovedProperly,
+      (wasRemovedProperly: boolean) => {
+        if (wasRemovedProperly) {
+          const id = store.getters.dataFromTheEliminationModel?.id
+          const itemToDelete = data.find(item => item.id === id)
+          if (itemToDelete) {
+            handleDeleteAnimation(itemToDelete)
           }
         }
       }
     )
+    
+    onMounted(() => {
+      refresh()
+    })
 
     return {
       showForm,
       formData,
       data,
-      viewForm,
-      openModalDelete,
-      endsAnimationOfDisappearingRow
+      pagination,
+      search,
+      itemsPerPage,
+      openForm,
+      confirmDelete
     }
   }
 })
 </script>
 
 <template>
-
+  <!-- Título del componente -->
+  <h1 class="title has-text-centered">Lista de escuelas</h1>
   <div class="columns">
     <div class="column">
-      <button class="button is-link is-fullwidth" @click="viewForm(null)">
+      <button class="button is-link is-fullwidth" @click="openForm(null)">
         <span class="icon">
           <i class="fas fa-plus"></i>
         </span>
@@ -133,10 +87,15 @@ export default defineComponent({
     </div>
   </div>
 
-  <!-- Búsqueda -->
+  <!-- Búsqueda y filtros -->
   <div class="field has-addons">
     <div class="control is-expanded">
-      <input class="input" type="text" placeholder="Buscar escuela">
+      <input
+        class="input"
+        type="text"
+        placeholder="Buscar escuela"
+        v-model="search"
+      >
     </div>
 
     <div class="control">
@@ -147,7 +106,7 @@ export default defineComponent({
 
     <div class="control">
       <span class="select">
-        <select>
+        <select v-model="itemsPerPage">
           <option>10</option>
           <option>20</option>
           <option>30</option>
@@ -172,20 +131,20 @@ export default defineComponent({
       </thead>
 
       <tbody>
-        <template v-for="stranger in data" :key="stranger.id">
+        <template v-for="escuela in data" :key="escuela.id">
           <tr
-            v-show="!stranger.hideRow"
-            :class="{ 'animate__animated animate__bounceOut': stranger.animateDisappearRow }"
-            @animationend="endsAnimationOfDisappearingRow(stranger)"
+            v-show="!escuela.hideRow"
+            :class="{ 'animate__animated animate__bounceOut': escuela.animateDisappearRow }"
+            @animationend="endsAnimationOfDisappearingRow(escuela)"
           >
-            <td v-text="stranger.school"></td>
-            <td v-text="stranger.code"></td>
-            <td v-text="stranger.schoolType"></td>
-            <td v-text="stranger.location"></td>
-            <td v-text="stranger.progressiveNumber"></td>
+            <td v-text="escuela.school"></td>
+            <td v-text="escuela.code"></td>
+            <td v-text="escuela.schoolType"></td>
+            <td v-text="escuela.location"></td>
+            <td v-text="escuela.progressiveNumber"></td>
 
             <td>
-              <button class="button is-link" @click="viewForm(stranger)">
+              <button class="button is-link" @click="openForm(escuela)">
                 <span class="icon">
                   <i class="fas fa-edit"></i>
                 </span>
@@ -193,12 +152,7 @@ export default defineComponent({
 
               <button
                 class="button is-danger"
-                @click="openModalDelete({
-                  id: stranger.id,
-                  description: stranger.school,
-                  showModalDelete: true,
-                  acceptDelete: false
-                })"
+                @click="confirmDelete(escuela)"
               >
                 <span class="icon">
                   <i class="fas fa-trash"></i>
@@ -212,17 +166,11 @@ export default defineComponent({
       <tfoot>
         <tr class="has-background-white-bis">
           <td colspan="6">
-            <nav class="pagination" role="navigation">
-              <a href="#" class="pagination-previous">Antes</a>
-              <a href="#" class="pagination-next">Siguiente</a>
-              <ul class="pagination-list">
-                <li><a href="#" class="pagination-link">1</a></li>
-                <li><span class="pagination-ellipsis">&hellip;</span></li>
-                <li><a href="#" class="pagination-link">45</a></li>
-                <li><a class="pagination-link is-current">46</a></li>
-                <li><a href="#" class="pagination-link">47</a></li>
-              </ul>
-            </nav>
+            <!-- Paginador -->
+            <table-pagination
+              :pagination="pagination"
+              @getData="fetchData"
+            />
           </td>
         </tr>
       </tfoot>
