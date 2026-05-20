@@ -207,7 +207,7 @@ export const useCrud = <T extends CrudItem>(
   }
   
   /**
-   * Cierra el formulario
+   * Cierra el formulario para crear o editar
    */
   const closeForm = (): void => {
     showForm.value = false
@@ -243,6 +243,13 @@ export const useCrud = <T extends CrudItem>(
   
   /**
    * Confirma eliminación (usando modal del store si está configurado)
+   * 
+   * Mandamos a llamar al método modalDelete, para abrir la modal
+   *  para eliminar.
+   * 
+   * @item de tipo DataFromTheEliminationModel = T
+   * 
+   * return void
    */
   const confirmDelete = (item: T): void => {
     if (config.storeDeleteAction) {
@@ -252,29 +259,26 @@ export const useCrud = <T extends CrudItem>(
         showModalDelete: true,
         route: `${config.basePath}${item.id}`
       })
-    } else {
-      // Si no hay acción configurada, eliminación directa
-      deleteItem(item.id)
     }
   }
   
   /**
    * Elimina un item directamente (sin modal)
    */
-  const deleteItem = async (id: number): Promise<boolean> => {
-    isLoading.value = true
+  // const deleteItem = async (id: number): Promise<boolean> => {
+  //   isLoading.value = true
     
-    try {
-      await handleRequest('delete', `${config.basePath}${id}`)
-      await refresh()
-      return true
-    } catch (error) {
-      handleErrors(error)
-      return false
-    } finally {
-      isLoading.value = false
-    }
-  }
+  //   try {
+  //     await handleRequest('delete', `${config.basePath}${id}`)
+  //     await refresh()
+  //     return true
+  //   } catch (error) {
+  //     handleErrors(error)
+  //     return false
+  //   } finally {
+  //     isLoading.value = false
+  //   }
+  // }
   
   /**
    * Maneja la animación de eliminación y oculta la fila
@@ -288,6 +292,13 @@ export const useCrud = <T extends CrudItem>(
   
   /**
    * Marca un item como oculto después de la animación
+   * 
+   * Identificar en que momento se termina la animación
+   *  cuando termina la animacion ocultamos realmente la fila
+   * 
+   * @item de tipo DataModel = T
+   * 
+   * return void
    */
   const onAnimationEnd = (item: T): void => {
     item.hideRow = true
@@ -303,13 +314,8 @@ export const useCrud = <T extends CrudItem>(
   }
   
   // ============ Watchers ============
-  if (enableSearch) {
-    watch(() => search.value, () => {
-      refresh()
-    })
-  }
-  
-  watch(() => itemsPerPage.value, () => {
+  // Observar cambios en búsqueda y paginación
+  watch([() => search.value, () => itemsPerPage.value], () => {
     refresh()
   })
   
@@ -336,7 +342,7 @@ export const useCrud = <T extends CrudItem>(
     closeForm,
     saveItem,
     confirmDelete,
-    deleteItem,
+    // deleteItem,
     handleDeleteAnimation,
     onAnimationEnd,
     clearFilters
