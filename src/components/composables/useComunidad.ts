@@ -32,10 +32,11 @@ export const useComunidad = (store: Store<any>) => {
     
     /*
       Caso
-      -Si el usuario elegi mostrar 'Todos' los registros entonces
-        debo establecer el valor de paginate.value = a el total de
+      -Si el usuario elige mostrar 'Todos', entonces debo establecer
+        el valor de paginate.value = a el total de
         todos los registros que existen en la base de datos, este
-        valor lo trae pagination.total.
+        valor lo puedo extraer de pagination.total
+        
         No debe de haber problemas porque siempre que se seleccione
         'Total' ya se hizo por primera vez una petición
     */
@@ -78,7 +79,7 @@ export const useComunidad = (store: Store<any>) => {
       pagination.value = response
 
       /*
-        Cada vez que guarde un registro por primera vez o edite un
+        Cada vez que guarde un registro por primera vez o edite uno
           reestablecer el id de la variable formData, para mostrar un 
           nuevo formulario reconstruido, esto por reglas de vue js.
       */
@@ -125,9 +126,8 @@ export const useComunidad = (store: Store<any>) => {
   }
   
   /*
-    Observamos store.getters.dataFromTheEliminationModel.acceptDelete, para determinar si acepto
-      eliminar, si fue el caso, entonces, comenzamos a eliminar para que se muestre que esta 
-      siendo eliminado.
+    Observamos store.getters.dataFromTheEliminationModel.acceptDelete, acepto eliminar y ya se 
+        eliminó en la base de datos, ahora eliminamos visualmente.
 
     @acceptDelete de tipo boolean
 

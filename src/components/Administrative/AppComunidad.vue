@@ -37,9 +37,8 @@ export default defineComponent({
     /*
       Observar eliminación desde el store
 
-      Observamos store.getters.dataFromTheEliminationModel.acceptDelete, para determinar si acepto
-        eliminar, si fue el caso, entonces, comenzamos a eliminar para que se muestre que esta 
-        siendo eliminado.
+      Observamos store.getters.dataFromTheEliminationModel.acceptDelete, acepto eliminar y ya se 
+        eliminó en la base de datos, ahora eliminamos visualmente.
 
       @acceptDelete de tipo boolean
 
