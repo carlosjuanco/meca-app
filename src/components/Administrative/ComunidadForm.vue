@@ -37,12 +37,15 @@ export default defineComponent ({
     // Inicializar la variable dataInternalNotification con datos vacios
     let dataInternalNotification = reactive({} as DataModelInternal)
 
+    // Inicializar la variable para mostrar u ocultar el dialogo notificaciones internas
     let showInternalNotification = ref(false)
 
-     // Esquema de validación
+    const form = reactive({} as DataModel)
+
+    // Esquema de validación
     const schema = object({
       id: number(),
-      name: string().min(1, 'El nombre debe tener al menos 1 caracteres')
+      name: string().min(1, 'El nombre debe tener al menos 1 carácter')
         .max(25, 'El nombre debe tener como máximo 25 caracteres')
         .required('El nombre es obligatorio.')
     });

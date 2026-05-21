@@ -72,7 +72,8 @@ export const useComunidad = (store: Store<any>) => {
       
       /*
         Reiniciar el array manteniendo la reactividad
-        Los tres puntos son el operador de propagación (spread operator). Su función es "expandir" o "desempaquetar" los elementos de un array
+        Los tres puntos son el operador de propagación (spread operator).
+          Su función es "expandir" o "desempaquetar" los elementos de un array
       */
       data.splice(0, data.length, ...response.data)
       
