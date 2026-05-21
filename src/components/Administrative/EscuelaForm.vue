@@ -1,17 +1,21 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, watch, watchEffect, PropType, nextTick } from 'vue'
-
-type DataModel = {
-  id: number
-  school: string
-  code: string
-  schoolType: string
-  location: string
-  progressiveNumber: string
-}
+import helpers from '../../helpers'
+import InternalNotification from '../InternalNotification.vue'
+import { Field, Form, ErrorMessage } from 'vee-validate'
+import { object, string, number } from 'yup'
+import type { DataModel } from '../types/escuela'
+import type { DataModelInternal } from '../types/tiposGenericos'
 
 export default defineComponent({
   name: 'EscuelaForm',
+  components: {
+    Form,
+    Field,
+    ErrorMessage,
+    InternalNotification
+  },
+  emits: ['close'],
   props: {
     show: {
       type: Boolean,
@@ -22,12 +26,32 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['close'],
   setup(props, { emit }) {
-
+    const { handleRequest } = helpers()
     let loading = ref(false)
+    / Crear un contador para la key
+    const modalKey = ref(0)
+
+    // Inicializar la variable form, con datos vacios
+    const initialValues = reactive({} as DataModel)
+
+    // Inicializar la variable dataInternalNotification con datos vacios
+    let dataInternalNotification = reactive({} as DataModelInternal)
+    // Inicializar la variable para mostrar u ocultar el dialogo notificaciones internas
+    let showInternalNotification = ref(false)
 
     const form = reactive({} as DataModel)
+
+    // Esquema de validación
+    const schema = object({
+      id: number(),
+      name: string().min(1, 'El nombre debe tener al menos 1 carácter')
+        .max(26, 'El nombre debe tener como máximo 26 caracteres'),
+      key: string().min(1, 'La clave debe tener al menos 1 carácter')
+        .max(10, 'La clave debe tener como máximo 10 caracteres'),
+      type_of_school: string().min(1, 'La clave debe tener al menos 1 carácter')
+        .max(10, 'La clave debe tener como máximo 10 caracteres'),
+    });
 
     const firstInput = ref<HTMLInputElement | null>(null)
 

@@ -15,22 +15,25 @@ export default defineComponent({
 
     const store = useStore()
 
-    // Todo viene del composable genérico
     const {
       showForm,
-      selectedItem: formData,  // Renombramos para claridad
-      items: data,
+      formData,
+      data,
       pagination,
       search,
       itemsPerPage,
-      // isEditing,
       openForm,
       confirmDelete,
-      handleDeleteAnimation,
+      handleRowDeletion,
       onAnimationEnd,
-      refresh,
-      fetchItems
+      refreshData,
+      fetchData
     } = useEscuela(store)
+
+    // Observar cambios en búsqueda y paginación
+    watch([() => search.value, () => itemsPerPage.value], () => {
+      refreshData()
+    })
 
     /*
       Observar eliminación desde el store
@@ -45,18 +48,15 @@ export default defineComponent({
     watch(
       () => store.getters.dataFromTheEliminationModel?.wasItRemovedProperly,
       (wasRemovedProperly: boolean) => {
-        if (wasRemovedProperly) {
-          const id = store.getters.dataFromTheEliminationModel?.id
-          const itemToDelete = data.find(item => item.id === id)
-          if (itemToDelete) {
-            handleDeleteAnimation(itemToDelete)
-          }
+        const removedId = store.getters.dataFromTheEliminationModel?.id
+        if (wasRemovedProperly && removedId) {
+          handleRowDeletion(wasRemovedProperly, removedId)
         }
       }
     )
     
     onMounted(() => {
-      refresh()
+      refreshData()
     })
 
     return {
@@ -67,7 +67,10 @@ export default defineComponent({
       search,
       itemsPerPage,
       openForm,
-      confirmDelete
+      confirmDelete,
+      onAnimationEnd,
+      refreshData,
+      fetchData
     }
   }
 })
@@ -99,7 +102,7 @@ export default defineComponent({
     </div>
 
     <div class="control">
-      <button class="button is-info">
+      <button class="button is-info" @click="refresh()">
         Buscar
       </button>
     </div>
@@ -135,7 +138,7 @@ export default defineComponent({
           <tr
             v-show="!escuela.hideRow"
             :class="{ 'animate__animated animate__bounceOut': escuela.animateDisappearRow }"
-            @animationend="endsAnimationOfDisappearingRow(escuela)"
+            @animationend="onAnimationEnd(escuela)"
           >
             <td v-text="escuela.school"></td>
             <td v-text="escuela.code"></td>
@@ -178,11 +181,11 @@ export default defineComponent({
     </table>
   </div>
 
-  <!-- Modal -->
-  <EscuelaForm
+  <!-- Modal del formulario -->
+  <escuela-form
     :show="showForm"
     :data="formData"
-    @close="showForm = false"
+    @close="showForm = false, refreshData()"
   />
 
 </template>
