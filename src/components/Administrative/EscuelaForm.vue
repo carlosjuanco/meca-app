@@ -49,8 +49,16 @@ export default defineComponent({
         .max(26, 'El nombre debe tener como máximo 26 caracteres'),
       key: string().min(1, 'La clave debe tener al menos 1 carácter')
         .max(10, 'La clave debe tener como máximo 10 caracteres'),
-      type_of_school: string().min(1, 'La clave debe tener al menos 1 carácter')
-        .max(10, 'La clave debe tener como máximo 10 caracteres'),
+      // Linea 311 de README.md de yup
+      // https://github.com/jquense/yup/blob/pre-v1/docs/typescript.md
+      type_of_school: mixed()
+        .oneOf(['Primaria', 'Preescolar', 'Inicial', 'Albergues escolares'] as const)
+        .defined()
+        .required('El tipo de escuela es obligatorio.'),
+      community_id: number()
+        .required('La comunidad es obligatorio.'),
+      secondary_number: number()
+        .min(10, 'El número consecutivo no puede ser mayor a 10')
     });
 
     const firstInput = ref<HTMLInputElement | null>(null)
