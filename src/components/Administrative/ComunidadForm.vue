@@ -40,8 +40,6 @@ export default defineComponent ({
     // Inicializar la variable para mostrar u ocultar el dialogo notificaciones internas
     let showInternalNotification = ref(false)
 
-    const form = reactive({} as DataModel)
-
     // Esquema de validación
     const schema = object({
       id: number(),
@@ -63,8 +61,8 @@ export default defineComponent ({
 
         emit('close')
 
-        // La palabra informacion va sin acento porque en el componente
-        // es una propiedad y las propiedad en ningun lenguaje llevan acento 
+        // La palabra información va sin acento porque en el componente
+        // es una propiedad y las propiedades en ningun lenguaje llevan acento
         dataInternalNotification.type = 'Informacion'
         dataInternalNotification.message = response.message
 
