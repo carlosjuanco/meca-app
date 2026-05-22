@@ -113,7 +113,8 @@ export const useEscuela = (store: Store<any>) => {
     Mandamos a llamar al método modalDelete, para abrir la modal
       para eliminar.
 
-    @eliminate de tipo DataFromTheEliminationModel
+    @item de tipo DataModel
+    @deleteData de tipo DataFromTheEliminationModel
 
     return void
   */

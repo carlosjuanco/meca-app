@@ -3,7 +3,7 @@ import { defineComponent, reactive, ref, watch, watchEffect, PropType, nextTick 
 import helpers from '../../helpers'
 import InternalNotification from '../InternalNotification.vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
-import { object, string, number } from 'yup'
+import { object, string, number, mixed } from 'yup'
 import type { DataModel } from '../types/escuela'
 import type { DataModelInternal } from '../types/tiposGenericos'
 
@@ -29,7 +29,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { handleRequest } = helpers()
     let loading = ref(false)
-    / Crear un contador para la key
+    // Crear un contador para la key
     const modalKey = ref(0)
 
     // Inicializar la variable form, con datos vacios
@@ -39,8 +39,6 @@ export default defineComponent({
     let dataInternalNotification = reactive({} as DataModelInternal)
     // Inicializar la variable para mostrar u ocultar el dialogo notificaciones internas
     let showInternalNotification = ref(false)
-
-    const form = reactive({} as DataModel)
 
     // Esquema de validación
     const schema = object({
@@ -63,37 +61,76 @@ export default defineComponent({
 
     const firstInput = ref<HTMLInputElement | null>(null)
 
-    const save = () => {
-      console.log('Guardar...')
-      emit('close')
+    // Realiza una petición al servidor para guardar los datos
+    const save = async (values: DataModel) => {
+      loading.value = true
+      try {
+        let route: string = props.data.id ? '/schools' : '/schools/store'
+
+        const response = await handleRequest('post', route, values, props.data.id)
+
+        emit('close')
+
+        // La palabra información va sin acento porque en el componente
+        // es una propiedad y las propiedades en ningun lenguaje llevan acento
+        dataInternalNotification.type = 'Informacion'
+        dataInternalNotification.message = response.message
+
+        showInternalNotification.value = true
+      } catch (error: any) {
+        emit('close')
+
+        dataInternalNotification.type = 'Advertencia'
+        dataInternalNotification.message = error.message
+        // Si no existe response, eso significa que no es un error de API es un error
+        // Network Error
+        dataInternalNotification.errors = error.response ? error.response.data.errors : ''
+
+        showInternalNotification.value = true
+      } finally {
+        loading.value = false
+      }
     }
 
+    // Observa a props.data, pero como reemplamos lo de adentro, por eso uso watchEffect
     watchEffect(() => {
       if (props.data) {
-        Object.assign(form, props.data)
+        Object.assign(initialValues, props.data)
       }
     })
 
+    /*
+      Miro a props.show, si cambia de valor y es verdadero, entonces ponemos el foco
+        al primer elemento del formulario
+    */
     watch(() => props.show, async (value: boolean) => {
       if (value) {
+        // Incrementar la key cada vez que se abre el modal
+        modalKey.value++
+
         await nextTick()
-        firstInput.value?.focus()
+        if(firstInput.value) {
+          firstInput.value.focus()
+        }
       }
     })
 
     return {
-      form,
-      firstInput,
+      initialValues,
       save,
-      emit,
-      loading
+      loading,
+      modalKey,
+      firstInput,
+      schema,
+      showInternalNotification,
+      dataInternalNotification
     }
   }
 })
 </script>
 
 <template>
-
+  <!-- Modal card -->
   <div :class="{'modal': true, 'is-active': show}">
     <div class="modal-background" @click="$emit('close')"></div>
 
@@ -107,62 +144,95 @@ export default defineComponent({
         <button class="delete" @click="$emit('close')"></button>
       </header>
 
-      <section class="modal-card-body">
+      <Form
+        :key="data?.id ? `edit-${data.id}` : `new-${modalKey}`" 
+        :validation-schema="schema" 
+        :initial-values="initialValues"
+        @submit="save"
+      >
+        <!-- Cuerpo del modal -->
+        <section class="modal-card-body">
 
-        <div class="field">
-          <label class="label">Escuela</label>
-          <input ref="firstInput" v-model="form.school" class="input">
-        </div>
-
-        <div class="field">
-          <label class="label">Clave</label>
-          <input v-model="form.code" class="input">
-        </div>
-
-        <div class="field">
-          <label class="label">Tipo de escuela</label>
-          <div class="select is-fullwidth">
-            <select v-model="form.schoolType">
-              <option>Primaria</option>
-              <option>Preescolar</option>
-              <option>Inicial</option>
-              <option>Albergues escolares</option>
-            </select>
+          <div class="field">
+            <label class="label">Escuela</label>
+            <Field name="name" v-slot="{ value, handleChange, handleBlur }"
+            >
+              <input 
+                :value="value"
+                @input="handleChange"
+                @blur="handleBlur"
+                ref="firstInput"
+                type="text"
+                :class="{ 'is-danger': false, 'input': true }"
+                placeholder="Nombre escuela"
+              />
+            </Field>
+            <ErrorMessage name="name" class="tag is-warning"/>
           </div>
-        </div>
 
-        <div class="field">
-          <label class="label">Localidad</label>
-          <div class="select is-fullwidth">
-            <select v-model="form.location">
-              <option>San Juan Monteflor</option>
-              <option>Cañada de Hielo</option>
-            </select>
+          <div class="field">
+            <label class="label">Clave</label>
+            <Field name="key"
+              type="text"
+              placeholder="Nombre escuela"
+              :class="{ 'is-danger': false, 'input': true }"
+            >
+            </Field>
+            <ErrorMessage name="key" class="tag is-warning"/>
           </div>
-        </div>
 
-        <div class="field">
-          <label class="label">Número progresivo</label>
-          <input v-model="form.progressiveNumber" class="input">
-        </div>
+          <div class="field">
+            <label class="label">Tipo de escuela</label>
+            <div class="select is-fullwidth">
+              <Field name="type_of_school" as="select">
+                <option value="Primaria">Primaria</option>
+                <option value="Preescolar">Preescolar</option>
+                <option value="Inicial">Inicial</option>
+                <option value="Albergues escolares">Albergues escolares</option>
+              </Field>
+              <ErrorMessage name="type_of_school" class="tag is-warning"/>
+            </div>
+          </div>
 
-      </section>
+          <div class="field">
+            <label class="label">Comunidad</label>
+            <div class="select is-fullwidth">
+              <select v-model="form.location">
+                <option>San Juan Monteflor</option>
+                <option>Cañada de Hielo</option>
+              </select>
+            </div>
+          </div>
 
-      <footer class="modal-card-foot">
-        <div class="buttons">
-          <button class="button is-link" v-if="!loading" @click="save">
-            <span v-if="data.id">Actualizar</span>
-            <span v-else>Guardar</span>
-          </button>
+          <div class="field">
+            <label class="label">Número progresivo</label>
+            <input v-model="form.progressiveNumber" class="input">
+          </div>
 
-          <button class="button" @click="$emit('close')">
-            Cancelar
-          </button>
-        </div>
-      </footer>
+        </section>
 
+        <!-- Pie del modal -->
+        <footer class="modal-card-foot">
+          <div class="buttons">
+            <button class="button is-link" v-if="!loading" @click="save">
+              <span v-if="data.id">Actualizar</span>
+              <span v-else>Guardar</span>
+            </button>
+
+            <button class="button" @click="$emit('close')">
+              Cancelar
+            </button>
+          </div>
+        </footer>
+      </Form>
     </div>
 
   </div>
-
+  
+  <!-- Modal para la notificacion interna -->
+  <internal-notification
+    :show="showInternalNotification"
+    :data="dataInternalNotification"
+    @close="showInternalNotification = false, loading = false"
+  />
 </template>

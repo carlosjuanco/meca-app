@@ -8,7 +8,7 @@ export type PaginationLink = {
 // Definimos la estructura principal del modal para eliminar
 export type DeleteModalData = {
   id: number;
-  description: string;
+  description: string | undefined;
   showModalDelete: boolean;
   route?: string;
 }
