@@ -1,10 +1,11 @@
 <script lang="ts">
-import { defineComponent, reactive, ref, watch, watchEffect, PropType, nextTick } from 'vue'
+import { defineComponent, reactive, ref, watch, watchEffect, PropType, nextTick, onMounted } from 'vue'
 import helpers from '../../helpers'
 import InternalNotification from '../InternalNotification.vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import { object, string, number, mixed } from 'yup'
 import type { DataModel } from '../types/escuela'
+import type { DataModel as DataModelCominity } from '../types/comunidad'
 import type { DataModelInternal } from '../types/tiposGenericos'
 
 export default defineComponent({
@@ -54,12 +55,32 @@ export default defineComponent({
         .defined()
         .required('El tipo de escuela es obligatorio.'),
       community_id: number()
-        .required('La comunidad es obligatorio.'),
+        .required('La comunidad es obligatorio.')
+        .typeError('Seleccione una comunidad'),
       secondary_number: number()
         .min(10, 'El número consecutivo no puede ser mayor a 10')
     });
 
     const firstInput = ref<HTMLInputElement | null>(null)
+
+    // Crear la variable communities para almacenar todas las comunidades
+    let communities = reactive<DataModelCominity[]>([])
+
+    // Obtener todas la comunidades
+    const getAllTheCommunities = async () => {
+      try {
+        const response = await handleRequest('get', `communities`)
+
+        /*
+          Reiniciar el array manteniendo la reactividad
+          Los tres puntos son el operador de propagación (spread operator).
+            Su función es "expandir" o "desempaquetar" los elementos de un array
+        */
+        communities.splice(0, communities.length, ...response.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
     // Realiza una petición al servidor para guardar los datos
     const save = async (values: DataModel) => {
@@ -115,6 +136,10 @@ export default defineComponent({
       }
     })
 
+    onMounted(() => {
+      getAllTheCommunities()
+    })
+
     return {
       initialValues,
       save,
@@ -123,7 +148,8 @@ export default defineComponent({
       firstInput,
       schema,
       showInternalNotification,
-      dataInternalNotification
+      dataInternalNotification,
+      communities
     }
   }
 })
@@ -138,7 +164,7 @@ export default defineComponent({
 
       <header class="modal-card-head">
         <p class="modal-card-title">
-          <span v-if="form.id">Editar escuela</span>
+          <span v-if="data.id">Editar escuela</span>
           <span v-else>Nueva escuela</span>
         </p>
         <button class="delete" @click="$emit('close')"></button>
@@ -184,11 +210,16 @@ export default defineComponent({
           <div class="field">
             <label class="label">Tipo de escuela</label>
             <div class="select is-fullwidth">
-              <Field name="type_of_school" as="select">
-                <option value="Primaria">Primaria</option>
-                <option value="Preescolar">Preescolar</option>
-                <option value="Inicial">Inicial</option>
-                <option value="Albergues escolares">Albergues escolares</option>
+              <Field name="type_of_school" v-slot="{ field }">
+                <select
+                  v-bind="field"
+                  :class="{ 'is-danger': false }"
+                >
+                  <option value="Primaria">Primaria</option>
+                  <option value="Preescolar">Preescolar</option>
+                  <option value="Inicial">Inicial</option>
+                  <option value="Albergues escolares">Albergues escolares</option>
+                </select>
               </Field>
               <ErrorMessage name="type_of_school" class="tag is-warning"/>
             </div>
@@ -197,16 +228,27 @@ export default defineComponent({
           <div class="field">
             <label class="label">Comunidad</label>
             <div class="select is-fullwidth">
-              <select v-model="form.location">
-                <option>San Juan Monteflor</option>
-                <option>Cañada de Hielo</option>
-              </select>
+              <Field name="community_id" v-slot="{ field }">
+                <select 
+                  v-bind="field"
+                >
+                  <option value="" disabled>Selecciona una comunidad</option>
+                  <option 
+                    v-for="community in communities" 
+                    :key="community.id" 
+                    :value="community.id"
+                    :text="community.name"
+                  >
+                  </option>
+                </select>
+              </Field>
+              <ErrorMessage name="community_id" class="tag is-warning"/>
             </div>
           </div>
 
           <div class="field">
             <label class="label">Número progresivo</label>
-            <input v-model="form.progressiveNumber" class="input">
+            <input class="input">
           </div>
 
         </section>
