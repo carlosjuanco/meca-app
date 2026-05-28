@@ -70,6 +70,16 @@ export default defineComponent({
         .min(1, 'Selecciona una comunidad'),
       secondary_number: number()
         .nullable()
+        // Para manejar un campo number que puede estar vacío (string vacío) o ser un número positivo
+        .transform((value, originalValue) => {
+          // Si es string vacío, retorna null
+          if (originalValue === '' || originalValue === undefined || originalValue === null) {
+            return null;
+          }
+          // Intenta convertir a número
+          const num = Number(originalValue);
+          return isNaN(num) ? null : num;
+        })
         .max(10, 'El número consecutivo no puede ser mayor a 10')
         .positive('El número consecutivo debe ser un número positivo')
     })
@@ -214,10 +224,18 @@ export default defineComponent({
           <div class="field">
             <label class="label">Clave</label>
             <Field name="key"
-              type="text"
-              placeholder="Clave"
-              :class="{ 'is-danger': false, 'input': true }"
+              v-slot="{ value, handleChange }"
             >
+            <!-- Sacamos a handleChange, para que al momento de escribir el usuario, pueda
+              visualizar si el máximo de caracteres es permitido y no después de perder
+              el foco en el input -->
+              <input
+                :value="value"
+                @input="handleChange"
+                type="text"
+                placeholder="Clave"
+                :class="{ 'is-danger': false, 'input': true }"
+              />
             </Field>
             <ErrorMessage name="key" class="tag is-warning"/>
           </div>
