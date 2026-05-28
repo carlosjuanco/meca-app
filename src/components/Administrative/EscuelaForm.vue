@@ -51,15 +51,18 @@ export default defineComponent({
       // Linea 311 de README.md de yup
       // https://github.com/jquense/yup/blob/pre-v1/docs/typescript.md
       type_of_school: mixed()
-        .oneOf(['Primaria', 'Preescolar', 'Inicial', 'Albergues escolares'] as const)
+        .oneOf(['Primaria', 'Preescolar', 'Inicial', 'Albergues escolares'] as const,
+          'El tipo de escuela debe ser uno de los siguientes valores: Primaria, Preescolar, Inicial, Albergues escolares ')
         .defined()
         .required('El tipo de escuela es obligatorio.'),
       community_id: number()
         .required('La comunidad es obligatorio.')
-        .typeError('Seleccione una comunidad'),
+        // Si no le pongo esta opcion de que al menos tenga un caracter no hace
+        // que la comunidad sea obligatoria
+        .min(1, 'Selecciona una comunidad'), // Opcional, para más seguridad
       secondary_number: number()
         .min(10, 'El número consecutivo no puede ser mayor a 10')
-    });
+    })
 
     const firstInput = ref<HTMLInputElement | null>(null)
 
@@ -228,7 +231,9 @@ export default defineComponent({
           <div class="field">
             <label class="label">Comunidad</label>
             <div class="select is-fullwidth">
-              <Field name="community_id" v-slot="{ field }">
+              <Field name="community_id" 
+                v-slot="{ field, value }"
+              >
                 <select 
                   v-bind="field"
                 >
@@ -236,9 +241,10 @@ export default defineComponent({
                   <option 
                     v-for="community in communities" 
                     :key="community.id" 
-                    :value="community.id"
-                    :text="community.name"
+                    :value="Number(community.id)"
+                    :selected="value === Number(community.id)"
                   >
+                  {{ community.name }}
                   </option>
                 </select>
               </Field>
@@ -256,7 +262,10 @@ export default defineComponent({
         <!-- Pie del modal -->
         <footer class="modal-card-foot">
           <div class="buttons">
-            <button class="button is-link" v-if="!loading" @click="save">
+            <button
+              :class="{'button is-link': true, 'is-loading': loading }"
+              :disabled="loading == true"
+            >
               <span v-if="data.id">Actualizar</span>
               <span v-else>Guardar</span>
             </button>

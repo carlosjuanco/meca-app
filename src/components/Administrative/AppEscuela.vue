@@ -129,7 +129,7 @@ export default defineComponent({
           <th>Tipo escuela</th>
           <th>Localidad</th>
           <th>N/P</th>
-          <th>Operaciones</th>
+          <th width="5%">Operaciones</th>
         </tr>
       </thead>
 
@@ -143,7 +143,7 @@ export default defineComponent({
             <td v-text="escuela.name"></td>
             <td v-text="escuela.key"></td>
             <td v-text="escuela.type_of_school"></td>
-            <td v-text="escuela.community_id"></td>
+            <td v-text="escuela.name_community"></td>
             <td v-text="escuela.secondary_number"></td>
 
             <td>
