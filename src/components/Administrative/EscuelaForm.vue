@@ -76,7 +76,7 @@ export default defineComponent({
           Los tres puntos son el operador de propagación (spread operator).
             Su función es "expandir" o "desempaquetar" los elementos de un array
         */
-        communities.splice(0, communities.length, ...response.data)
+        communities.splice(0, communities.length, ...response)
       } catch (error) {
         console.log(error)
       }

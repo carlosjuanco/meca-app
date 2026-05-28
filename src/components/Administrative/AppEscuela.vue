@@ -140,11 +140,11 @@ export default defineComponent({
             :class="{ 'animate__animated animate__bounceOut': escuela.animateDisappearRow }"
             @animationend="onAnimationEnd(escuela)"
           >
-            <td v-text="escuela.school"></td>
-            <td v-text="escuela.code"></td>
-            <td v-text="escuela.schoolType"></td>
-            <td v-text="escuela.location"></td>
-            <td v-text="escuela.progressiveNumber"></td>
+            <td v-text="escuela.name"></td>
+            <td v-text="escuela.key"></td>
+            <td v-text="escuela.type_of_school"></td>
+            <td v-text="escuela.community_id"></td>
+            <td v-text="escuela.secondary_number"></td>
 
             <td>
               <button class="button is-link" @click="openForm(escuela)">
