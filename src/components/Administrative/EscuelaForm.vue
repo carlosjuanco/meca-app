@@ -44,9 +44,17 @@ export default defineComponent({
     // Esquema de validación
     const schema = object({
       id: number(),
-      name: string().min(1, 'El nombre debe tener al menos 1 carácter')
+      name: string()
+        /**
+         * Nullable() siempre va despues de string() o number(),
+         * 
+         * Es necesario utilizarlo cuando no es requerido, cuando edita es donde
+         * se ve el beneficio, porque el registrar un nuevo registro no.
+         */
+        .nullable()
         .max(26, 'El nombre debe tener como máximo 26 caracteres'),
-      key: string().min(1, 'La clave debe tener al menos 1 carácter')
+      key: string()
+        .nullable()
         .max(10, 'La clave debe tener como máximo 10 caracteres'),
       // Linea 311 de README.md de yup
       // https://github.com/jquense/yup/blob/pre-v1/docs/typescript.md
@@ -59,9 +67,11 @@ export default defineComponent({
         .required('La comunidad es obligatorio.')
         // Si no le pongo esta opcion de que al menos tenga un caracter no hace
         // que la comunidad sea obligatoria
-        .min(1, 'Selecciona una comunidad'), // Opcional, para más seguridad
+        .min(1, 'Selecciona una comunidad'),
       secondary_number: number()
-        .min(10, 'El número consecutivo no puede ser mayor a 10')
+        .nullable()
+        .max(10, 'El número consecutivo no puede ser mayor a 10')
+        .positive('El número consecutivo debe ser un número positivo')
     })
 
     const firstInput = ref<HTMLInputElement | null>(null)
@@ -89,6 +99,7 @@ export default defineComponent({
     const save = async (values: DataModel) => {
       loading.value = true
       try {
+        console.info('welcome to your life', values)
         let route: string = props.data.id ? '/schools' : '/schools/store'
 
         const response = await handleRequest('post', route, values, props.data.id)
@@ -119,6 +130,7 @@ export default defineComponent({
     // Observa a props.data, pero como reemplamos lo de adentro, por eso uso watchEffect
     watchEffect(() => {
       if (props.data) {
+        console.info('There is ', props.data)
         Object.assign(initialValues, props.data)
       }
     })
@@ -203,7 +215,7 @@ export default defineComponent({
             <label class="label">Clave</label>
             <Field name="key"
               type="text"
-              placeholder="Nombre escuela"
+              placeholder="Clave"
               :class="{ 'is-danger': false, 'input': true }"
             >
             </Field>
@@ -254,7 +266,18 @@ export default defineComponent({
 
           <div class="field">
             <label class="label">Número progresivo</label>
-            <input class="input">
+            <Field name="secondary_number"
+              v-slot="{ field, value }"
+            >
+              <input
+                v-bind="field"
+                :value="value"
+                type="number"
+                placeholder="Número progresivo"
+                :class="{ 'is-danger': false, 'input': true }"
+              >
+            </Field>
+            <ErrorMessage name="secondary_number" class="tag is-warning"/>
           </div>
 
         </section>
@@ -263,6 +286,7 @@ export default defineComponent({
         <footer class="modal-card-foot">
           <div class="buttons">
             <button
+              type="submit"
               :class="{'button is-link': true, 'is-loading': loading }"
               :disabled="loading == true"
             >

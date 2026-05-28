@@ -11,11 +11,22 @@ import type { PaginationLink } from './tiposGenericos'
 
 export type DataModel = {
   id: number;
-  name?: string;
-  key?: string;
+  /**
+   * Me sirve poner undefined, cuando el campo no es obligatorio
+   * Por ejemplo en el método openForm, al reestablecer el valor
+   * a un string vacio y el campo name en el esquema de validaciones
+   * no es obligatorio, valida forzosamente que se ingrese al menos un
+   * caracter, pero repito el campo no es obligatorio.
+   * 
+   * En cambio al reestablecer el valor de name como undefined
+   * valida que el campo name no sea obligatorio.
+   */
+
+  name?: string | undefined;
+  key?: string | undefined;
   type_of_school: string;
   community_id: number;
-  secondary_number?: number;
+  secondary_number?: number | undefined | null;
   animateDisappearRow?: boolean;
   hideRow?: boolean;
 }

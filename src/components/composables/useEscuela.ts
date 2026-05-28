@@ -105,7 +105,14 @@ export const useEscuela = (store: Store<any>) => {
   */
   const openForm = (row: DataModel | null) => {
     // Si row viene vacio entonces mandamos un objeto vacio de tipo DataModel
-    Object.assign(formData, row || { id: 0, type_of_school: '', community_id: 0 })
+    Object.assign(formData, row || { 
+      id: 0,
+      name: undefined,
+      key: undefined,
+      type_of_school: '',
+      community_id: 0,
+      secondary_number: undefined
+    })
     showForm.value = true
   }
   
