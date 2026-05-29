@@ -37,8 +37,12 @@
 
             // Variable que me sirve para establecer el foco al input de correo
             const focusOnEmail = ref<HTMLInputElement | null>(null)
-            // Variable que me sirve para establecer el foco al input de contraseña
+            //  Variable que me sirve para establecer el foco al input de contraseña
             // const setFocusToPassword = ref<HTMLInputElement | null>(null)
+            //  Variable que sirve para establecer la clase de animacion
+            //      para darle una salida al formulario
+            const encourageExit = ref(false)
+            const encourageEntrance = ref(true)
 
             let data_modal_notification: Datamodal = reactive({
               title: '',
@@ -53,6 +57,7 @@
                     await store.dispatch('login', values)
 
                     router.replace({ name: store.getters.pages[0].name })
+                    encourageExit.value = true
                 }
                 catch (error) {
                     data_modal_notification.title = 'Advertencia'
@@ -79,6 +84,8 @@
                 await nextTick()
                 if(focusOnEmail.value) {
                   focusOnEmail.value.focus()
+                  // quitar las clases que animan el ingreso del formulario
+                  encourageEntrance.value = false
                 }
             }
 
@@ -89,7 +96,9 @@
                 show_modal_notification,
                 data_modal_notification,
                 focusOnEmail,
-                theLoginFormHasFinishedAnimating
+                theLoginFormHasFinishedAnimating,
+                encourageExit,
+                encourageEntrance,
             }
         }
     })
@@ -100,7 +109,9 @@
         <div class="columns is-centered">
             <div class="column is-5">
                 <nav 
-                    class="panel animate__animated animate__backInUp"
+                    :class="{'panel animate__animated': true,
+                    'animate__backInUp': encourageEntrance,
+                    'animate__backOutDown': encourageExit }"
                     @animationend="theLoginFormHasFinishedAnimating()"
                 >
                     <p class="panel-heading">
@@ -113,10 +124,12 @@
                                     <div class="field">
                                         <div class="control">
                                             <Field name="email"
-                                                v-slot="{ value }"
+                                                v-slot="{ value, handleChange, handleBlur }"
                                             >
                                                 <input 
                                                     :value="value"
+                                                    @input="handleChange"
+                                                    @blur="handleBlur"
                                                     ref="focusOnEmail"
                                                     type="email"
                                                     :class="{'input is-family-monospace has-text-centered': true}"
