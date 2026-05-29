@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { defineComponent, ref, reactive} from 'vue'
+    import { defineComponent, ref, reactive, nextTick } from 'vue'
     import ModalNotification from '../components/ModalNotification.vue'
     import { useStore } from 'vuex'
     import { useRouter } from 'vue-router'
@@ -35,6 +35,11 @@
             let loading = ref(false)
             let show_modal_notification = ref(false)
 
+            // Variable que me sirve para establecer el foco al input de correo
+            const focusOnEmail = ref<HTMLInputElement | null>(null)
+            // Variable que me sirve para establecer el foco al input de contraseña
+            // const setFocusToPassword = ref<HTMLInputElement | null>(null)
+
             let data_modal_notification: Datamodal = reactive({
               title: '',
               message: {},
@@ -60,12 +65,31 @@
                 }
             }
 
+            /**
+             *  Identificar en que momento se termina la animación
+             *      cuando termina de aparecer bien el formullario.
+             *  Para establecer el foco al campo correo.
+             *  Caso:
+             *      -Solo cuando se recargue la página o se habra la primera
+             *          vez el sitio web realizara esta acción
+             * 
+             *  return void
+            */
+            const theLoginFormHasFinishedAnimating = async() => {
+                await nextTick()
+                if(focusOnEmail.value) {
+                  focusOnEmail.value.focus()
+                }
+            }
+
             return {
                 loading,
                 schema,
                 login,
                 show_modal_notification,
-                data_modal_notification
+                data_modal_notification,
+                focusOnEmail,
+                theLoginFormHasFinishedAnimating
             }
         }
     })
@@ -75,7 +99,10 @@
     <section class="section">
         <div class="columns is-centered">
             <div class="column is-5">
-                <nav class="panel animate__animated animate__backInUp">
+                <nav 
+                    class="panel animate__animated animate__backInUp"
+                    @animationend="theLoginFormHasFinishedAnimating()"
+                >
                     <p class="panel-heading">
                         Acceso al sistema
                     </p>
@@ -85,9 +112,17 @@
                                 <Form :validation-schema="schema" @submit="login">
                                     <div class="field">
                                         <div class="control">
-                                            <Field name="email" type="email"
-                                            :class="{'input is-family-monospace has-text-centered': true}"
-                                            placeholder="Correo"/>
+                                            <Field name="email"
+                                                v-slot="{ value }"
+                                            >
+                                                <input 
+                                                    :value="value"
+                                                    ref="focusOnEmail"
+                                                    type="email"
+                                                    :class="{'input is-family-monospace has-text-centered': true}"
+                                                    placeholder="Correo"
+                                                />
+                                            </Field>
                                         </div>
                                         <ErrorMessage name="email" :class="{'tag is-warning': true }"/>
                                     </div>
