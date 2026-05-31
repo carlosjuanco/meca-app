@@ -43,6 +43,8 @@
             //      para darle una salida al formulario
             const encourageExit = ref(false)
             const encourageEntrance = ref(true)
+            // Variable para ocultar el formulario de logueo
+            const hideLogin = ref(true)
 
             let data_modal_notification: Datamodal = reactive({
               title: '',
@@ -56,7 +58,6 @@
                 try {
                     await store.dispatch('login', values)
 
-                    router.replace({ name: store.getters.pages[0].name })
                     encourageExit.value = true
                 }
                 catch (error) {
@@ -80,12 +81,25 @@
              * 
              *  return void
             */
-            const theLoginFormHasFinishedAnimating = async() => {
-                await nextTick()
-                if(focusOnEmail.value) {
-                  focusOnEmail.value.focus()
-                  // quitar las clases que animan el ingreso del formulario
-                  encourageEntrance.value = false
+            const theLoginFormHasFinishedAnimating = async(event: { [key: string]: any }) => {
+                console.info('Se termino la animación', event)
+                // event.animationName contiene el nombre de la animación que terminó
+                const animationName = event.animationName
+              
+                if (animationName === 'backInUp') {
+                    console.log('Animación de entrada terminada')
+                    encourageEntrance.value = false
+                    // Lógica específica para entrada
+                    await nextTick()
+                    if(focusOnEmail.value) {
+                      focusOnEmail.value.focus()
+                    }
+                } else if (animationName === 'backOutDown') {
+                    console.log('Animación de salida terminada')
+                    hideLogin.value = false
+                    encourageExit.value = false
+                    // Lógica específica para salida
+                    router.replace({ name: store.getters.pages[0].name })
                 }
             }
 
@@ -99,6 +113,7 @@
                 theLoginFormHasFinishedAnimating,
                 encourageExit,
                 encourageEntrance,
+                hideLogin,
             }
         }
     })
@@ -109,10 +124,11 @@
         <div class="columns is-centered">
             <div class="column is-5">
                 <nav 
+                    v-show="hideLogin"
                     :class="{'panel animate__animated': true,
                     'animate__backInUp': encourageEntrance,
                     'animate__backOutDown': encourageExit }"
-                    @animationend="theLoginFormHasFinishedAnimating()"
+                    @animationend="theLoginFormHasFinishedAnimating($event)"
                 >
                     <p class="panel-heading">
                         Acceso al sistema
