@@ -107,12 +107,14 @@ export default defineComponent({
 
     // Realiza una petición al servidor para guardar los datos
     const save = async (values: DataModel) => {
+      console.info('Se ejecuta aún cuando se presiona el botón cancelar')
       loading.value = true
       try {
-        console.info('welcome to your life', values)
+        console.info('Preparando para realizar la petición')
         let route: string = props.data.id ? '/schools' : '/schools/store'
 
         const response = await handleRequest('post', route, values, props.data.id)
+        console.info('Realizó la petición')
 
         emit('close')
 
@@ -140,7 +142,6 @@ export default defineComponent({
     // Observa a props.data, pero como reemplamos lo de adentro, por eso uso watchEffect
     watchEffect(() => {
       if (props.data) {
-        console.info('There is ', props.data)
         Object.assign(initialValues, props.data)
       }
     })
@@ -312,7 +313,10 @@ export default defineComponent({
               <span v-else>Guardar</span>
             </button>
 
-            <button class="button" @click="$emit('close')">
+            <button class="button" 
+              type="button"
+              @click="$emit('close')"
+            >
               Cancelar
             </button>
           </div>
