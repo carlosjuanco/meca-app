@@ -13,7 +13,7 @@ export default {
 }
 </script>
 
-<template>
-  <h1 class="title is-1 mt-6 has-text-centered">Bienvenido al sistema</h1>
-  <h2 class="subtitle is-2 has-text-centered" v-text="name_user"></h2>
+<template >
+  <h1 class="title is-1 mt-6 has-text-centered animate__animated animate__bounceInDown">Bienvenido al sistema</h1>
+  <h2 class="subtitle is-2 has-text-centered animate__animated animate__bounceInDown" v-text="name_user"></h2>
 </template>
