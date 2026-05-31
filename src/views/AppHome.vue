@@ -108,7 +108,11 @@
 </script>
 <template>
   <div class="container">
-    <nav class="navbar is-transparent">
+    <nav 
+      class="navbar is-transparent"
+      :class="{'navbar is-transparent animate__animated': true,
+        'animate__bounceInDown': true }"
+    >
       <div class="navbar-brand">
         <a class="navbar-item" href="#">
           <img src="../assets/logoJuanito.png" alt="Mi Logo">
