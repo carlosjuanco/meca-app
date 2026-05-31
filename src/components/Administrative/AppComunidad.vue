@@ -76,6 +76,8 @@ export default defineComponent({
 </script>
 
 <template>
+  <!-- Título del componente -->
+  <h1 class="title has-text-centered">Lista de comunidades</h1>
   <!-- Botón principal -->
   <div class="columns">
     <div class="column">
