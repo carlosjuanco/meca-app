@@ -33,7 +33,7 @@ export default defineComponent ({
     });
 
     let loading = ref(false)
-    let show_modal_notification = ref(false)
+    let showModalNotification = ref(false)
 
     // Variable que me sirve para establecer el foco al input de correo
     const focusOnEmail = ref<HTMLInputElement | null>(null)
@@ -46,7 +46,7 @@ export default defineComponent ({
     // Variable para ocultar el formulario de logueo
     const hideLogin = ref(true)
 
-    let data_modal_notification: Datamodal = reactive({
+    let dataModalNotification: Datamodal = reactive({
       title: '',
       message: {},
       url: ''
@@ -61,11 +61,11 @@ export default defineComponent ({
         encourageExit.value = true
       }
       catch (error) {
-        data_modal_notification.title = 'Advertencia'
-        data_modal_notification.message = handleErrors(error) 
-        data_modal_notification.url = `/`
+        dataModalNotification.title = 'Advertencia'
+        dataModalNotification.message = handleErrors(error) 
+        dataModalNotification.url = `/`
 
-        show_modal_notification.value = true
+        showModalNotification.value = true
 
         loading.value = false
       }
@@ -82,12 +82,10 @@ export default defineComponent ({
      *  return void
     */
     const theLoginFormHasFinishedAnimating = async(event: { [key: string]: any }) => {
-      console.info('Se termino la animación', event)
       // event.animationName contiene el nombre de la animación que terminó
       const animationName = event.animationName
     
       if (animationName === 'backInUp') {
-        console.log('Animación de entrada terminada')
         encourageEntrance.value = false
         // Lógica específica para entrada
         await nextTick()
@@ -95,7 +93,6 @@ export default defineComponent ({
           focusOnEmail.value.focus()
         }
       } else if (animationName === 'backOutDown') {
-        console.log('Animación de salida terminada')
         hideLogin.value = false
         encourageExit.value = false
         // Lógica específica para salida
@@ -107,8 +104,8 @@ export default defineComponent ({
       loading,
       schema,
       login,
-      show_modal_notification,
-      data_modal_notification,
+      showModalNotification,
+      dataModalNotification,
       focusOnEmail,
       theLoginFormHasFinishedAnimating,
       encourageExit,
@@ -185,9 +182,9 @@ export default defineComponent ({
 
     <!-- Modal de notificaciones -->
     <modal-notification
-      :show="show_modal_notification"
-      :data="data_modal_notification"
-      @close="show_modal_notification = false"
+      :show="showModalNotification"
+      :data="dataModalNotification"
+      @close="showModalNotification = false"
     >
     </modal-notification>
   </section>
