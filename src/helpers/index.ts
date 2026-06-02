@@ -6,21 +6,92 @@ const helpers = () => {
     const store = useStore()
     const router = useRouter()
 
+    /**
+     * Maneja y normaliza los errores provenientes de peticiones HTTP, especialmente
+     * aquellos enviados por Laravel en respuestas con código de estado 422.
+     *
+     * @param {any} error - Objeto de error capturado en el bloque catch de axios/fetch.
+     * @returns {Object} Objeto de errores normalizado donde cada clave es el campo
+     *                   y el valor es el primer mensaje de error asociado.
+     *
+     * @description
+     * Esta función procesa errores de validación y otros errores HTTP, priorizando
+     * el formato que Laravel retorna en sus validaciones.
+     *
+     * ### Casos de uso:
+     *
+     * 1. **Errores de validación de Laravel** (status 422):
+     *    - Formato esperado: `response.data.errors`
+     *    - Ejemplo de Laravel con múltiples errores:
+     *      ```data
+     *      {
+     *        "errors": {
+     *          "email": ["El email es requerido", "El email debe ser válido"],
+     *          "password": ["La contraseña debe tener mínimo 8 caracteres"]
+     *        }
+     *      }
+     *      ```
+     *    - Resultado: `[{ email: "El email es requerido", password: "La contraseña..." }]`
+     *
+     * 2. **Error personalizado de contraseña** (desde AuthController):
+     *    - Formato manual retornado desde el backend:
+     *      ```data
+     *      {
+     *        "errors": {
+     *          "password": ["Contraseña incorrecta"]
+     *        }
+     *      }
+     *      ```
+     *    - Resultado: `[{ password: "Contraseña incorrecta" }]`
+     *
+     * 3. **Otros errores HTTP con mensaje simple**:
+     *    - Formato: `response.data.message`
+     *    - Resultado: `{ message: "Mensaje del error" }`
+     *
+     * 4. **Errores de red o conexión**:
+     *    - Resultado: `{ message: error.message }`
+     *
+     * ### Comportamiento específico:
+     * - Cuando hay múltiples errores de validación en un mismo campo, solo se toma
+     *   el primer mensaje.
+     * - En validaciones con múltiples campos incorrectos (ej: email y password),
+     *   la función extrae el primer error de cada campo.
+     * - Si el backend retorna un error de autenticación personalizado, este se
+     *   procesa igual que los errores de validación tradicionales.
+     *
+     * ### Integración con AppLogin.vue:
+     * La función permite que el componente de login maneje uniformemente:
+     * - Errores de validación automáticos de Laravel
+     * - Errores de contraseña incorrecta (manejados manualmente en el backend)
+     * - Ambos tipos de error se presentan al usuario de forma consistente
+     *
+     * @example
+     * // Uso típico en un componente Vue
+     * try {
+     *   await axios.post('/login', formData)
+     * } catch (error) {
+     *   const errors = handleErrors(error)
+     *   // errors = { email: "El email es requerido", password: "Contraseña incorrecta" }
+     *   mostrarErroresAlUsuario(errors)
+     * }
+     */
     const handleErrors = (error: any) => {
-        const errors:{ [key: string]: any } = {}
+        const errors: { [key: string]: any } = {}
+        
         if (error.response) {
             if (error.response.data.errors) {
+                // Procesa errores de validación de Laravel
                 Object.entries(error.response.data.errors).forEach(([key, value]) => {
                     const valor = value as string[]
-                    errors[key] = valor[0]
+                    errors[key] = valor[0] // Solo toma el primer mensaje del campo
                 })
-            }
-            else {
+            } else {
+                // Otros errores HTTP con mensaje simple
                 errors['message'] = error.response.data.message
             }
-        }
-        else {
-           errors['message'] = error.message
+        } else {
+            // Errores de red, timeout, etc.
+            errors['message'] = error.message
         }
 
         return errors
