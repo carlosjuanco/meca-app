@@ -1,111 +1,320 @@
 <script lang="ts">
-import { defineComponent, reactive } from 'vue'
-import { ref } from 'vue'
+import { defineComponent, reactive, ref, computed } from 'vue'
 // https://bulma.io/documentation/elements/icon/#
+/**
+ * @component InternalNotification
+ * @description Componente de notificaciones modales con 4 tipos predefinidos:
+ * - Éxito: Operaciones completadas correctamente
+ * - Error: Fallos en operaciones, incluyendo errores de validación (422)
+ * - Ayuda: Confirmaciones o preguntas al usuario (Sí/No)
+ * - Advertencia: Acciones peligrosas o irreversibles
+ * 
+ * Fuente: https://josetxu.com/estilos-para-notificaciones/
+ * 
+ * @requires animate.css v4.1.1 - Para las animaciones de los iconos
+ * @requires Bulma v1.0.1 - Para los estilos base del modal y botones
+ * @requires Font Awesome - Para los iconos (fas fa-circle-check, fas fa-ban, etc.)
+ * 
+ * @emits close - Se emite cuando el modal se cierra (por X, fondo o botón cancelar)
+ * @emits confirm - Se emite cuando el usuario confirma la acción (Sí, Aceptar, De acuerdo)
+ * @emits reject - Se emite cuando el usuario rechaza la acción (No, Cancelar)
+ * 
+ * @example
+ * // Uso básico - Notificación de éxito
+ * <InternalNotification
+ *   :show="showModal"
+ *   :data="{ type: 'Exito', message: 'Guardado correctamente' }"
+ *   @close="showModal = false"
+ * />
+ * 
+ * @example
+ * // Notificación de error con múltiples mensajes (Laravel 422)
+ * <InternalNotification
+ *   :show="showErrorModal"
+ *   :data="{
+ *     type: 'Error',
+ *     errors: {
+ *       email: ['El email ya está registrado'],
+ *       password: ['La contraseña debe tener mínimo 8 caracteres']
+ *     }
+ *   }"
+ *   @close="showErrorModal = false"
+ * />
+ * 
+ * @example
+ * // Notificación de ayuda con callbacks
+ * <InternalNotification
+ *   :show="showHelpModal"
+ *   :data="{
+ *     type: 'Ayuda',
+ *     message: '¿Deseas eliminar este registro?',
+ *     onConfirm: () => eliminarRegistro(),
+ *     onReject: () => console.log('Cancelado')
+ *   }"
+ *   @close="showHelpModal = false"
+ * />
+ */
+
+interface NotificationData {
+  type: 'Exito' | 'Error' | 'Ayuda' | 'Advertencia'
+  message?: string
+  errors?: string[] | string
+  onConfirm?: () => void
+  onReject?: () => void
+}
 
 export default defineComponent({
   name: 'InternalNotification',
-  emits: ['close', 'getData'],
+  emits: ['close', 'confirm', 'reject'],
   props: {
     show: Boolean,
-    data: Object
+    data: {
+      type: Object as () => NotificationData,
+      default: () => ({ type: 'Exito', message: '' })
+    }
   },
-  setup (props, { emit }) {
-    interface MessageType {
-      icon: string,
-      textColor: string,
-    }
-
-    interface Type {
-      Informacion: MessageType,
-      Advertencia: MessageType,
-    }
-
+  setup(props, { emit }) {
     let loading = ref(false)
     let animationModalContent = ref(true)
-    const icon = reactive<Type>({
-      Informacion: {
-        icon: "fas fa-circle-check fas",
-        textColor: "success"
+
+    // Configuración de tipos de notificaciones
+    const typeConfig = {
+      Exito: {
+        icon: "fas fa-circle-check",
+        textColor: "has-text-success",
+        title: "Éxito",
+        buttonText: "De acuerdo",
+        buttonColor: "is-success",
+        animation: "animate__heartBeat",
+        showBody: true,
+        showFooter: true,
+        buttons: 1
+      },
+      Error: {
+        icon: "fas fa-ban",
+        textColor: "has-text-danger",
+        title: "Error",
+        buttonText: "Claro",
+        buttonColor: "is-danger",
+        animation: "animate__flipInY",
+        showBody: true,
+        showFooter: true,
+        buttons: 1
+      },
+      Ayuda: {
+        icon: "fas fa-info-circle",
+        textColor: "has-text-info",
+        title: "Ayuda",
+        buttonText: "Sí",
+        buttonTextSecondary: "No",
+        buttonColor: "is-info",
+        buttonColorSecondary: "is-light",
+        animation: "animate__pulse",
+        showBody: false,
+        showFooter: true,
+        buttons: 2
       },
       Advertencia: {
-        icon: "fas fa-exclamation-triangle",
-        textColor: "warning"
+        icon: "fas fa-triangle-exclamation",
+        textColor: "has-text-warning",
+        title: "Advertencia",
+        buttonText: "Aceptar",
+        buttonTextSecondary: "Cancelar",
+        buttonColor: "is-warning",
+        buttonColorSecondary: "is-light",
+        animation: "animate__shakeX",
+        showBody: true,
+        showFooter: true,
+        buttons: 2
       }
-    });
+    }
+
+    const currentType = computed(() => {
+      return typeConfig[props.data?.type || 'Exito']
+    })
+
+    // Procesar mensajes de error (especialmente para errores 422 de Laravel)
+    // const errorMessages = computed(() => {
+    //   if (props.data?.type !== 'Error') return []
+      
+    //   const errors = props.data?.errors
+    //   if (!errors) return props.data?.message ? [props.data.message] : []
+      
+    //   if (Array.isArray(errors)) {
+    //     return errors
+    //   }
+      
+    //   if (typeof errors === 'object') {
+    //     return Object.values(errors).flat()
+    //   }
+      
+    //   return [props.data?.message || 'Ha ocurrido un error']
+    // })
+
+    // const displayMessage = computed(() => {
+    //   if (props.data?.type === 'Error') {
+    //     return errorMessages.value
+    //   }
+    //   return props.data?.message ? [props.data.message] : []
+    // })
 
     const animationEndModalContent = async () => {
-      if(animationModalContent.value == false) {
+      if (!animationModalContent.value) {
         emit('close')
         animationModalContent.value = true
       }
     }
 
-    return { loading, animationModalContent, animationEndModalContent, icon }
+    const closeModal = () => {
+      animationModalContent.value = false
+    }
+
+    const handleConfirm = () => {
+      if (props.data?.onConfirm) {
+        props.data.onConfirm()
+      }
+      emit('confirm')
+      if (props.data?.type !== 'Ayuda') {
+        closeModal()
+      }
+    }
+
+    const handleReject = () => {
+      if (props.data?.onReject) {
+        props.data.onReject()
+      }
+      emit('reject')
+      closeModal()
+    }
+
+    return { 
+      loading, 
+      animationModalContent, 
+      animationEndModalContent,
+      currentType,
+      // displayMessage,
+      closeModal,
+      handleConfirm,
+      handleReject
+    }
   }
 })
 </script>
-<template>
-  <div :class="{'modal modal-fx-fadeInScale': true, 'is-active': show }">
-    <div @click="animationModalContent = false" v-if="loading == false"></div>
-    <div :class="{'animate__animated': true,
-      'animate__bounceOut': animationModalContent == false }"
-      @animationend="animationEndModalContent"
-    >
-      <div>
-        <section @click="animationModalContent = false"
-          class="animate__animated animate__bounceIn"
-        >
-          <div class="columns is-mobile">
-            <div class="column is-half is-offset-one-quarter">
-              <span :class="`icon is-large has-text-${icon[data.type]?.textColor} is-justify-content-space-between`">
-                  <i :class="`${icon[data.type]?.icon} fa-10x`"></i>
-              </span>
-            </div>
-          </div>
-          <!--
-            Casos
-            message: "Network Error"
-              Descripcion: 
-                - Existe un error con la API.
-                - No hay conexion con la API.
-                - No hay internet en el lugar que se esta conectando al wifi.
-            message: "Request failed with status code 422"
-              Descripcion: Las validaciones estan regresando un mensaje, 
-                tengo que entrar en
-              errors: Este es un arreglo la llave es el nombre del campo
-                El valor es el error que esta devolviendo.
-            message: "¡Listo! Tus datos se guardaron bien."
-              Descripcion: Se guarda, modifica y se elimina correctamente.
-                Pero de acuerdo al proyecto o en el futuro puedo cambiar ese mensaje
-                así que por el momento no lo pondre en la lista de casos dentro del if.
 
-          -->
-          <template v-if="data.message == 'Network Error' ">
-            <div class="columns is-mobile">
-              <div class="column is-three-fifths is-offset-one-fifth">
-                <h4 :class="`subtitle is-4 has-text-centered mb-3 tag is-${icon[data.type]?.textColor} is-medium`"
-                  v-text="data.message"
-                >
-                </h4>
+<template>
+  <transition 
+    @after-leave="animationEndModalContent"
+    enter-active-class="animate__animated animate__fadeIn"
+    leave-active-class="animate__animated animate__fadeOut"
+  >
+    <div v-if="show" :class="{'modal': true, 'is-active': animationModalContent }">
+      <div class="modal-background" @click="closeModal()"></div>
+      
+      <div class="modal-content">
+        <div class="box">
+          <article class="media">
+            <!-- Icono con animación -->
+            <div class="media-left">
+              <figure 
+                class="image is-64x64"
+                :class="{'animate__animated': show, [currentType.animation]: show}"
+              >
+                <i :class="`${currentType.icon} fa-3x ${currentType.textColor}`"></i>
+              </figure>
+            </div>
+            
+            <div class="media-content">
+              <div class="content">
+                <!-- Título -->
+                <p :class="`title is-4 ${currentType.textColor} has-text-weight-bold`">
+                  {{ currentType.title }}
+                </p>
+                
+                <!-- Cuerpo del mensaje -->
+                <div v-if="currentType.showBody">
+                  <div v-if="displayMessage.length > 0">
+                    <p v-for="(msg, index) in displayMessage" :key="index" class="mb-2">
+                      {{ msg }}
+                    </p>
+                  </div>
+                  <slot name="body">
+                    <p v-if="$slots.body"></p>
+                  </slot>
+                </div>
+              </div>
+              
+              <!-- Botones del pie -->
+              <div v-if="currentType.showFooter" class="buttons">
+                <template v-if="currentType.buttons === 1">
+                  <button 
+                    :class="['button', currentType.buttonColor, { 'is-loading': loading }]"
+                    @click="handleConfirm"
+                    :disabled="loading"
+                  >
+                    {{ currentType.buttonText }}
+                  </button>
+                </template>
+                
+                <template v-else-if="currentType.buttons === 2">
+                  <button 
+                    :class="['button', currentType.buttonColor, { 'is-loading': loading }]"
+                    @click="handleConfirm"
+                    :disabled="loading"
+                  >
+                    {{ currentType.buttonText }}
+                  </button>
+                  <button 
+                    :class="['button', currentType.buttonColorSecondary]"
+                    @click="handleReject"
+                  >
+                    {{ currentType.buttonTextSecondary }}
+                  </button>
+                </template>
               </div>
             </div>
-          </template>
-          <template v-else-if="data.message == 'Request failed with status code 422' ">
-            <h4 v-for="item in data.errors" :key="item" 
-              :class="`subtitle is-4 has-text-centered mb-3 tag is-${icon[data.type]?.textColor} is-medium`" 
-              v-text="item[0]"
-            >
-            </h4>
-          </template>
-          <template v-else>
-            <h4 :class="`subtitle is-4 has-text-centered mb-3 tag is-${icon[data.type]?.textColor} is-medium`"
-              v-text="data.message"
-            >
-            </h4>
-          </template>
-        </section>
+          </article>
+        </div>
       </div>
+      
+      <button 
+        class="modal-close is-large" 
+        aria-label="close" 
+        @click="closeModal()"
+      ></button>
     </div>
-  </div>
+  </transition>
 </template>
+
+<style scoped>
+// .modal {
+//   z-index: 40;
+// }
+
+// .modal-background {
+//   background-color: rgba(10, 10, 10, 0.86);
+// }
+
+// .box {
+//   border-radius: 8px;
+//   box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+// }
+
+// .media-left i {
+//   transition: all 0.3s ease;
+// }
+
+
+/* Mejoras para mensajes de error */
+// .content p {
+//   line-height: 1.5;
+//   margin-bottom: 0.5rem;
+// }
+
+// .buttons {
+//   margin-top: 1rem;
+// }
+
+// .mb-2 {
+//   margin-bottom: 0.5rem;
+// }
+</style>
