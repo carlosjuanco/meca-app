@@ -79,7 +79,7 @@ export default defineComponent({
         title: "Éxito",
         buttonText: "De acuerdo",
         buttonColor: "is-success",
-        animation: "animate__heartBeat",
+        animation: "animate__heartBeat animate__infinite",
         showBody: true,
         showFooter: true,
         buttons: 1
@@ -91,7 +91,7 @@ export default defineComponent({
         title: "Error",
         buttonText: "Claro",
         buttonColor: "is-danger",
-        animation: "animate__flipInY",
+        animation: "animate__flash animate__infinite",
         showBody: true,
         showFooter: true,
         buttons: 1
@@ -105,7 +105,7 @@ export default defineComponent({
         buttonTextSecondary: "No",
         buttonColor: "is-info",
         buttonColorSecondary: "is-light",
-        animation: "animate__pulse",
+        animation: "animate__pulse animate__infinite",
         showBody: false,
         showFooter: true,
         buttons: 2
@@ -119,7 +119,7 @@ export default defineComponent({
         buttonTextSecondary: "Cancelar",
         buttonColor: "is-warning",
         buttonColorSecondary: "is-light",
-        animation: "animate__shakeX",
+        animation: "animate__shakeX animate__infinite",
         showBody: true,
         showFooter: true,
         buttons: 2
@@ -147,6 +147,7 @@ export default defineComponent({
 
     const closeModal = () => {
       animationModalContent.value = false
+      emit('close')
     }
 
     const handleConfirm = () => {
