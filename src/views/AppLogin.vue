@@ -1,17 +1,11 @@
 <script lang="ts">
-import { defineComponent, ref, reactive, nextTick } from 'vue'
-import ModalNotification from '../components/ModalNotification.vue'
+import { defineComponent, ref, nextTick } from 'vue'
+import InternalNotification from '../components/InternalNotification.vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import helpers from '../helpers'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import { object, string } from 'yup';
-
-type Datamodal = {
-  title: string
-  message: { [key: string]: any }
-  url: string
-}
 
 export default defineComponent ({
   name: 'AppLogin',
@@ -19,7 +13,7 @@ export default defineComponent ({
     Form,
     Field,
     ErrorMessage,
-    ModalNotification
+    InternalNotification
   },
   setup () {
     const store = useStore()
@@ -33,7 +27,7 @@ export default defineComponent ({
     });
 
     let loading = ref(false)
-    let showModalNotification = ref(false)
+    let showModalInternalNotification = ref(false)
 
     // Variable que me sirve para establecer el foco al input de correo
     const focusOnEmail = ref<HTMLInputElement | null>(null)
@@ -45,12 +39,10 @@ export default defineComponent ({
     const encourageEntrance = ref(true)
     // Variable para ocultar el formulario de logueo
     const hideLogin = ref(true)
+    // Variable para almacenar el mensaje de error.
+    let errorMessage = ref<string>('') 
 
-    let dataModalNotification: Datamodal = reactive({
-      title: '',
-      message: {},
-      url: ''
-    })
+    let dataInternalNotification = ref({})
 
     const login = async (values:{ [key: string]: any }) => {
       loading.value = true
@@ -61,13 +53,30 @@ export default defineComponent ({
         encourageExit.value = true
       }
       catch (error) {
-        dataModalNotification.title = 'Advertencia'
-        dataModalNotification.message = handleErrors(error) 
-        dataModalNotification.url = `/`
+        
+        errorMessage.value = Object.values(handleErrors(error))[0]
 
-        showModalNotification.value = true
+        dataInternalNotification.value = {
+          type: 'Error',
+          errors: handleErrors(error),
+          onConfirm: () => {
+            console.log('Usuario entendió el error')
+            showModalInternalNotification.value = false
+          }
+        }
+        showModalInternalNotification.value = true
 
         loading.value = false
+
+        // if(errorMessage.value == 'correo no existe'){
+        //   // if(focusOnEmail.value) {
+        //     focusOnEmail.value.focus()
+        //   // } 
+        // } else if (errorMessage.value == 'Contraseña incorrecta'){
+        //   // if(setFocusToPassword.value) {
+        //     setFocusToPassword.value.focus()
+        //   // } 
+        // }
       }
     }
 
@@ -104,8 +113,8 @@ export default defineComponent ({
       loading,
       schema,
       login,
-      showModalNotification,
-      dataModalNotification,
+      showModalInternalNotification,
+      dataInternalNotification,
       focusOnEmail,
       theLoginFormHasFinishedAnimating,
       encourageExit,
@@ -181,11 +190,11 @@ export default defineComponent ({
     </div>
 
     <!-- Modal de notificaciones -->
-    <modal-notification
-      :show="showModalNotification"
-      :data="dataModalNotification"
-      @close="showModalNotification = false"
+    <internal-notification
+      :show="showModalInternalNotification"
+      :data="dataInternalNotification"
+      @close="showModalInternalNotification = false"
     >
-    </modal-notification>
+    </internal-notification>
   </section>
 </template>
