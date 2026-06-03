@@ -1,5 +1,6 @@
 <script lang="ts">
-import { defineComponent, reactive, ref, computed } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
+import type { DataModelInternal } from './types/tiposGenericos'
 // https://bulma.io/documentation/elements/icon/#
 /**
  * @component InternalNotification
@@ -34,8 +35,8 @@ import { defineComponent, reactive, ref, computed } from 'vue'
  *   :data="{
  *     type: 'Error',
  *     errors: {
- *       email: ['El email ya está registrado'],
- *       password: ['La contraseña debe tener mínimo 8 caracteres']
+ *       email: 'El email ya está registrado',
+ *       password: 'La contraseña debe tener mínimo 8 caracteres'
  *     }
  *   }"
  *   @close="showErrorModal = false"
@@ -55,21 +56,13 @@ import { defineComponent, reactive, ref, computed } from 'vue'
  * />
  */
 
-interface NotificationData {
-  type: 'Exito' | 'Error' | 'Ayuda' | 'Advertencia'
-  message?: string
-  errors?: string[] | string
-  onConfirm?: () => void
-  onReject?: () => void
-}
-
 export default defineComponent({
   name: 'InternalNotification',
   emits: ['close', 'confirm', 'reject'],
   props: {
     show: Boolean,
     data: {
-      type: Object as () => NotificationData,
+      type: Object as () => DataModelInternal,
       default: () => ({ type: 'Exito', message: '' })
     }
   },
@@ -80,6 +73,7 @@ export default defineComponent({
     // Configuración de tipos de notificaciones
     const typeConfig = {
       Exito: {
+        colorModalBackground: "background-success-internal-notificacion",
         icon: "fas fa-circle-check",
         textColor: "has-text-success",
         title: "Éxito",
@@ -91,6 +85,7 @@ export default defineComponent({
         buttons: 1
       },
       Error: {
+        colorModalBackground: "background-danger-internal-notificacion",
         icon: "fas fa-ban",
         textColor: "has-text-danger",
         title: "Error",
@@ -102,6 +97,7 @@ export default defineComponent({
         buttons: 1
       },
       Ayuda: {
+        colorModalBackground: "background-info-internal-notificacion",
         icon: "fas fa-info-circle",
         textColor: "has-text-info",
         title: "Ayuda",
@@ -115,6 +111,7 @@ export default defineComponent({
         buttons: 2
       },
       Advertencia: {
+        colorModalBackground: "background-warning-internal-notificacion",
         icon: "fas fa-triangle-exclamation",
         textColor: "has-text-warning",
         title: "Advertencia",
@@ -133,30 +130,13 @@ export default defineComponent({
       return typeConfig[props.data?.type || 'Exito']
     })
 
-    // Procesar mensajes de error (especialmente para errores 422 de Laravel)
-    // const errorMessages = computed(() => {
-    //   if (props.data?.type !== 'Error') return []
-      
-    //   const errors = props.data?.errors
-    //   if (!errors) return props.data?.message ? [props.data.message] : []
-      
-    //   if (Array.isArray(errors)) {
-    //     return errors
-    //   }
-      
-    //   if (typeof errors === 'object') {
-    //     return Object.values(errors).flat()
-    //   }
-      
-    //   return [props.data?.message || 'Ha ocurrido un error']
-    // })
-
-    // const displayMessage = computed(() => {
-    //   if (props.data?.type === 'Error') {
-    //     return errorMessages.value
-    //   }
-    //   return props.data?.message ? [props.data.message] : []
-    // })
+    const displayMessage = computed(() => {
+      if (props.data?.type === 'Error') {
+        console.info('Regresa errores', props.data.errors)
+        return props.data.errors
+      }
+      return props.data?.message ? [props.data.message] : []
+    })
 
     const animationEndModalContent = async () => {
       if (!animationModalContent.value) {
@@ -192,7 +172,7 @@ export default defineComponent({
       animationModalContent, 
       animationEndModalContent,
       currentType,
-      // displayMessage,
+      displayMessage,
       closeModal,
       handleConfirm,
       handleReject
@@ -208,7 +188,9 @@ export default defineComponent({
     leave-active-class="animate__animated animate__fadeOut"
   >
     <div v-if="show" :class="{'modal': true, 'is-active': animationModalContent }">
-      <div class="modal-background" @click="closeModal()"></div>
+      <div :class="`modal-background ${currentType.colorModalBackground}`"
+        @click="closeModal()">
+      </div>
       
       <div class="modal-content">
         <div class="box">
@@ -232,11 +214,9 @@ export default defineComponent({
                 
                 <!-- Cuerpo del mensaje -->
                 <div v-if="currentType.showBody">
-                  <div v-if="displayMessage.length > 0">
-                    <p v-for="(msg, index) in displayMessage" :key="index" class="mb-2">
-                      {{ msg }}
-                    </p>
-                  </div>
+                  <p v-for="(msg, index) in displayMessage" :key="index" class="mb-2">
+                    {{ msg }}
+                  </p>
                   <slot name="body">
                     <p v-if="$slots.body"></p>
                   </slot>
@@ -286,35 +266,7 @@ export default defineComponent({
 </template>
 
 <style scoped>
-// .modal {
-//   z-index: 40;
-// }
-
-// .modal-background {
-//   background-color: rgba(10, 10, 10, 0.86);
-// }
-
-// .box {
-//   border-radius: 8px;
-//   box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
-// }
-
-// .media-left i {
-//   transition: all 0.3s ease;
-// }
-
-
-/* Mejoras para mensajes de error */
-// .content p {
-//   line-height: 1.5;
-//   margin-bottom: 0.5rem;
-// }
-
-// .buttons {
-//   margin-top: 1rem;
-// }
-
-// .mb-2 {
-//   margin-bottom: 0.5rem;
-// }
+.background-danger-internal-notificacion {
+  background-color: hsl(10.56deg 73.04% 55.93% / 86%);
+}
 </style>

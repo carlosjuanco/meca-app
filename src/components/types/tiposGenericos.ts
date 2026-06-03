@@ -15,7 +15,9 @@ export type DeleteModalData = {
 
 // Describir la forma del objeto para el modal interno
 export type DataModelInternal = {
-  message: string;
-  errors?: { [key: string]: any };
-  type: string;
+  type: 'Exito' | 'Error' | 'Ayuda' | 'Advertencia'
+  message?: string
+  errors?: { [key: string]: any }
+  onConfirm?: () => void
+  onReject?: () => void
 }
