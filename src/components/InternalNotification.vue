@@ -86,11 +86,12 @@ export default defineComponent({
       },
       Error: {
         colorModalBackground: "background-danger-internal-notificacion",
+        colorModalBackgroundContent: "background-danger-internal-notificacion-content",
         icon: "fas fa-ban",
-        textColor: "has-text-danger",
+        textColor: "has-text-white",
         title: "Error",
         buttonText: "Claro",
-        buttonColor: "is-danger",
+        buttonColor: "",
         animation: "animate__flash animate__infinite",
         showBody: true,
         showFooter: true,
@@ -194,74 +195,69 @@ export default defineComponent({
       </div>
       
       <div class="modal-content">
-        <div class="box">
+        <div :class="`box ${currentType.colorModalBackgroundContent}`">
           <article class="media">
             <!-- Icono con animación -->
             <div class="media-left">
               <figure 
                 class="image is-64x64"
-                :class="{'animate__animated': show, [currentType.animation]: show}"
+                :class="{'animate__animated': show, [currentType.animation]: show }"
               >
                 <i :class="`${currentType.icon} fa-3x ${currentType.textColor}`"></i>
               </figure>
             </div>
             
             <div class="media-content">
-              <div class="content">
-                <!-- Título -->
-                <p :class="`title is-4 ${currentType.textColor} has-text-weight-bold`">
-                  {{ currentType.title }}
-                </p>
-                
-                <!-- Cuerpo del mensaje -->
-                <div v-if="currentType.showBody">
-                  <p v-for="(msg, index) in displayMessage" :key="index" class="mb-2">
-                    {{ msg }}
-                  </p>
-                  <slot name="body">
-                    <p v-if="$slots.body"></p>
-                  </slot>
-                </div>
-              </div>
+              <!-- Título -->
+              <p :class="`title is-2 ${currentType.textColor} has-text-weight-bold`">
+                {{ currentType.title }}
+              </p>
               
-              <!-- Botones del pie -->
-              <div v-if="currentType.showFooter" class="buttons">
-                <template v-if="currentType.buttons === 1">
-                  <button 
-                    :class="['button', currentType.buttonColor, { 'is-loading': loading }]"
-                    @click="handleConfirm"
-                    :disabled="loading"
-                  >
-                    {{ currentType.buttonText }}
-                  </button>
-                </template>
-                
-                <template v-else-if="currentType.buttons === 2">
-                  <button 
-                    :class="['button', currentType.buttonColor, { 'is-loading': loading }]"
-                    @click="handleConfirm"
-                    :disabled="loading"
-                  >
-                    {{ currentType.buttonText }}
-                  </button>
-                  <button 
-                    :class="['button', currentType.buttonColorSecondary]"
-                    @click="handleReject"
-                  >
-                    {{ currentType.buttonTextSecondary }}
-                  </button>
-                </template>
-              </div>
+              <!-- Cuerpo del mensaje -->
+              <template v-if="currentType.showBody">
+                <p v-for="(msg, index) in displayMessage" :key="index"
+                  :class="`subtitle is-4 ${currentType.textColor}`"
+                >
+                  {{ msg }}
+                </p>
+              </template>
+
             </div>
+
+            <!-- Icono con cerrar el modal -->
+            <button class="delete" @click="closeModal()"></button>
+
           </article>
+          <!-- Botones del pie -->
+          <div v-if="currentType.showFooter" class="buttons">
+            <template v-if="currentType.buttons === 1">
+              <button 
+                :class="['button is-fullwidth', currentType.buttonColor, { 'is-loading': loading }]"
+                @click="handleConfirm"
+                :disabled="loading"
+              >
+                {{ currentType.buttonText }}
+              </button>
+            </template>
+            
+            <template v-else-if="currentType.buttons === 2">
+              <button 
+                :class="['button is-fullwidth', currentType.buttonColor, { 'is-loading': loading }]"
+                @click="handleConfirm"
+                :disabled="loading"
+              >
+                {{ currentType.buttonText }}
+              </button>
+              <button 
+                :class="['button', currentType.buttonColorSecondary]"
+                @click="handleReject"
+              >
+                {{ currentType.buttonTextSecondary }}
+              </button>
+            </template>
+          </div>
         </div>
       </div>
-      
-      <button 
-        class="modal-close is-large" 
-        aria-label="close" 
-        @click="closeModal()"
-      ></button>
     </div>
   </transition>
 </template>
@@ -269,5 +265,8 @@ export default defineComponent({
 <style scoped>
 .background-danger-internal-notificacion {
   background-color: hsl(10.56deg 73.04% 55.93% / 86%);
+}
+.background-danger-internal-notificacion-content {
+  background-color: hsl(10.56deg 73.04% 55.93% / 0%);
 }
 </style>
