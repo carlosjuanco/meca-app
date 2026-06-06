@@ -74,11 +74,12 @@ export default defineComponent({
     const typeConfig = {
       Exito: {
         colorModalBackground: "background-success-internal-notificacion",
+        colorModalBackgroundContent: "background-success-internal-notificacion-content",
         icon: "fas fa-circle-check",
-        textColor: "has-text-success",
+        textColor: "has-text-white",
         title: "Éxito",
         buttonText: "De acuerdo",
-        buttonColor: "is-success",
+        buttonColor: "",
         animation: "animate__heartBeat animate__infinite",
         showBody: true,
         showFooter: true,
@@ -268,5 +269,11 @@ export default defineComponent({
 }
 .background-danger-internal-notificacion-content {
   background-color: hsl(10.56deg 73.04% 55.93% / 0%);
+}
+.background-success-internal-notificacion {
+  background-color: hsl(152.64deg 52.3% 53.14% / 86%);
+}
+.background-success-internal-notificacion-content {
+  background-color: hsl(152.64deg 52.3% 53.14% / 0%);
 }
 </style>
