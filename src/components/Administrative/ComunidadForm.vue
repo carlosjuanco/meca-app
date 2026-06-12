@@ -4,7 +4,7 @@ import helpers from '../../helpers'
 import InternalNotification from '../InternalNotification.vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import { object, string, number } from 'yup'
-import type { DataModel, DataModelInternal } from '../types/comunidad'
+import type { DataModel } from '../types/comunidad'
 
 export default defineComponent ({
   name: 'ComunidadForm',
@@ -26,7 +26,7 @@ export default defineComponent ({
     }
   },
   setup (props, { emit }) {
-    const { handleRequest } = helpers()
+    const { handleRequest, handleErrors } = helpers()
     let loading = ref(false)
     // Crear un contador para la key
     const modalKey = ref(0)
@@ -35,10 +35,10 @@ export default defineComponent ({
     const initialValues = reactive({} as DataModel)
 
     // Inicializar la variable dataInternalNotification con datos vacios
-    let dataInternalNotification = reactive({} as DataModelInternal)
+    let dataInternalNotification = ref({})
 
     // Inicializar la variable para mostrar u ocultar el dialogo notificaciones internas
-    let showInternalNotification = ref(false)
+    let showModalInternalNotification = ref(false)
 
     // Esquema de validación
     const schema = object({
@@ -61,22 +61,21 @@ export default defineComponent ({
 
         emit('close')
 
-        // La palabra información va sin acento porque en el componente
-        // es una propiedad y las propiedades en ningun lenguaje llevan acento
-        dataInternalNotification.type = 'Informacion'
-        dataInternalNotification.message = response.message
+        dataInternalNotification.value = {
+          type: 'Exito',
+          message: response.message
+        }
 
-        showInternalNotification.value = true
+        showModalInternalNotification.value = true
       } catch (error: any) {
         emit('close')
 
-        dataInternalNotification.type = 'Advertencia'
-        dataInternalNotification.message = error.message
-        // Si no existe response, eso significa que no es un error de API es un error
-        // Network Error
-        dataInternalNotification.errors = error.response ? error.response.data.errors : ''
+        dataInternalNotification.value = {
+          type: 'Error',
+          errors: handleErrors(error),
+        }
 
-        showInternalNotification.value = true
+        showModalInternalNotification.value = true
       } finally {
         loading.value = false
       }
@@ -112,7 +111,7 @@ export default defineComponent ({
       modalKey,
       firstInput,
       schema,
-      showInternalNotification,
+      showModalInternalNotification,
       dataInternalNotification
     }
   }
@@ -191,8 +190,8 @@ export default defineComponent ({
 
   <!-- Modal para la notificacion interna -->
   <internal-notification
-    :show="showInternalNotification"
+    :show="showModalInternalNotification"
     :data="dataInternalNotification"
-    @close="showInternalNotification = false, loading = false"
+    @close="showModalInternalNotification = false, loading = false"
   />
 </template>
