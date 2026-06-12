@@ -36,10 +36,3 @@ export type DeleteModalData = {
   showModalDelete: boolean;
   route?: string;
 }
-
-// Describir la forma del objeto para el modal interno
-export type DataModelInternal = {
-  message: string;
-  errors?: { [key: string]: any };
-  type: string;
-}
