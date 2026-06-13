@@ -100,15 +100,16 @@ export default defineComponent({
       },
       Ayuda: {
         colorModalBackground: "background-info-internal-notificacion",
+        colorModalBackgroundContent: "background-info-internal-notificacion-content",
         icon: "fas fa-info-circle",
-        textColor: "has-text-info",
+        textColor: "has-text-white",
         title: "Ayuda",
         buttonText: "Sí",
         buttonTextSecondary: "No",
-        buttonColor: "is-info",
-        buttonColorSecondary: "is-light",
+        buttonColor: "",
+        buttonColorSecondary: "",
         animation: "animate__pulse animate__infinite",
-        showBody: false,
+        showBody: true,
         showFooter: true,
         buttons: 2
       },
@@ -230,8 +231,8 @@ export default defineComponent({
 
           </article>
           <!-- Botones del pie -->
-          <div v-if="currentType.showFooter" class="buttons">
-            <template v-if="currentType.buttons === 1">
+          <template v-if="currentType.showFooter">
+            <div v-if="currentType.buttons === 1" class="buttons">
               <button 
                 :class="['button is-fullwidth', currentType.buttonColor, { 'is-loading': loading }]"
                 @click="handleConfirm"
@@ -239,24 +240,27 @@ export default defineComponent({
               >
                 {{ currentType.buttonText }}
               </button>
-            </template>
-            
-            <template v-else-if="currentType.buttons === 2">
-              <button 
-                :class="['button is-fullwidth', currentType.buttonColor, { 'is-loading': loading }]"
-                @click="handleConfirm"
-                :disabled="loading"
-              >
-                {{ currentType.buttonText }}
-              </button>
-              <button 
-                :class="['button', currentType.buttonColorSecondary]"
-                @click="handleReject"
-              >
-                {{ currentType.buttonTextSecondary }}
-              </button>
-            </template>
-          </div>
+            </div>
+            <div v-else-if="currentType.buttons === 2" class="columns is-mobile is-centered">
+              <div class="column is-half">
+                <div class="buttons is-centered">
+                  <button 
+                    :class="['button', currentType.buttonColor, { 'is-loading': loading }]"
+                    @click="handleConfirm"
+                    :disabled="loading"
+                  >
+                    {{ currentType.buttonText }}
+                  </button>
+                  <button 
+                    :class="['button', currentType.buttonColorSecondary]"
+                    @click="handleReject"
+                  >
+                    {{ currentType.buttonTextSecondary }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -275,5 +279,11 @@ export default defineComponent({
 }
 .background-success-internal-notificacion-content {
   background-color: hsl(152.64deg 52.3% 53.14% / 0%);
+}
+.background-info-internal-notificacion {
+  background-color: hsl(198.04deg 100% 70% / 86%);
+}
+.background-info-internal-notificacion-content {
+  background-color: hsl(198.04deg 100% 70% / 0%);
 }
 </style>
