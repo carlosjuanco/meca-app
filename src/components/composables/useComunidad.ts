@@ -1,9 +1,8 @@
 import { ref, reactive } from 'vue'
-import type { Store } from 'vuex'
 import helpers from '../../helpers'
 import type { DataModel, PaginationModel, DeleteModalData } from '../types/comunidad'
 
-export const useComunidad = (store: Store<any>) => {
+export const useComunidad = () => {
   const { handleRequest, handleErrors } = helpers()
 
   // Inicializar la variable showForm en false
@@ -26,6 +25,12 @@ export const useComunidad = (store: Store<any>) => {
 
   // Inicializar los datos para la paginación
   const pagination = ref({} as PaginationModel)
+
+  // Inicializar la variable dataInternalNotification con datos vacios
+  const dataInternalNotification = ref({})
+
+  // Inicializar la variable para mostrar u ocultar el dialogo notificaciones internas
+  const showModalInternalNotification = ref(false)
   
   const buildApiUrl = (): string => {
     let effectiveItemsPerPage = itemsPerPage.value
@@ -116,31 +121,29 @@ export const useComunidad = (store: Store<any>) => {
     return void
   */
   const confirmDelete = (item: DataModel): void => {
-    const deleteData: DeleteModalData = {
-      id: item.id,
-      description: item.name,
-      showModalDelete: true,
-      route: `${basePath}${item.id}`
-    }
-    
-    store.dispatch('modalDelete', deleteData)
-  }
-  
-  /*
-    Observamos store.getters.dataFromTheEliminationModel.acceptDelete, acepto eliminar y ya se 
-        eliminó en la base de datos, ahora eliminamos visualmente.
 
-    @acceptDelete de tipo boolean
+    dataInternalNotification.value = {
+      type: 'Ayuda',
+      message: `¿Seguro que desea eliminar ${item.name}?`,
+      onConfirm: async () => {
+        try {
+          await handleRequest('delete', `${basePath}${item.id}`)
 
-    return void
-  */
-  const handleRowDeletion = (wasRemovedProperly: boolean, removedId: number) => {
-    if (!wasRemovedProperly) return
-    
-    const targetRow = data.find(row => row.id === removedId)
-    if (targetRow) {
-      targetRow.animateDisappearRow = true
+          showModalInternalNotification.value = false
+
+          const targetRow = data.find(row => row.id === item.id)
+          if (targetRow) {
+            targetRow.animateDisappearRow = true
+          }
+        }
+        catch (error) {
+          console.info(handleErrors(error))
+        }
+      },
+      onReject: () => console.log('Cancelado')
     }
+
+    showModalInternalNotification.value = true
   }
   
   /*
@@ -167,7 +170,8 @@ export const useComunidad = (store: Store<any>) => {
     // Métodos
     openForm,
     confirmDelete,
-    handleRowDeletion,
+    dataInternalNotification,
+    showModalInternalNotification,
     onAnimationEnd,
     refreshData,
     fetchData
