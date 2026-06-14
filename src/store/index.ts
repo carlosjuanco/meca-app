@@ -15,19 +15,10 @@ type Pages = {
     name_component: string;
 }
 
-type DataFromTheEliminationModel = {
-    id: number;
-    description: string;
-    showModalDelete: boolean;
-    wasItRemovedProperly: boolean;
-    route: string;
-}
-
 type State = {
     apiToken: string;
     user: User;
     pages: Pages;
-    dataFromTheEliminationModel: DataFromTheEliminationModel;
 }
 
 // Define the initial state
@@ -40,13 +31,6 @@ const state: State = {
     apiToken,
     user: {id: 0, name: '', email:''},
     pages: {id: 0, name: '', name_component: ''},
-    dataFromTheEliminationModel: { 
-        id: 0,
-        description: '', 
-        showModalDelete: false,
-        wasItRemovedProperly: false,
-        route: ''
-    }
 };
 
 export default createStore({
@@ -61,9 +45,6 @@ export default createStore({
         },
         SET_PAGES (state, pages) {
             state.pages = pages
-        },
-        SET_SHOW_MODAL_DELETE (state, data) {
-            state.dataFromTheEliminationModel = data
         },
     },
     actions: {
@@ -99,15 +80,11 @@ export default createStore({
             commit('SET_PAGES', [])
             commit('SET_USER', {})
         },
-        modalDelete({ commit }, data:DataFromTheEliminationModel) {
-            commit('SET_SHOW_MODAL_DELETE', data)
-        },
     },
     modules: {},
     getters: {
         apiToken: state => state.apiToken,
         pages: state => state.pages,
         user: state => state.user,
-        dataFromTheEliminationModel: state => state.dataFromTheEliminationModel,
     }
 })

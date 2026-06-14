@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, watch, onMounted } from 'vue'
-import { useStore } from 'vuex'
 import TablePagination from '../TablePagination.vue'
+import InternalNotification from '../InternalNotification.vue'
 import ComunidadForm from './ComunidadForm.vue'
 import { useComunidad } from '../composables/useComunidad'
 
@@ -9,11 +9,10 @@ export default defineComponent({
   name: 'AppComunidad',
   components: {
     ComunidadForm,
-    TablePagination
+    TablePagination,
+    InternalNotification,
   },
   setup () {
-    // Store
-    const store = useStore()
     const {
       showForm,
       formData,
@@ -23,36 +22,17 @@ export default defineComponent({
       itemsPerPage,
       openForm,
       confirmDelete,
-      handleRowDeletion,
+      dataInternalNotification,
+      showModalInternalNotification,
       onAnimationEnd,
       refreshData,
       fetchData
-    } = useComunidad(store)
+    } = useComunidad()
     
     // Observar cambios en búsqueda y paginación
     watch([() => search.value, () => itemsPerPage.value], () => {
       refreshData()
     })
-    
-    /*
-      Observar eliminación desde el store
-
-      Observamos store.getters.dataFromTheEliminationModel.acceptDelete, acepto eliminar y ya se 
-        eliminó en la base de datos, ahora eliminamos visualmente.
-
-      @acceptDelete de tipo boolean
-
-      return void
-    */
-    watch(
-      () => store.getters.dataFromTheEliminationModel?.wasItRemovedProperly,
-      (wasRemovedProperly: boolean) => {
-        const removedId = store.getters.dataFromTheEliminationModel?.id
-        if (wasRemovedProperly && removedId) {
-          handleRowDeletion(wasRemovedProperly, removedId)
-        }
-      }
-    )
     
     onMounted(() => {
       refreshData()
@@ -67,6 +47,8 @@ export default defineComponent({
       itemsPerPage,
       openForm,
       confirmDelete,
+      dataInternalNotification,
+      showModalInternalNotification,
       onAnimationEnd,
       refreshData,
       fetchData
@@ -169,5 +151,12 @@ export default defineComponent({
     :show="showForm"
     :data="formData"
     @close="showForm = false, refreshData()"
+  />
+
+  <!-- Modal para la notificacion interna -->
+  <internal-notification
+    :show="showModalInternalNotification"
+    :data="dataInternalNotification"
+    @close="showModalInternalNotification = false, loading = false"
   />
 </template>

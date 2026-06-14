@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, watch, onMounted } from 'vue'
-import { useStore } from 'vuex'
 import TablePagination from '../TablePagination.vue'
+import InternalNotification from '../InternalNotification.vue'
 import EscuelaForm from './EscuelaForm.vue'
 import { useEscuela } from '../composables/useEscuela'
 
@@ -9,11 +9,10 @@ export default defineComponent({
   name: 'AppEscuela',
   components: {
     EscuelaForm,
-    TablePagination
+    TablePagination,
+    InternalNotification,
   },
   setup() {
-
-    const store = useStore()
 
     const {
       showForm,
@@ -24,36 +23,17 @@ export default defineComponent({
       itemsPerPage,
       openForm,
       confirmDelete,
-      handleRowDeletion,
+      dataInternalNotification,
+      showModalInternalNotification,
       onAnimationEnd,
       refreshData,
       fetchData
-    } = useEscuela(store)
+    } = useEscuela()
 
     // Observar cambios en búsqueda y paginación
     watch([() => search.value, () => itemsPerPage.value], () => {
       refreshData()
     })
-
-    /*
-      Observar eliminación desde el store
-
-      Observamos store.getters.dataFromTheEliminationModel.acceptDelete, acepto eliminar y ya se 
-        eliminó en la base de datos, ahora eliminamos visualmente.
-
-      @acceptDelete de tipo boolean
-
-      return void
-    */
-    watch(
-      () => store.getters.dataFromTheEliminationModel?.wasItRemovedProperly,
-      (wasRemovedProperly: boolean) => {
-        const removedId = store.getters.dataFromTheEliminationModel?.id
-        if (wasRemovedProperly && removedId) {
-          handleRowDeletion(wasRemovedProperly, removedId)
-        }
-      }
-    )
     
     onMounted(() => {
       refreshData()
@@ -68,6 +48,8 @@ export default defineComponent({
       itemsPerPage,
       openForm,
       confirmDelete,
+      dataInternalNotification,
+      showModalInternalNotification,
       onAnimationEnd,
       refreshData,
       fetchData
@@ -188,4 +170,10 @@ export default defineComponent({
     @close="showForm = false, refreshData()"
   />
 
+  <!-- Modal para la notificacion interna -->
+  <internal-notification
+    :show="showModalInternalNotification"
+    :data="dataInternalNotification"
+    @close="showModalInternalNotification = false, loading = false"
+  />
 </template>
