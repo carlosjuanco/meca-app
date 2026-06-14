@@ -1,6 +1,6 @@
 import { ref, reactive } from 'vue'
 import helpers from '../../helpers'
-import type { DataModel, PaginationModel, DeleteModalData } from '../types/comunidad'
+import type { DataModel, PaginationModel } from '../types/comunidad'
 
 export const useComunidad = () => {
   const { handleRequest, handleErrors } = helpers()
