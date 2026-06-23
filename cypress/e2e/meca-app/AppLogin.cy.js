@@ -1,6 +1,6 @@
 describe('Componente AppLogin', () => {
     beforeEach(() => {
-        cy.visit('http://localhost:8083/')
+        cy.visit('http://localhost:8090/')
     })
 
     it('¿Esta corriendo el sistema?', () => {
