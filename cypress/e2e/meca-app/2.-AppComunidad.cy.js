@@ -199,8 +199,39 @@ describe('Componente AppComunidad', () => {
       // Desaparecer menú
       cy.get(".js-burger").click()
 
-      // Afirmar que la cabecera con los títulos "Nombre de la comunidad" y "Operaciones", existen.
+      // Afirmar que existen 10 registros en el cuerpo de la tabla
        cy.get(".table tbody tr").should('have.length', 10)
+      
+      // Cerrar sesión
+      cy.get(".js-burger").click()
+      // Cerrar sesión
+      cy.get(".button").contains("Cerrar").click()
+    })
+
+    it('Afirmar que el páginador existe en el pie de la tabla', () => {
+      // Ingresar con las credenciales del rol "Administrativo"
+      cy.get('form').get("input[type='email']").type('administrativo@gmail.com')
+      cy.get('form').get("input[type='password']").type('administrativo')
+
+      cy.get('form').contains('Ingresar').click()
+
+      /*
+        * Verificar que ya exista el menú inicio.
+        *
+        * Es importante que se realice este paso, debido a que si nos vamos directo a realizar otra acciones nos marca error.
+        * Al parecer es importante esperar, de esta manera todos los elementos ya estan en su ubicación.
+      */
+      cy.get('a').contains("Inicio")  
+
+      // Hacer clic para que se despliegue el menú
+      cy.get(".js-burger").click()
+      // Clic en el menú "Comunidades"
+      cy.get("a").contains("Comunidades").click()
+      // Desaparecer menú
+      cy.get(".js-burger").click()
+
+      // Afirmar que el páginador existe en el pie de la tabla
+       cy.get(".table tfoot tr").find('nav').find('ul').should('contain', 1)
       
       // Cerrar sesión
       cy.get(".js-burger").click()
