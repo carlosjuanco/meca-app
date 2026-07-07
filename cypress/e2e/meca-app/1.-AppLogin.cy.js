@@ -1,6 +1,8 @@
 describe('Componente AppLogin', () => {
+    // Documentación de cypress
+    // https://example.cypress.io
     beforeEach(() => {
-        cy.visit('http://localhost:8090/')
+        cy.visit('http://localhost:8091/')
     })
 
     it('¿Esta corriendo el sistema?', () => {
