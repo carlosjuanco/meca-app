@@ -251,8 +251,8 @@ export default defineComponent({
                   <option value="Albergues escolares">Albergues escolares</option>
                 </select>
               </Field>
-              <ErrorMessage name="type_of_school" class="tag is-warning"/>
             </div>
+            <ErrorMessage name="type_of_school" class="tag is-warning"/>
           </div>
 
           <div class="field">
@@ -275,8 +275,8 @@ export default defineComponent({
                   </option>
                 </select>
               </Field>
-              <ErrorMessage name="community_id" class="tag is-warning"/>
             </div>
+            <ErrorMessage name="community_id" class="tag is-warning"/>
           </div>
 
           <div class="field">
