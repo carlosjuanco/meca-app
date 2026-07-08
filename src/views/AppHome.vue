@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { defineComponent, ref, reactive} from 'vue'
+  import { defineComponent, ref, reactive } from 'vue'
   import { useStore } from 'vuex'
   import { useRouter } from 'vue-router'
   import ModalNotification from '../components/ModalNotification.vue'
@@ -33,7 +33,9 @@
 
 	export default defineComponent ({
     name: 'AppHome',
-    components: { ModalNotification },
+    components: {
+      ModalNotification,
+    },
     setup() {
       const store = useStore()
       const router = useRouter()
@@ -43,8 +45,8 @@
       pages.value = pages.value.filter(page => JSON.parse(page.pivot.permissions).Ver_la_pagina_en_el_menu)
       
       let name_user = store.getters.user.name
-      let show_modal_notification = ref(false)
-      let data_modal_notification: Datamodal = reactive({
+      let showModalNotification = ref(false)
+      let dataModalNotification: Datamodal = reactive({
         title: '',
         message: {},
         url: ''
@@ -55,18 +57,18 @@
       router.replace({ name: "Bienvenido usuario", params:{ name_user: name_user} })
 
       const logout = async () => {
-          try {
-              await store.dispatch('logout')
-              router.replace({ name: 'login' })
-          }
-          catch (error) {
-            data_modal_notification.title = 'Advertencia'
-            data_modal_notification.message = handleErrors(error) 
-            data_modal_notification.url = `/`
+        try {
+          await store.dispatch('logout')
+          router.replace({ name: 'login' })
+        }
+        catch (error) {
+          dataModalNotification.title = 'Advertencia'
+          dataModalNotification.message = handleErrors(error) 
+          dataModalNotification.url = `/`
 
-            show_modal_notification.value = true
-            console.log(error)
-          }
+          showModalNotification.value = true
+          console.log(error)
+        }
       }
 
       const show_menu = () => {
@@ -84,18 +86,22 @@
       return {
         pages, 
         logout, 
-        show_modal_notification, 
-        data_modal_notification,
+        showModalNotification, 
+        dataModalNotification,
         show_menu,
         show_navbar,
-        go_to_route
+        go_to_route,
       }
     }
 	})
 </script>
 <template>
   <div class="container">
-    <nav class="navbar is-transparent">
+    <nav 
+      class="navbar is-transparent"
+      :class="{'navbar is-transparent animate__animated': true,
+        'animate__bounceInDown': true }"
+    >
       <div class="navbar-brand">
         <a class="navbar-item" href="#">
           <img src="../assets/logoJuanito.png" alt="Mi Logo">
@@ -141,10 +147,12 @@
     <section>
         <router-view name="sidebar"></router-view>
     </section>
+
+    <!-- Modal de notificasiones -->
     <modal-notification
-      :show="show_modal_notification"
-      :data="data_modal_notification"
-      @close="show_modal_notification = false"
+      :show="showModalNotification"
+      :data="dataModalNotification"
+      @close="showModalNotification = false"
     ></modal-notification>
   </div>
 </template>

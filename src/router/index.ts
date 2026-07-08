@@ -5,6 +5,10 @@ import HelloWord from "@/components/HelloWorld.vue"
 import WelcomeUser from "@/components/WelcomeUser.vue"
 import AppLogin from "@/views/AppLogin.vue"
 import AppHome from "@/views/AppHome.vue"
+import AppComunidad from "@/components/Administrative/AppComunidad.vue"
+import AppEscuela from "@/components/Administrative/AppEscuela.vue"
+import AppProfesor from "@/components/Administrative/AppProfesor.vue"
+import ReportePorComunidad from "@/components/Administrative/ReportePorComunidad.vue"
 
 const routes = [
     {
@@ -33,6 +37,50 @@ const routes = [
             }
         }]
     },
+    {
+        path: '/AppComunidad',
+        component: AppHome,
+        children: [{
+            path: '/AppComunidad', name: 'Comunidades',
+            components: {
+                default: AppComunidad,
+                sidebar: AppComunidad
+            }
+        }]
+    },
+    {
+        path: '/AppEscuela',
+        component: AppHome,
+        children: [{
+            path: '/AppEscuela', name: 'Escuelas',
+            components: {
+                default: AppEscuela,
+                sidebar: AppEscuela
+            }
+        }]
+    },
+    {
+        path: '/AppProfesor',
+        component: AppHome,
+        children: [{
+            path: '/AppProfesor', name: 'Profesores',
+            components: {
+                default: AppProfesor,
+                sidebar: AppProfesor
+            }
+        }]
+    },
+    {
+        path: '/ReportePorComunidad',
+        component: AppHome,
+        children: [{
+            path: '/ReportePorComunidad', name: 'Reporte por comunidad',
+            components: {
+                default: ReportePorComunidad,
+                sidebar: ReportePorComunidad
+            }
+        }]
+    }
 ]
 
 const router = createRouter({
