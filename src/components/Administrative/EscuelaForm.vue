@@ -51,7 +51,7 @@ export default defineComponent({
          * se ve el beneficio, porque el registrar un nuevo registro no.
          */
         .nullable()
-        .max(26, 'El nombre debe tener como máximo 26 caracteres'),
+        .max(26, 'La escuela debe tener como máximo 26 caracteres'),
       key: string()
         .nullable()
         .max(10, 'La clave debe tener como máximo 10 caracteres'),
@@ -79,8 +79,8 @@ export default defineComponent({
           const num = Number(originalValue);
           return isNaN(num) ? null : num;
         })
-        .max(10, 'El número consecutivo no puede ser mayor a 10')
-        .positive('El número consecutivo debe ser un número positivo')
+        .max(10, 'El número progresivo no puede ser mayor a 10')
+        .positive('El número progresivo debe ser un número positivo')
     })
 
     const firstInput = ref<HTMLInputElement | null>(null)
