@@ -1,205 +1,97 @@
 <script lang="ts">
-import { defineComponent, reactive, ref, watch } from 'vue'
-import { useStore } from 'vuex'
+import { defineComponent, watch, onMounted } from 'vue'
+import TablePagination from '../TablePagination.vue'
+import InternalNotification from '../InternalNotification.vue'
 import ProfesorForm from './ProfesorForm.vue'
+import { useTeacher } from '../composables/useTeacher'
 import ProfesorInformacion from './ProfesorInformacion.vue'
 
 export default defineComponent({
   name: 'AppProfesor',
   components: {
     ProfesorForm,
-    ProfesorInformacion
+    ProfesorInformacion,
+    TablePagination,
+    InternalNotification,
   },
   setup() {
+    const {
+      showForm,
+      formData,
+      data,
+      pagination,
+      search,
+      itemsPerPage,
+      openForm,
+      confirmDelete,
+      dataInternalNotification,
+      showModalInternalNotification,
+      onAnimationEnd,
+      refreshData,
+      fetchData
+    } = useTeacher()
 
-    const store = useStore()
-
-    type DataModel = {
-      id: number
-      name: string
-      lastNameFather: string
-      lastNameMother: string
-      curp: string
-      rfc: string
-      sex: string
-      budgetKey: string
-      function: string
-      school: string
-      phone: number
-      reason: number
-      admissionDate: string
-      studyProfile: string
-      language: string
-      languageVariant: string
-      animateDisappearRow: boolean
-      hideRow: boolean
-    }
-
-    type DataFromTheEliminationModel = {
-      id: number
-      description: string
-      showModalDelete: boolean
-      acceptDelete: boolean
-    }
-
-    const showForm = ref(false)
-    const showInformation = ref(false)
-
-    const formData = reactive<DataModel>({
-      id: 0,
-      name: '',
-      lastNameFather: '',
-      lastNameMother: '',
-      curp: '',
-      rfc: '',
-      sex: '',
-      budgetKey: '',
-      function: '',
-      school: '',
-      phone: 0,
-      reason: 0,
-      admissionDate: '',
-      studyProfile: '',
-      language: '',
-      languageVariant: '',
-      animateDisappearRow: false,
-      hideRow: false
+    // Observar cambios en búsqueda y paginación
+    watch([() => search.value, () => itemsPerPage.value], () => {
+      refreshData()
     })
-
-    const data = reactive<DataModel[]>([
-      {
-        id: 1,
-        name: "Gloria",
-        lastNameFather: "Garcia",
-        lastNameMother: "Ramirez",
-        curp: "GARG6604092aa6",
-        rfc: "GARG6604092a6",
-        sex: "Femenino",
-        budgetKey: "11072005F04808000200006",
-        function: "Administrativo",
-        school: "Jose Maria Morelos y Pavon",
-        phone: 9511028751,
-        reason: 89,
-        admissionDate: "10/04/2000",
-        studyProfile: "Titulado de U.P.N.",
-        language: "Mixteca",
-        languageVariant: "Baja",
-        animateDisappearRow: false,
-        hideRow: false
-      },
-      {
-        id: 2,
-        name: "Eloy",
-        lastNameFather: "Rojas",
-        lastNameMother: "Perez",
-        curp: "LUMS720504HOCSRL00",
-        rfc: "LUMS720504LWA",
-        sex: "Masculino",
-        budgetKey: "8729E1485000201291",
-        function: "Administrativo",
-        school: "Redencion",
-        phone: 9511204965,
-        reason: 90,
-        admissionDate: "30/01/2010",
-        studyProfile: "Titulado de U.P.N.",
-        language: "Mixteca",
-        languageVariant: "Baja",
-        animateDisappearRow: false,
-        hideRow: false
-      }
-    ])
-
-    const viewForm = (row: DataModel | null): void => {
-      Object.assign(formData, {
-        id: 0,
-        name: '',
-        lastNameFather: '',
-        lastNameMother: '',
-        curp: '',
-        rfc: '',
-        sex: '',
-        budgetKey: '',
-        function: '',
-        school: '',
-        phone: 0,
-        reason: 0,
-        admissionDate: '',
-        studyProfile: '',
-        language: '',
-        languageVariant: '',
-        animateDisappearRow: false,
-        hideRow: false
-      })
-
-      if (row) Object.assign(formData, row)
-
-      showForm.value = true
-    }
-
-    const viewInformation = (row: DataModel ): void => {
-      if (row) Object.assign(formData, row)
-
-      showInformation.value = true
-    }
-
-    const openModalDelete = (eliminate: DataFromTheEliminationModel): void => {
-      store.dispatch('modalDelete', eliminate)
-    }
-
-    const endsAnimationOfDisappearingRow = async (row: DataModel) => {
-      row.hideRow = true
-    }
-
-    watch(
-      () => store.getters.dataFromTheEliminationModel.acceptDelete,
-      (acceptDelete: boolean) => {
-        if (acceptDelete) {
-          let row = data.find(
-            stranger => stranger.id === store.getters.dataFromTheEliminationModel.id
-          )
-          if (row) row.animateDisappearRow = true
-        }
-      }
-    )
+    
+    onMounted(() => {
+      refreshData()
+    })
 
     return {
       showForm,
       formData,
       data,
-      viewForm,
-      openModalDelete,
-      endsAnimationOfDisappearingRow,
-      showInformation,
-      viewInformation
+      pagination,
+      search,
+      itemsPerPage,
+      openForm,
+      confirmDelete,
+      dataInternalNotification,
+      showModalInternalNotification,
+      onAnimationEnd,
+      refreshData,
+      fetchData
     }
   }
 })
 </script>
 
 <template>
+  <!-- Título del componente -->
+  <h1 class="title has-text-centered">Lista de profesores</h1>
 
   <div class="columns">
     <div class="column">
-      <button class="button is-link is-fullwidth" @click="viewForm(null)">
+      <button class="button is-link is-fullwidth" @click="openForm(null)">
         <span class="icon"><i class="fas fa-plus"></i></span>
         <span>Agregar nuevo profesor o profesora</span>
       </button>
     </div>
   </div>
 
-  <!-- Búsqueda -->
+  <!-- Búsqueda y filtros  -->
   <div class="field has-addons">
     <div class="control is-expanded">
-      <input class="input" type="text" placeholder="Buscar profesor">
+      <input
+        class="input"
+        type="text"
+        placeholder="Buscar profesor"
+        v-model="search"
+      >
     </div>
 
     <div class="control">
-      <button class="button is-info">Buscar</button>
+      <button class="button is-info" @click="refresh()">
+        Buscar
+      </button>
     </div>
 
     <div class="control">
       <span class="select">
-        <select>
+        <select v-model="itemsPerPage">
           <option>10</option>
           <option>20</option>
           <option>30</option>
@@ -216,36 +108,47 @@ export default defineComponent({
         <tr class="is-primary">
           <th>Nombre completo</th>
           <th>R.F.C.</th>
-          <th>Operaciones</th>
+          <th width="5%">Operaciones</th>
         </tr>
       </thead>
 
       <tbody>
-        <template v-for="stranger in data" :key="stranger.id">
+        <template v-for="teacher in data" :key="teacher.id">
           <tr
-            v-show="!stranger.hideRow"
-            :class="{ 'animate__animated animate__bounceOut': stranger.animateDisappearRow }"
-            @animationend="endsAnimationOfDisappearingRow(stranger)"
+            v-show="!teacher.hideRow"
+            :class="{ 'animate__animated animate__bounceOut': teacher.animateDisappearRow }"
+            @animationend="endsAnimationOfDisappearingRow(teacher)"
           >
-            <td v-text="stranger.name + ' ' + stranger.lastNameFather + ' ' + stranger.lastNameMother"></td>
-            <td v-text="stranger.rfc"></td>
+            <!-- 
+              ============================================
+              MANEJO DE NULOS EN TEMPLATES CON ?? 
+              ============================================
+              
+              DEFINICIÓN OFICIAL (MDN):
+              El operador de coalescencia nula (??) es un operador lógico que 
+              retorna el operando del lado derecho cuando el izquierdo es 
+              null o undefined, y en caso contrario, retorna el operando 
+              del lado izquierdo.
+
+              Esto significa que solo reacciona ante dos valores específicos: null y undefined.
+              ============================================
+            -->
+
+            <td v-text="teacher.name + ' ' + teacher.paternal_surname + ' ' + (teacher.maternal_surname ?? '')"></td>
+            <td v-text="teacher.rfc"></td>
 
             <td>
-              <button class="button is-link" @click="viewForm(stranger)">
+              <button class="button is-link" @click="openForm(teacher)">
                 <span class="icon"><i class="fas fa-edit"></i></span>
               </button>
 
               <button class="button is-danger"
-                @click="openModalDelete({
-                  id: stranger.id,
-                  description: stranger.name,
-                  showModalDelete: true,
-                  acceptDelete: false
-                })">
+                @click="confirmDelete(teacher)
+              >
                 <span class="icon"><i class="fas fa-trash"></i></span>
               </button>
 
-              <button class="button is-info" @click="viewInformation(stranger)">
+              <button class="button is-info" @click="viewInformation(teacher)">
                 <span class="icon"><i class="fas fa-eye"></i></span>
               </button>
             </td>
@@ -256,18 +159,11 @@ export default defineComponent({
       <tfoot>
         <tr class="has-background-white-bis">
           <td colspan="3">
-            <!-- mismo paginador -->
-            <nav class="pagination" role="navigation">
-              <a href="#" class="pagination-previous">Antes</a>
-              <a href="#" class="pagination-next">Siguiente</a>
-              <ul class="pagination-list">
-                <li><a href="#" class="pagination-link">1</a></li>
-                <li><span class="pagination-ellipsis">&hellip;</span></li>
-                <li><a href="#" class="pagination-link">45</a></li>
-                <li><a class="pagination-link is-current">46</a></li>
-                <li><a href="#" class="pagination-link">47</a></li>
-              </ul>
-            </nav>
+            <!-- Paginador -->
+            <table-pagination
+              :pagination="pagination"
+              @getData="fetchData"
+            />
           </td>
         </tr>
       </tfoot>
@@ -275,10 +171,18 @@ export default defineComponent({
     </table>
   </div>
 
+  <!-- Modal del formulario -->
   <ProfesorForm
     :show="showForm"
     :data="formData"
-    @close="showForm = false"
+    @close="showForm = false, refreshData()"
+  />
+
+  <!-- Modal para la notificacion interna -->
+  <internal-notification
+    :show="showModalInternalNotification"
+    :data="dataInternalNotification"
+    @close="showModalInternalNotification = false, loading = false"
   />
 
   <ProfesorInformacion
