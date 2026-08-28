@@ -3,7 +3,7 @@ import { defineComponent, reactive, ref, watch, watchEffect, PropType, nextTick 
 import helpers from '../../helpers'
 import InternalNotification from '../InternalNotification.vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
-import { object, string, number, mixed } from 'yup'
+import { object, string, number, mixed, date } from 'yup'
 import type { DataModel } from '../types/teacher'
 import type { DataModel as DataModelSchool } from '../types/escuela'
 
@@ -82,15 +82,18 @@ export default defineComponent({
         .max(2, 'El motivo debe tener como máximo 2 caracteres'),
       date_of_entry_into_the_sep: date()
         .format(new Date(), 'dd/mm/yyyy'),
-      study_profile: .oneOf(['Titulado de U.P.N.', 'Pasante de normal superior', 'Pasante de maestría', 'Pasante de U.P.N.'] as const,
+      study_profile: mixed()
+        .oneOf(['Titulado de U.P.N.', 'Pasante de normal superior', 'Pasante de maestría', 'Pasante de U.P.N.'] as const,
           'El perfil de estudio debe ser uno de los siguientes valores: Titulado de U.P.N., Pasante de normal superior, Pasante de maestría o Pasante de U.P.N.')
         .defined()
         .nullable(),
-      language: .oneOf(['Mixteca', 'Cañada', 'Costa', 'Istmo', 'Papaloapan', 'Sierra sur', 'Sierra norte', 'Valles centrales'] as const,
+      language: mixed()
+        .oneOf(['Mixteca', 'Cañada', 'Costa', 'Istmo', 'Papaloapan', 'Sierra sur', 'Sierra norte', 'Valles centrales'] as const,
           'La lengua debe ser uno de los siguientes valores: Mixteca, Cañada, Costa, Istmo, Papaloapan, Sierra sur, Sierra norte o Valles centrales')
         .defined()
         .nullable(),
-      language_variant: .oneOf(['Alta', 'Baja'] as const,
+      language_variant: mixed()
+        .oneOf(['Alta', 'Baja'] as const,
           'La lengua debe ser uno de los siguientes valores: Alta o Baja')
         .defined()
         .nullable(),
@@ -323,113 +326,209 @@ export default defineComponent({
 
           <div class="field">
             <label class="label">CURP</label>
-            <input v-model="form.curp" class="input">
+            <Field name="curp"
+              type="text"
+              placeholder="CURP"
+              clas="input"
+            >
+            </Field>
+            <ErrorMessage name="curp" class="tag is-warning"/>
           </div>
 
           <div class="field">
             <label class="label">R.F.C.</label>
-            <input v-model="form.rfc" class="input">
+            <Field name="rfc"
+              type="text"
+              placeholder="R.F.C."
+              clas="input"
+            >
+            </Field>
+            <ErrorMessage name="rfc" class="tag is-warning"/>
           </div>
 
           <div class="field">
             <label class="label">Sexo</label>
             <div class="select is-fullwidth">
-              <select v-model="form.sex">
-                <option>Femenino</option>
-                <option>Masculino</option>
-              </select>
+              <Field name="gender" v-slot="{ field }">
+                <select
+                  v-bind="field"
+                  :class="{ 'is-danger': false }"
+                >
+                  <option value="Hombre">Hombre</option>
+                  <option value="Mujer">Mujer</option>
+                </select>
+              </Field>
             </div>
+            <ErrorMessage name="gender" class="tag is-warning"/>
           </div>
 
           <div class="field">
             <label class="label">Clave presupuestal</label>
-            <input v-model="form.budgetKey" class="input">
+            <Field name="budget_code"
+              type="text"
+              placeholder="Clave presupuestal"
+              clas="input"
+            >
+            </Field>
+            <ErrorMessage name="budget_code" class="tag is-warning"/>
           </div>
 
           <div class="field">
             <label class="label">Función</label>
             <div class="select is-fullwidth">
-              <select v-model="form.function">
-                <option>Docente</option>
-                <option>Administrativo</option>
-                <option>Docente con grupo</option>
-                <option>Director</option>
-              </select>
+              <Field name="funcion" v-slot="{ field }">
+                <select
+                  v-bind="field"
+                  :class="{ 'is-danger': false }"
+                >
+                  <option value="Docente">Docente</option>
+                  <option value="Administrativo">Administrativo</option>
+                  <option value="Docente con grupo">Docente con grupo</option>
+                  <option value="Director">Director</option>
+                </select>
+              </Field>
             </div>
+            <ErrorMessage name="funcion" class="tag is-warning"/>
           </div>
 
           <div class="field">
             <label class="label">Escuela</label>
             <div class="select is-fullwidth">
-              <select v-model="form.school">
-                <option>Redencion</option>
-                <option>Jose Maria Morelos y Pavon</option>
-              </select>
+              <Field name="school_id" 
+                v-slot="{ field, value }"
+              >
+                <select 
+                  v-bind="field"
+                >
+                  <option value="" disabled>Selecciona una escuela</option>
+                  <option 
+                    v-for="school in schools" 
+                    :key="school.id" 
+                    :value="Number(school.id)"
+                    :selected="value === Number(school.id)"
+                  >
+                  {{ school.name }}
+                  </option>
+                </select>
+              </Field>
             </div>
+            <ErrorMessage name="school_id" class="tag is-warning"/>
           </div>
 
           <div class="field">
             <label class="label">Teléfono</label>
-            <input v-model="form.phone" class="input">
+            <Field 
+              name="telephone" 
+              v-model="telephone"
+              placeholder="Teléfono"
+              class="input"
+              maxlength="12"
+            />
+            <ErrorMessage name="telephone" class="tag is-warning"/>
           </div>
 
           <div class="field">
             <label class="label">Motivo</label>
-            <input v-model="form.reason" class="input">
+            <Field name="reason"
+              type="number"
+              placeholder="Motivo"
+              clas="input"
+            >
+            </Field>
+            <ErrorMessage name="reason" class="tag is-warning"/>
           </div>
 
           <div class="field">
             <label class="label">Fecha de ingreso a la SEP</label>
-            <input v-model="form.admissionDate" class="input">
+            <Field name="date_of_entry_into_the_sep"
+              type="date"
+              placeholder="Fecha de ingreso a la SEP"
+              clas="input"
+            >
+            </Field>
+            <ErrorMessage name="date_of_entry_into_the_sep" class="tag is-warning"/>
           </div>
 
           <div class="field">
             <label class="label">Perfil de estudios</label>
             <div class="select is-fullwidth">
-              <select v-model="form.studyProfile">
-                <option>Titulado de U.P.N.</option>
-                <option>Pasante de normal superior</option>
-                <option>Pasante de maestría</option>
-                <option>Pasante de U.P.N.</option>
-              </select>
+              <Field name="study_profile" 
+                v-slot="{ field, value }"
+              >
+                <select 
+                  v-bind="field"
+                >
+                  <option value="" disabled>Seleccione un perfil de estudios</option>
+                  <option value="Titulado de U.P.N.">Titulado de U.P.N.</option>
+                  <option value="Pasante de normal superior">Pasante de normal superior</option>
+                  <option value="Pasante de maestría">Pasante de maestría</option>
+                  <option value="Pasante de U.P.N.">Pasante de U.P.N.</option>
+                </select>
+              </Field>
             </div>
+            <ErrorMessage name="study_profile" class="tag is-warning"/>
           </div>
 
           <div class="field">
             <label class="label">Lengua</label>
             <div class="select is-fullwidth">
-              <select v-model="form.language">
-                <option>Mixteca</option>
-                <option>Cañada</option>
-                <option>Costa</option>
-                <option>Istmo</option>
-                <option>Papaloapan</option>
-                <option>Sierra sur</option>
-                <option>Sierra norte</option>
-                <option>Valles centrales</option>
-              </select>
+              <Field name="language" 
+                v-slot="{ field, value }"
+              >
+                <select 
+                  v-bind="field"
+                >
+                  <option value="" disabled>Selecciona una lengua</option>
+                  <option value="Mixteca">Mixteca</option>
+                  <option value="Cañada">Cañada</option>
+                  <option value="Costa">Costa</option>
+                  <option value="Istmo">Istmo</option>
+                  <option value="Papaloapan">Papaloapan</option>
+                  <option value="Sierra sur">Sierra sur</option>
+                  <option value="Sierra norte">Sierra norte</option>
+                  <option value="Valles centrales">Valles centrales</option>
+                </select>
+              </Field>
             </div>
+            <ErrorMessage name="language" class="tag is-warning"/>
           </div>
 
           <div class="field">
             <label class="label">Variante de lengua</label>
-            <div class="select is-fullwidth">
-              <select v-model="form.languageVariant">
-                <option>Alta</option>
-                <option>Baja</option>
-              </select>
+              <Field name="language" 
+                v-slot="{ field, value }"
+              >
+                <select 
+                  v-bind="field"
+                >
+                  <option value="" disabled>Selecciona una variante</option>
+                  <option value="Alta">Alta</option>
+                  <option value="Baja">Baja</option>
+                </select>
+              </Field>
             </div>
+            <ErrorMessage name="language" class="tag is-warning"/>
           </div>
         </section>
 
         <!-- Pie del modal -->
         <footer class="modal-card-foot">
           <div class="buttons">
-            <button class="button is-link" v-if="!loading" @click="save">
+            <button
+              type="submit"
+              :class="{'button is-link': true, 'is-loading': loading }"
+              :disabled="loading == true"
+            >
               <span v-if="data.id">Actualizar</span>
               <span v-else>Guardar</span>
             </button>
-            <button class="button" @click="$emit('close')">Cancelar</button>
+            
+            <button class="button" 
+              type="button"
+              @click="$emit('close')"
+            >
+              Cancelar
+            </button>
           </div>
         </footer>
 
