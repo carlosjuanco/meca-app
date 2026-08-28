@@ -231,7 +231,7 @@ export default defineComponent({
                 @input="handleChange"
                 type="text"
                 placeholder="Clave"
-                :class="{ 'is-danger': false, 'input': true }"
+                class="input"
               />
             </Field>
             <ErrorMessage name="key" class="tag is-warning"/>
@@ -241,10 +241,7 @@ export default defineComponent({
             <label class="label">Tipo de escuela</label>
             <div class="select is-fullwidth">
               <Field name="type_of_school" v-slot="{ field }">
-                <select
-                  v-bind="field"
-                  :class="{ 'is-danger': false }"
-                >
+                <select v-bind="field">
                   <option value="Primaria">Primaria</option>
                   <option value="Preescolar">Preescolar</option>
                   <option value="Inicial">Inicial</option>
@@ -261,9 +258,7 @@ export default defineComponent({
               <Field name="community_id" 
                 v-slot="{ field, value }"
               >
-                <select 
-                  v-bind="field"
-                >
+                <select v-bind="field">
                   <option value="" disabled>Selecciona una comunidad</option>
                   <option 
                     v-for="community in communities" 
