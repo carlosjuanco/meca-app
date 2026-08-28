@@ -143,9 +143,11 @@ export default defineComponent({
               </button>
 
               <button class="button is-danger"
-                @click="confirmDelete(teacher)
+                @click="confirmDelete(teacher)"
               >
-                <span class="icon"><i class="fas fa-trash"></i></span>
+                <span class="icon">
+                  <i class="fas fa-trash"></i>
+                </span>
               </button>
 
               <button class="button is-info" @click="viewInformation(teacher)">
