@@ -45,7 +45,7 @@ export default defineComponent({
       id: number(),
       name: string()
         /**
-         * Nullable() siempre va despues de string() o number(),
+         * Nullable() siempre va después de string() o number(),
          * 
          * Es necesario utilizarlo cuando no es requerido, cuando edita es donde
          * se ve el beneficio, porque el registrar un nuevo registro no.
