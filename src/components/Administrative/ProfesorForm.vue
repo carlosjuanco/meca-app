@@ -307,7 +307,7 @@ export default defineComponent({
             <Field name="paternal_surname"
               type="text"
               placeholder="Apellido paterno"
-              clas="input"
+              class="input"
             >
             </Field>
             <ErrorMessage name="paternal_surname" class="tag is-warning"/>
@@ -318,7 +318,7 @@ export default defineComponent({
             <Field name="maternal_surname"
               type="text"
               placeholder="Apellido materno"
-              clas="input"
+              class="input"
             >
             </Field>
             <ErrorMessage name="maternal_surname" class="tag is-warning"/>
@@ -329,7 +329,7 @@ export default defineComponent({
             <Field name="curp"
               type="text"
               placeholder="CURP"
-              clas="input"
+              class="input"
             >
             </Field>
             <ErrorMessage name="curp" class="tag is-warning"/>
@@ -340,7 +340,7 @@ export default defineComponent({
             <Field name="rfc"
               type="text"
               placeholder="R.F.C."
-              clas="input"
+              class="input"
             >
             </Field>
             <ErrorMessage name="rfc" class="tag is-warning"/>
@@ -350,10 +350,8 @@ export default defineComponent({
             <label class="label">Sexo</label>
             <div class="select is-fullwidth">
               <Field name="gender" v-slot="{ field }">
-                <select
-                  v-bind="field"
-                  :class="{ 'is-danger': false }"
-                >
+                <select v-bind="field">
+                  <option value="" disabled>Seleccione un sexo</option>
                   <option value="Hombre">Hombre</option>
                   <option value="Mujer">Mujer</option>
                 </select>
@@ -367,7 +365,7 @@ export default defineComponent({
             <Field name="budget_code"
               type="text"
               placeholder="Clave presupuestal"
-              clas="input"
+              class="input"
             >
             </Field>
             <ErrorMessage name="budget_code" class="tag is-warning"/>
@@ -377,10 +375,8 @@ export default defineComponent({
             <label class="label">Función</label>
             <div class="select is-fullwidth">
               <Field name="funcion" v-slot="{ field }">
-                <select
-                  v-bind="field"
-                  :class="{ 'is-danger': false }"
-                >
+                <select v-bind="field">
+                  <option value="" disabled>Selecciona una función</option>
                   <option value="Docente">Docente</option>
                   <option value="Administrativo">Administrativo</option>
                   <option value="Docente con grupo">Docente con grupo</option>
@@ -394,12 +390,8 @@ export default defineComponent({
           <div class="field">
             <label class="label">Escuela</label>
             <div class="select is-fullwidth">
-              <Field name="school_id" 
-                v-slot="{ field, value }"
-              >
-                <select 
-                  v-bind="field"
-                >
+              <Field name="school_id" v-slot="{ field, value }">
+                <select v-bind="field">
                   <option value="" disabled>Selecciona una escuela</option>
                   <option 
                     v-for="school in schools" 
@@ -429,10 +421,11 @@ export default defineComponent({
 
           <div class="field">
             <label class="label">Motivo</label>
-            <Field name="reason"
+            <Field 
+              name="reason"
               type="number"
               placeholder="Motivo"
-              clas="input"
+              class="input"
             >
             </Field>
             <ErrorMessage name="reason" class="tag is-warning"/>
@@ -443,7 +436,7 @@ export default defineComponent({
             <Field name="date_of_entry_into_the_sep"
               type="date"
               placeholder="Fecha de ingreso a la SEP"
-              clas="input"
+              class="input"
             >
             </Field>
             <ErrorMessage name="date_of_entry_into_the_sep" class="tag is-warning"/>
@@ -452,12 +445,8 @@ export default defineComponent({
           <div class="field">
             <label class="label">Perfil de estudios</label>
             <div class="select is-fullwidth">
-              <Field name="study_profile" 
-                v-slot="{ field, value }"
-              >
-                <select 
-                  v-bind="field"
-                >
+              <Field name="study_profile" v-slot="{ field, value }">
+                <select v-bind="field">
                   <option value="" disabled>Seleccione un perfil de estudios</option>
                   <option value="Titulado de U.P.N.">Titulado de U.P.N.</option>
                   <option value="Pasante de normal superior">Pasante de normal superior</option>
@@ -472,12 +461,8 @@ export default defineComponent({
           <div class="field">
             <label class="label">Lengua</label>
             <div class="select is-fullwidth">
-              <Field name="language" 
-                v-slot="{ field, value }"
-              >
-                <select 
-                  v-bind="field"
-                >
+              <Field name="language" v-slot="{ field, value }">
+                <select v-bind="field">
                   <option value="" disabled>Selecciona una lengua</option>
                   <option value="Mixteca">Mixteca</option>
                   <option value="Cañada">Cañada</option>
@@ -495,12 +480,8 @@ export default defineComponent({
 
           <div class="field">
             <label class="label">Variante de lengua</label>
-              <Field name="language" 
-                v-slot="{ field, value }"
-              >
-                <select 
-                  v-bind="field"
-                >
+              <Field name="language" v-slot="{ field, value }">
+                <select v-bind="field">
                   <option value="" disabled>Selecciona una variante</option>
                   <option value="Alta">Alta</option>
                   <option value="Baja">Baja</option>
