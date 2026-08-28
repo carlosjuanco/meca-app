@@ -37,7 +37,7 @@ export default defineComponent({
 
     // Inicializar la variable dataInternalNotification con datos vacios
     let dataInternalNotification = ref({})
-    // Inicializar la variable para mostrar u ocultar el dialogo notificaciones internas
+    // Inicializar la variable para mostrar u ocultar el diálogo notificaciones internas
     let showModalInternalNotification = ref(false)
 
     // Esquema de validación
@@ -64,7 +64,7 @@ export default defineComponent({
         .oneOf(['Hombre', 'Mujer'] as const,
           'El sexo debe ser uno de los siguientes valores: Hombre o Mujer')
         .defined()
-        .required('El sexo es obligatorio.'),
+        .required('El sexo es obligatorio'),
       budget_code: string()
         .max(23, 'La Clave presupuestal debe tener como máximo 23 caracteres'),
       funcion: mixed()
@@ -78,7 +78,7 @@ export default defineComponent({
         })
         .matches(/^\d{3} \d{3} \d{4}$/, 'Formato inválido. Use: xxx xxx xxxx'),
       reason: number()
-        .required('El motivo es obligatorio.')
+        .required('El motivo es obligatorio')
         .max(2, 'El motivo debe tener como máximo 2 caracteres'),
       date_of_entry_into_the_sep: date()
         .format(new Date(), 'dd/mm/yyyy'),
@@ -94,13 +94,13 @@ export default defineComponent({
         .nullable(),
       language_variant: mixed()
         .oneOf(['Alta', 'Baja'] as const,
-          'La lengua debe ser uno de los siguientes valores: Alta o Baja')
+          'La variante de lengua debe ser uno de los siguientes valores: Alta o Baja')
         .defined()
         .nullable(),
       school_id: number()
-        .required('La escuela es obligatorio.')
+        .required('La escuela es obligatorio')
         // Si no le pongo esta opción de que al menos tenga un caracter no hace
-        // que la comunidad sea obligatoria
+        // que la escuela sea obligatoria
         .min(1, 'Selecciona una escuela')
     })
 
@@ -522,7 +522,7 @@ export default defineComponent({
               <span v-if="data.id">Actualizar</span>
               <span v-else>Guardar</span>
             </button>
-            
+
             <button class="button" 
               type="button"
               @click="$emit('close')"
