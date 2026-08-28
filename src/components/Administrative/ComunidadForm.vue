@@ -156,7 +156,7 @@ export default defineComponent ({
                   @blur="handleBlur"
                   ref="firstInput"
                   type="text"
-                  :class="{ 'is-danger': false, 'input': true }"
+                  class="input"
                   placeholder="Comunidad"
                 />
               </Field>
