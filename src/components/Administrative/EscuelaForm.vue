@@ -37,7 +37,7 @@ export default defineComponent({
 
     // Inicializar la variable dataInternalNotification con datos vacios
     let dataInternalNotification = ref({})
-    // Inicializar la variable para mostrar u ocultar el dialogo notificaciones internas
+    // Inicializar la variable para mostrar u ocultar el diálogo notificaciones internas
     let showModalInternalNotification = ref(false)
 
     // Esquema de validación
