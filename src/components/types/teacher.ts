@@ -30,7 +30,7 @@ export type DataModel = {
   gender: string;
   budget_code: string;
   funcion?: string | undefined;
-  telephone: number;
+  telephone: string;
   reason?: number | undefined | null;
   date_of_entry_into_the_sep?: string | undefined;
   study_profile?: string | undefined;

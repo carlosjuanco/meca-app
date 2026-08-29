@@ -26,7 +26,7 @@ export const useTeacher = () => {
     rfc: '',
     gender: '',
     budget_code: '',
-    telephone: 0,
+    telephone: '',
     school_id: 0
   })
   
@@ -127,7 +127,7 @@ export const useTeacher = () => {
       gender: '',
       budget_code: '',
       funcion: undefined,
-      telephone: 0,
+      telephone: '',
       reason: undefined,
       date_of_entry_into_the_sep: undefined,
       study_profile: undefined,

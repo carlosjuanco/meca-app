@@ -108,7 +108,7 @@ export default defineComponent({
         <tr class="is-primary">
           <th>Nombre completo</th>
           <th>R.F.C.</th>
-          <th width="5%">Operaciones</th>
+          <th width="15%">Operaciones</th>
         </tr>
       </thead>
 

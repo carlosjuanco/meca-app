@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, reactive, ref, watch, watchEffect, PropType, nextTick } from 'vue'
+import { defineComponent, reactive, ref, watch, watchEffect, PropType, nextTick, onMounted } from 'vue'
 import helpers from '../../helpers'
 import InternalNotification from '../InternalNotification.vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
@@ -44,8 +44,10 @@ export default defineComponent({
     const schema = object({
       id: number(),
       name: string()
+        .required('El nombre es obligatorio')
         .max(20, 'El nombre debe tener como máximo 20 caracteres'),
       paternal_surname: string()
+        .required('El apellido paterno es obligatorio')
         .max(20, 'El apellido paterno debe tener como máximo 20 caracteres'),
       maternal_surname: string()
         /**
@@ -57,20 +59,23 @@ export default defineComponent({
         .nullable()
         .max(20, 'El apellido materno debe tener como máximo 20 caracteres'),
       curp: string()
+        .required('La CURP es obligatorio')
         .max(18, 'La CURP debe tener como máximo 18 caracteres'),
       rfc: string()
-        .max(13, 'El RFC debe tener como máximo 13 caracteres'),
+        .required('El R.F.C. es obligatorio')
+        .max(13, 'El R.F.C. debe tener como máximo 13 caracteres'),
       gender: mixed()
         .oneOf(['Hombre', 'Mujer'] as const,
           'El sexo debe ser uno de los siguientes valores: Hombre o Mujer')
         .defined()
         .required('El sexo es obligatorio'),
       budget_code: string()
+        .required('La Clave presupuestal es obligatorio')
         .max(23, 'La Clave presupuestal debe tener como máximo 23 caracteres'),
       funcion: mixed()
+        .nullable()
         .oneOf(['Docente', 'Administrativo', 'Docente con grupo', 'Director'] as const,
-          'La función debe ser uno de los siguientes valores: Docente, Administrativo, Docente con grupo o Director')
-        .defined(),
+          'La función debe ser uno de los siguientes valores: Docente, Administrativo, Docente con grupo o Director'),
       telephone: string()
         .required('El teléfono es requerido')
         .transform((value, originalValue) => {
@@ -78,25 +83,22 @@ export default defineComponent({
         })
         .matches(/^\d{3} \d{3} \d{4}$/, 'Formato inválido. Use: xxx xxx xxxx'),
       reason: number()
-        .required('El motivo es obligatorio')
+        .nullable()
         .max(2, 'El motivo debe tener como máximo 2 caracteres'),
-      date_of_entry_into_the_sep: date()
-        .format(new Date(), 'dd/mm/yyyy'),
+      date_of_entry_into_the_sep: date(),
+        // .format(new Date(), 'dd/mm/yyyy'),
       study_profile: mixed()
+        .nullable()
         .oneOf(['Titulado de U.P.N.', 'Pasante de normal superior', 'Pasante de maestría', 'Pasante de U.P.N.'] as const,
-          'El perfil de estudio debe ser uno de los siguientes valores: Titulado de U.P.N., Pasante de normal superior, Pasante de maestría o Pasante de U.P.N.')
-        .defined()
-        .nullable(),
+          'El perfil de estudio debe ser uno de los siguientes valores: Titulado de U.P.N., Pasante de normal superior, Pasante de maestría o Pasante de U.P.N.'),
       language: mixed()
+        .nullable()
         .oneOf(['Mixteca', 'Cañada', 'Costa', 'Istmo', 'Papaloapan', 'Sierra sur', 'Sierra norte', 'Valles centrales'] as const,
-          'La lengua debe ser uno de los siguientes valores: Mixteca, Cañada, Costa, Istmo, Papaloapan, Sierra sur, Sierra norte o Valles centrales')
-        .defined()
-        .nullable(),
+          'La lengua debe ser uno de los siguientes valores: Mixteca, Cañada, Costa, Istmo, Papaloapan, Sierra sur, Sierra norte o Valles centrales'),
       language_variant: mixed()
+        .nullable()
         .oneOf(['Alta', 'Baja'] as const,
-          'La variante de lengua debe ser uno de los siguientes valores: Alta o Baja')
-        .defined()
-        .nullable(),
+          'La variante de lengua debe ser uno de los siguientes valores: Alta o Baja'),
       school_id: number()
         .required('La escuela es obligatorio')
         // Si no le pongo esta opción de que al menos tenga un caracter no hace
@@ -129,7 +131,7 @@ export default defineComponent({
     *
     * Fuente: https://chat.deepseek.com/share/pxzqhbrk5xgduk6m0j
     */
-    const phoneTransform = (value) => {
+    const phoneTransform = (value: string) => {
       if (!value) return value;
       
       // Eliminar todos los caracteres que no sean números
@@ -270,7 +272,7 @@ export default defineComponent({
 
       <header class="modal-card-head">
         <p class="modal-card-title">
-          <span v-if="form.id">Editar profesor</span>
+          <span v-if="data.id">Editar profesor</span>
           <span v-else>Nuevo profesor</span>
         </p>
         <button class="delete" @click="$emit('close')"></button>
@@ -445,7 +447,7 @@ export default defineComponent({
           <div class="field">
             <label class="label">Perfil de estudios</label>
             <div class="select is-fullwidth">
-              <Field name="study_profile" v-slot="{ field, value }">
+              <Field name="study_profile" v-slot="{ field }">
                 <select v-bind="field">
                   <option value="" disabled>Seleccione un perfil de estudios</option>
                   <option value="Titulado de U.P.N.">Titulado de U.P.N.</option>
@@ -461,7 +463,7 @@ export default defineComponent({
           <div class="field">
             <label class="label">Lengua</label>
             <div class="select is-fullwidth">
-              <Field name="language" v-slot="{ field, value }">
+              <Field name="language" v-slot="{ field }">
                 <select v-bind="field">
                   <option value="" disabled>Selecciona una lengua</option>
                   <option value="Mixteca">Mixteca</option>
@@ -480,7 +482,8 @@ export default defineComponent({
 
           <div class="field">
             <label class="label">Variante de lengua</label>
-              <Field name="language" v-slot="{ field, value }">
+            <div class="select is-fullwidth">
+              <Field name="language_variant" v-slot="{ field }">
                 <select v-bind="field">
                   <option value="" disabled>Selecciona una variante</option>
                   <option value="Alta">Alta</option>
@@ -488,7 +491,7 @@ export default defineComponent({
                 </select>
               </Field>
             </div>
-            <ErrorMessage name="language" class="tag is-warning"/>
+            <ErrorMessage name="language_variant" class="tag is-warning"/>
           </div>
         </section>
 
