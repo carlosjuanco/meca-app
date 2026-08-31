@@ -73,9 +73,9 @@ export default defineComponent({
         .required('La Clave presupuestal es obligatorio')
         .max(23, 'La Clave presupuestal debe tener como máximo 23 caracteres'),
       funcion: mixed()
-        .nullable()
         .oneOf(['Docente', 'Administrativo', 'Docente con grupo', 'Director'] as const,
-          'La función debe ser uno de los siguientes valores: Docente, Administrativo, Docente con grupo o Director'),
+          'La función debe ser uno de los siguientes valores: Docente, Administrativo, Docente con grupo o Director')
+        .required('La función es obligatorio'),
       telephone: string()
         .required('El teléfono es requerido')
         .transform((value, originalValue) => {
@@ -208,7 +208,6 @@ export default defineComponent({
         showModalInternalNotification.value = true
 
       } catch (error: any) {
-        emit('close')
 
         dataInternalNotification.value = {
           type: 'Error',
@@ -411,7 +410,8 @@ export default defineComponent({
 
           <div class="field">
             <label class="label">Teléfono</label>
-            <Field 
+            <Field
+              type="text" 
               name="telephone" 
               v-model="telephone"
               placeholder="Teléfono"
