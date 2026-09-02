@@ -4,13 +4,13 @@ import TablePagination from '../TablePagination.vue'
 import InternalNotification from '../InternalNotification.vue'
 import ProfesorForm from './ProfesorForm.vue'
 import { useTeacher } from '../composables/useTeacher'
-import ProfesorInformacion from './ProfesorInformacion.vue'
+// import ProfesorInformacion from './ProfesorInformacion.vue'
 
 export default defineComponent({
   name: 'AppProfesor',
   components: {
     ProfesorForm,
-    ProfesorInformacion,
+    // ProfesorInformacion,
     TablePagination,
     InternalNotification,
   },
@@ -185,12 +185,6 @@ export default defineComponent({
     :show="showModalInternalNotification"
     :data="dataInternalNotification"
     @close="showModalInternalNotification = false, loading = false"
-  />
-
-  <ProfesorInformacion
-    :show="showInformation"
-    :data="formData"
-    @close="showInformation = false"
   />
 
 </template>

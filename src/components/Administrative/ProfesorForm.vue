@@ -78,10 +78,9 @@ export default defineComponent({
         .required('La función es obligatorio'),
       telephone: string()
         .required('El teléfono es requerido')
-        .transform((value, originalValue) => {
-          return phoneTransform(originalValue)
-        })
-        .matches(/^\d{3} \d{3} \d{4}$/, 'Formato inválido. Use: xxx xxx xxxx'),
+        .test('format', 'Debe tener el formato: 123 456 7890', (value) => {
+          return /^\d{3} \d{3} \d{4}$/.test(value)
+        }),
       reason: number()
         .nullable()
         .max(2, 'El motivo debe tener como máximo 2 caracteres'),
@@ -191,6 +190,18 @@ export default defineComponent({
       return formatted
     }
 
+    // Manejar el input de teléfono en tiempo real
+    const handlePhoneInput = (event: { [key: string]: any }, handleChange: any) => {
+      const rawValue = event.target.value
+      const formatted = phoneTransform(rawValue)
+      
+       // ACTUALIZACIÓN CLAVE: Actualizar el valor del campo con el formato
+      handleChange(formatted)
+      
+      // También actualizar el valor en vee-validate
+      event.target.value = formatted
+    }
+
     const save = async (values: DataModel) => {
       loading.value = true
       try {
@@ -256,7 +267,8 @@ export default defineComponent({
       schema,
       showModalInternalNotification,
       dataInternalNotification,
-      schools
+      schools,
+      handlePhoneInput
     }
   }
 })
@@ -410,14 +422,18 @@ export default defineComponent({
 
           <div class="field">
             <label class="label">Teléfono</label>
-            <Field
-              type="text" 
-              name="telephone" 
-              v-model="telephone"
-              placeholder="Teléfono"
-              class="input"
-              maxlength="12"
-            />
+            <Field 
+              name="telephone"
+              v-slot="{ handleChange }" 
+            >
+              <input
+                type="text"
+                @input="(e) => handlePhoneInput(e, handleChange)"
+                placeholder="Teléfono"
+                maxlength="12"
+                class="input"
+              />
+            </Field>
             <ErrorMessage name="telephone" class="tag is-warning"/>
           </div>
 
