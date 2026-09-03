@@ -27,7 +27,7 @@ export default defineComponent({
   },
   emits: ['close'],
   setup(props, { emit }) {
-    const { handleRequest, handleErrors } = helpers()
+    const { handleRequest, handleErrors, phoneTransform } = helpers()
     let loading = ref(false)
     // Crear un contador para la key
     const modalKey = ref(0)
@@ -124,70 +124,6 @@ export default defineComponent({
       } catch (error) {
         console.log(error)
       }
-    }
-
-    /*
-    *
-    * Fuente: https://chat.deepseek.com/share/pxzqhbrk5xgduk6m0j
-    */
-    const phoneTransform = (value: string) => {
-      if (!value) return value;
-      
-      // Eliminar todos los caracteres que no sean números
-      const numbers = value.replace(/\D/g, '')
-      
-      /* 
-        ===============================================================
-        📌 SLICE() - MÉTODO PARA ARRAYS Y STRINGS
-        ===============================================================
-        
-        ¿QUÉ ES?
-        ---------
-        slice() es un método que extrae una parte de un array o string
-        y devuelve una NUEVA copia sin modificar el original.
-        
-        SINTAXIS BÁSICA:
-        ----------------
-        array.slice(inicio, fin)
-        string.slice(inicio, fin)
-        
-        PARÁMETROS:
-        -----------
-        • inicio (opcional): Índice donde empieza la extracción (SE INCLUYE)
-        • fin (opcional): Índice donde termina (NO SE INCLUYE)
-        
-        CARACTERÍSTICAS IMPORTANTES:
-        ----------------------------
-        • Si no se pasa ningún parámetro → copia TODO el array/string
-        • Si se pasa solo 'inicio' → desde 'inicio' hasta el final
-        • Acepta índices negativos (cuentan desde el final)
-        • NO modifica el array/string original
-        • Devuelve un NUEVO array o string
-        
-        EJEMPLO RÁPIDO:
-        ---------------
-        const arr = [1, 2, 3, 4, 5];
-        arr.slice(1, 4);    // [2, 3, 4]
-        arr.slice(-2);      // [4, 5]
-        arr.slice();        // [1, 2, 3, 4, 5] (copia)
-        ================================================================ 
-      */
-      // Limitar a 10 dígitos (opcional, ajusta según necesites)
-      const limitedNumbers = numbers.slice(0, 10)
-      
-      // Aplicar el formato: 3 números + espacio + 3 números + espacio + 4 números
-      let formatted: string = ''
-      if (limitedNumbers.length > 0) {
-        formatted = limitedNumbers.slice(0, 3)
-        if (limitedNumbers.length > 3) {
-          formatted += ' ' + limitedNumbers.slice(3, 6)
-          if (limitedNumbers.length > 6) {
-            formatted += ' ' + limitedNumbers.slice(6, 10)
-          }
-        }
-      }
-      
-      return formatted
     }
 
     // Manejar el input de teléfono en tiempo real
