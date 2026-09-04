@@ -27,7 +27,7 @@ export default defineComponent({
   },
   emits: ['close'],
   setup(props, { emit }) {
-    const { handleRequest, handleErrors, phoneTransform } = helpers()
+    const { handleRequest, handleErrors, phoneTransform, convertDate } = helpers()
     let loading = ref(false)
     // Crear un contador para la key
     const modalKey = ref(0)
@@ -140,6 +140,10 @@ export default defineComponent({
       loading.value = true
       try {
         let route: string = props.data.id ? '/teachers' : '/teachers/store'
+
+        if (values.date_of_entry_into_the_sep) {
+          values.date_of_entry_into_the_sep = convertDate(values.date_of_entry_into_the_sep);
+        }
 
         const response = await handleRequest('post', route, values, props.data.id)
 
@@ -375,8 +379,10 @@ export default defineComponent({
             <label class="label">Motivo</label>
             <Field 
               name="reason"
+              v-slot="{ value }"
             >
               <input
+                :value="value"
                 type="number"
                 placeholder="Motivo"
                 max="99"

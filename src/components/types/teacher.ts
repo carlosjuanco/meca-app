@@ -31,7 +31,7 @@ export type DataModel = {
   budget_code: string;
   funcion?: string | undefined;
   telephone: string;
-  reason?: number | undefined | null;
+  reason?: number | undefined;
   date_of_entry_into_the_sep?: string | undefined;
   study_profile?: string | undefined;
   language?: string | undefined;
