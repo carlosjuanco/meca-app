@@ -82,10 +82,8 @@ export default defineComponent({
           return /^\d{3} \d{3} \d{4}$/.test(value)
         }),
       reason: number()
-        .nullable()
-        .max(2, 'El motivo debe tener como máximo 2 caracteres'),
+        .nullable(),
       date_of_entry_into_the_sep: date(),
-        // .format(new Date(), 'dd/mm/yyyy'),
       study_profile: mixed()
         .nullable()
         .oneOf(['Titulado de U.P.N.', 'Pasante de normal superior', 'Pasante de maestría', 'Pasante de U.P.N.'] as const,
@@ -377,10 +375,14 @@ export default defineComponent({
             <label class="label">Motivo</label>
             <Field 
               name="reason"
-              type="number"
-              placeholder="Motivo"
-              class="input"
             >
+              <input
+                type="number"
+                placeholder="Motivo"
+                max="99"
+                min="0"
+                class="input"
+              />
             </Field>
             <ErrorMessage name="reason" class="tag is-warning"/>
           </div>
