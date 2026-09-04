@@ -247,6 +247,48 @@ const helpers = () => {
       return formatted
     }
 
+    /*
+     * Convierte una fecha en formato ISO (yyyy-mm-dd) a formato latino (dd/mm/yyyy)
+     * 
+     * @param fecha - Fecha en formato ISO "yyyy-mm-dd" (ej: "2026-09-04")
+     * @returns Fecha formateada como "dd/mm/yyyy" (ej: "04/09/2026")
+     * @throws {Error} Si la fecha no tiene el formato esperado
+     * 
+     * @example
+     * // Uso básico
+     * const resultado = convertDate("2026-09-04");
+     * console.log(resultado); // "04/09/2026"
+     * 
+     * @example
+     * // Con input de tipo date
+     * const fechaInput = document.querySelector<HTMLInputElement>('#miFecha')?.value;
+     * if (fechaInput) {
+     *   const fechaFormateada = convertDate(fechaInput);
+     *   console.log(fechaFormateada);
+     * }
+     *
+     * Fuente: https://chat.deepseek.com/share/2bxeigghmry1cmmu9t
+     */
+    function convertDate(fecha: string): string {
+        // Validación básica del formato
+        if (!fecha || typeof fecha !== 'string') {
+            throw new Error('La fecha debe ser una cadena de texto');
+        }
+
+        // Validar que tenga el formato yyyy-mm-dd
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!regex.test(fecha)) {
+            throw new Error(`Formato inválido: "${fecha}". Debe ser "yyyy-mm-dd"`);
+        }
+
+        const partes = fecha.split('-');
+        
+        // TypeScript sabe que partes tiene 3 elementos por el split
+        const [anio, mes, dia] = partes;
+        
+        return `${dia}/${mes}/${anio}`;
+    }
+
     return {
         handleRequest,
         handleErrors,
@@ -254,7 +296,8 @@ const helpers = () => {
         getInformationUser,
         setForm,
         handleMultipleRequests,
-        phoneTransform
+        phoneTransform,
+        convertDate
     }
 }
 
