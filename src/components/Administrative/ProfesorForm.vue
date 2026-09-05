@@ -27,7 +27,10 @@ export default defineComponent({
   },
   emits: ['close'],
   setup(props, { emit }) {
-    const { handleRequest, handleErrors, phoneTransform, convertDate } = helpers()
+    const { handleRequest, handleErrors, phoneTransform,
+      convertDate,
+      convertDateInversa
+    } = helpers()
     let loading = ref(false)
     // Crear un contador para la key
     const modalKey = ref(0)
@@ -83,7 +86,8 @@ export default defineComponent({
         }),
       reason: number()
         .nullable(),
-      date_of_entry_into_the_sep: date(),
+      date_of_entry_into_the_sep: date()
+        .nullable(),
       study_profile: mixed()
         .nullable()
         .oneOf(['Titulado de U.P.N.', 'Pasante de normal superior', 'Pasante de maestría', 'Pasante de U.P.N.'] as const,
@@ -172,6 +176,10 @@ export default defineComponent({
     // Observa a props.data, pero como reemplamos lo de adentro, por eso uso watchEffect
     watchEffect(() => {
       if (props.data) {
+        if(props.data.date_of_entry_into_the_sep) {
+          props.data.date_of_entry_into_the_sep = convertDateInversa(props.data.date_of_entry_into_the_sep)
+        }
+        
         Object.assign(initialValues, props.data)
       }
     })
@@ -362,10 +370,11 @@ export default defineComponent({
             <label class="label">Teléfono</label>
             <Field 
               name="telephone"
-              v-slot="{ handleChange }" 
+              v-slot="{ field, handleChange }" 
             >
               <input
                 type="text"
+                v-bind="field"
                 @input="(e) => handlePhoneInput(e, handleChange)"
                 placeholder="Teléfono"
                 maxlength="12"
@@ -379,10 +388,11 @@ export default defineComponent({
             <label class="label">Motivo</label>
             <Field 
               name="reason"
-              v-slot="{ value }"
+              v-slot="{ value, field }"
             >
               <input
                 :value="value"
+                v-bind="field"
                 type="number"
                 placeholder="Motivo"
                 max="99"
@@ -395,11 +405,16 @@ export default defineComponent({
 
           <div class="field">
             <label class="label">Fecha de ingreso a la SEP</label>
-            <Field name="date_of_entry_into_the_sep"
-              type="date"
-              placeholder="Fecha de ingreso a la SEP"
-              class="input"
+            <Field 
+              name="date_of_entry_into_the_sep"
+              v-slot="{ field }"
             >
+              <input
+                type="date"
+                v-bind="field"
+                placeholder="Fecha de ingreso a la SEP"
+                class="input"
+              />
             </Field>
             <ErrorMessage name="date_of_entry_into_the_sep" class="tag is-warning"/>
           </div>
