@@ -27,9 +27,12 @@ export default defineComponent({
   },
   emits: ['close'],
   setup(props, { emit }) {
-    const { handleRequest, handleErrors, phoneTransform,
+    const { 
+      handleRequest,
+      handleErrors,
+      phoneTransform,
       convertDate,
-      convertDateInversa
+      convertReverseDate
     } = helpers()
     let loading = ref(false)
     // Crear un contador para la key
@@ -176,11 +179,17 @@ export default defineComponent({
     // Observa a props.data, pero como reemplamos lo de adentro, por eso uso watchEffect
     watchEffect(() => {
       if (props.data) {
+        // Lo que me ayuda undefined con la libreria vee-validate, es a crear campos totalmente vacios
+        // en caso que no exista un valor en la base de datos.
+        let date: string | undefined = undefined
         if(props.data.date_of_entry_into_the_sep) {
-          props.data.date_of_entry_into_the_sep = convertDateInversa(props.data.date_of_entry_into_the_sep)
+          date = convertReverseDate(props.data.date_of_entry_into_the_sep)
         }
         
-        Object.assign(initialValues, props.data)
+        Object.assign(initialValues, {
+          ...props.data,
+          date_of_entry_into_the_sep: date
+        })
       }
     })
 
