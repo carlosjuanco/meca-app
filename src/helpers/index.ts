@@ -289,6 +289,55 @@ const helpers = () => {
         return `${dia}/${mes}/${anio}`;
     }
 
+    /*
+     * Convierte una fecha en formato latino (dd/mm/yyyy) a formato ISO (yyyy-mm-dd).
+     *
+     * Esta función está diseñada para ser la contraparte directa de `convertirFecha`.
+     * Asume que la fecha de entrada SIEMPRE tiene el formato "dd/mm/yyyy" y es válida.
+     * Es una solución de alto rendimiento, ya que solo realiza un split y reordenamiento.
+     *
+     * @param fecha - Fecha en formato "dd/mm/yyyy" (ej: "04/09/2026")
+     * @returns Fecha formateada como "yyyy-mm-dd" (ej: "2026-09-04")
+     * @throws {Error} Si la fecha no tiene el formato esperado o está vacía.
+     *
+     * @example
+     * // Uso básico
+     * const resultado = convertReverseDate("04/09/2026");
+     * console.log(resultado); // "2026-09-04"
+     *
+     * @example
+     * // Con un valor de entrada
+     * const fechaInput = document.querySelector<HTMLInputElement>('#miFechaInput')?.value;
+     * if (fechaInput) {
+     *   const fechaISO = convertReverseDate(fechaInput);
+     *   console.log(fechaISO); // "2026-09-04"
+     * }
+     */
+    function convertReverseDate(fecha: string): string {
+        // Validación básica para asegurar que la entrada es una cadena no vacía
+        if (!fecha || typeof fecha !== 'string') {
+            throw new Error('La fecha debe ser una cadena de texto no vacía.');
+        }
+
+        // Validar que tenga el formato dd/mm/yyyy usando una expresión regular.
+        // \d{2} para el día y mes, \d{4} para el año.
+        const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (!regex.test(fecha)) {
+            throw new Error(
+                `Formato inválido: "${fecha}". Debe ser "dd/mm/yyyy" (ejemplo: 04/09/2026)`
+            );
+        }
+
+        // Dividir la fecha por el separador "/"
+        const partes = fecha.split('/');
+
+        // Desestructurar el arreglo en variables: [dia, mes, anio]
+        const [dia, mes, anio] = partes;
+
+        // Reordenar y devolver en formato ISO (yyyy-mm-dd)
+        return `${anio}-${mes}-${dia}`;
+    }
+
     return {
         handleRequest,
         handleErrors,
@@ -297,7 +346,8 @@ const helpers = () => {
         setForm,
         handleMultipleRequests,
         phoneTransform,
-        convertDate
+        convertDate,
+        convertReverseDate
     }
 }
 
