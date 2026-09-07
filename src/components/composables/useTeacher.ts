@@ -128,7 +128,7 @@ export const useTeacher = () => {
       budget_code: '',
       funcion: undefined,
       telephone: '',
-      reason: undefined,
+      motivo: undefined,
       date_of_entry_into_the_sep: undefined,
       study_profile: undefined,
       language: undefined,

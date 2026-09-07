@@ -87,7 +87,7 @@ export default defineComponent({
         .test('format', 'Debe tener el formato: 123 456 7890', (value) => {
           return /^\d{3} \d{3} \d{4}$/.test(value)
         }),
-      reason: number()
+      motivo: number()
         .nullable(),
       date_of_entry_into_the_sep: date()
         .nullable(),
@@ -396,7 +396,7 @@ export default defineComponent({
           <div class="field">
             <label class="label">Motivo</label>
             <Field 
-              name="reason"
+              name="motivo"
               v-slot="{ value, field }"
             >
               <input
@@ -409,7 +409,7 @@ export default defineComponent({
                 class="input"
               />
             </Field>
-            <ErrorMessage name="reason" class="tag is-warning"/>
+            <ErrorMessage name="motivo" class="tag is-warning"/>
           </div>
 
           <div class="field">
