@@ -117,7 +117,7 @@ export default defineComponent({
           <tr
             v-show="!teacher.hideRow"
             :class="{ 'animate__animated animate__bounceOut': teacher.animateDisappearRow }"
-            @animationend="endsAnimationOfDisappearingRow(teacher)"
+            @animationend="onAnimationEnd(teacher)"
           >
             <!-- 
               ============================================
@@ -180,7 +180,7 @@ export default defineComponent({
     @close="showForm = false, refreshData()"
   />
 
-  <!-- Modal para la notificacion interna -->
+  <!-- Modal para la notificación interna -->
   <internal-notification
     :show="showModalInternalNotification"
     :data="dataInternalNotification"

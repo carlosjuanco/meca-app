@@ -504,7 +504,7 @@ export default defineComponent({
     </div>
   </div>
 
-  <!-- Modal para la notificacion interna -->
+  <!-- Modal para la notificación interna -->
   <internal-notification
     :show="showModalInternalNotification"
     :data="dataInternalNotification"
