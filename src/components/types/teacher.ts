@@ -25,6 +25,7 @@ export type DataModel = {
   name: string;
   paternal_surname: string;
   maternal_surname?: string | undefined;
+  full_name?: string;
   curp: string;
   rfc: string;
   gender: string;

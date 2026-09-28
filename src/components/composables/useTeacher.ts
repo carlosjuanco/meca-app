@@ -159,10 +159,13 @@ export const useTeacher = () => {
      * del lado izquierdo.
      * 
      * Esto significa que solo reacciona ante dos valores específicos: null y undefined.
+     * 
+     * Ejemplo
+     * ${item.name} ${item.paternal_surname} ${item.paternal_surname ?? ''}
      */
     dataInternalNotification.value = {
       type: 'Ayuda',
-      message: `¿Seguro que desea eliminar ${item.name} ${item.paternal_surname} ${item.paternal_surname ?? ''}?`,
+      message: `¿Seguro que desea eliminar ${item.full_name}?`,
       onConfirm: async () => {
         try {
           await handleRequest('delete', `${basePath}${item.id}`)
