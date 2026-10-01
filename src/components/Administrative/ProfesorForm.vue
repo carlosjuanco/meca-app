@@ -51,7 +51,11 @@ export default defineComponent({
       id: number(),
       name: string()
         .required('El nombre es obligatorio')
-        .max(20, 'El nombre debe tener como máximo 20 caracteres'),
+        .max(20, 'El nombre debe tener como máximo 20 caracteres')
+        .matches(
+          /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
+          'El nombre solo puede contener letras y espacios'
+        ),
       paternal_surname: string()
         .required('El apellido paterno es obligatorio')
         .max(20, 'El apellido paterno debe tener como máximo 20 caracteres'),
