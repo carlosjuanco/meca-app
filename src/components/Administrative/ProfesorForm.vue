@@ -52,6 +52,7 @@ export default defineComponent({
       name: string()
         .required('El nombre es obligatorio')
         .max(20, 'El nombre debe tener como máximo 20 caracteres')
+        // chat en deepseek: https://chat.deepseek.com/share/lsaohkcaj7ysj89pee
         .matches(
           /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
           'El nombre solo puede contener letras y espacios'
