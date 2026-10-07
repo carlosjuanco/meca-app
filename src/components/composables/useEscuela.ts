@@ -10,6 +10,8 @@ export const useEscuela = () => {
 
   // Variable para realizar búsquedas
   const search = ref('')
+
+  // Variable donde indicamos que comenzamos la paginación en 10 registros
   const itemsPerPage = ref('10')
 
   // Establecer la ruta del componente
@@ -52,11 +54,11 @@ export const useEscuela = () => {
     
     if (pagination.value.data) {
       /*
-        Contexto: Siempre que realicemos un nuevo registro o una busqueda, ya
+        Contexto: Siempre que realicemos un nuevo registro o una búsqueda, ya
           existen datos en pagination.value.data.
         Casos
         -Si comienza a realizar una búsqueda y estamos en la página 2, si busca bien,
-          pero como estabamos en la página 2, establece esa búsqueda, entonces,
+          pero como estábamos en la página 2, establece esa búsqueda, entonces,
           solo entonces, debemos comenzar en la página 1, ya que al navegar por los
           resultados funciona correctamente.
         -Solo si es un registro nuevo, volver a la primera página.
@@ -125,7 +127,6 @@ export const useEscuela = () => {
       para eliminar.
 
     @item de tipo DataModel
-    @deleteData de tipo DataFromTheEliminationModel
 
     return void
   */

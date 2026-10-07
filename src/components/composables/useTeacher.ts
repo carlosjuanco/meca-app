@@ -1,8 +1,8 @@
 import { ref, reactive } from 'vue'
 import helpers from '../../helpers'
-import type { DataModel, PaginationModel } from '../types/comunidad'
+import type { DataModel, PaginationModel } from '../types/teacher'
 
-export const useComunidad = () => {
+export const useTeacher = () => {
   const { handleRequest, handleErrors } = helpers()
 
   // Inicializar la variable showForm en false
@@ -15,12 +15,19 @@ export const useComunidad = () => {
   const itemsPerPage = ref('10')
 
   // Establecer la ruta del componente
-  const basePath = '/communities/'
+  const basePath = '/teachers/'
 
   // Inicializar los datos del formulario 
   const formData = reactive<DataModel>({
     id: 0,
-    name: ''
+    name: '',
+    paternal_surname: '',
+    curp: '',
+    rfc: '',
+    gender: '',
+    budget_code: '',
+    telephone: '',
+    school_id: 0
   })
   
   const data = reactive<DataModel[]>([])
@@ -110,7 +117,24 @@ export const useComunidad = () => {
   */
   const openForm = (row: DataModel | null) => {
     // Si row viene vacio entonces mandamos un objeto vacio de tipo DataModel
-    Object.assign(formData, row || { id: 0, name: '' })
+    Object.assign(formData, row || { 
+      id: 0,
+      name: '',
+      paternal_surname: '',
+      maternal_surname: undefined,
+      curp: '',
+      rfc: '',
+      gender: '',
+      budget_code: '',
+      funcion: undefined,
+      telephone: '',
+      motivo: undefined,
+      date_of_entry_into_the_sep: undefined,
+      study_profile: undefined,
+      language: undefined,
+      language_variant: undefined,
+      school_id: 0,
+    })
     showForm.value = true
   }
   
@@ -123,10 +147,25 @@ export const useComunidad = () => {
     return void
   */
   const confirmDelete = (item: DataModel): void => {
-
+    /**
+     * ================================================
+     * OPERADOR DE COALESCENCIA NULA (??)
+     * ================================================
+     * 
+     * DEFINICIÓN OFICIAL (MDN):
+     * El operador de coalescencia nula (??) es un operador lógico que 
+     * retorna el operando del lado derecho cuando el izquierdo es 
+     * null o undefined, y en caso contrario, retorna el operando 
+     * del lado izquierdo.
+     * 
+     * Esto significa que solo reacciona ante dos valores específicos: null y undefined.
+     * 
+     * Ejemplo
+     * ${item.name} ${item.paternal_surname} ${item.paternal_surname ?? ''}
+     */
     dataInternalNotification.value = {
       type: 'Ayuda',
-      message: `¿Seguro que desea eliminar ${item.name}?`,
+      message: `¿Seguro que desea eliminar ${item.full_name}?`,
       onConfirm: async () => {
         try {
           await handleRequest('delete', `${basePath}${item.id}`)
@@ -147,7 +186,7 @@ export const useComunidad = () => {
 
     showModalInternalNotification.value = true
   }
-  
+    
   /*
     Identificar en que momento se termina la animación
       cuando termina la animacion ocultamos realmente la fila

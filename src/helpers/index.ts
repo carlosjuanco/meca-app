@@ -183,6 +183,160 @@ const helpers = () => {
       return responses.map(r => r.data);
     }
 
+    /*
+    *
+    * Fuente: https://chat.deepseek.com/share/pxzqhbrk5xgduk6m0j
+    */
+    const phoneTransform = (value: string) => {
+      if (!value) return value;
+      
+      // Eliminar todos los caracteres que no sean números
+      const numbers = value.replace(/\D/g, '')
+      
+      /* 
+        ===============================================================
+        📌 SLICE() - MÉTODO PARA ARRAYS Y STRINGS
+        ===============================================================
+        
+        ¿QUÉ ES?
+        ---------
+        slice() es un método que extrae una parte de un array o string
+        y devuelve una NUEVA copia sin modificar el original.
+        
+        SINTAXIS BÁSICA:
+        ----------------
+        array.slice(inicio, fin)
+        string.slice(inicio, fin)
+        
+        PARÁMETROS:
+        -----------
+        • inicio (opcional): Índice donde empieza la extracción (SE INCLUYE)
+        • fin (opcional): Índice donde termina (NO SE INCLUYE)
+        
+        CARACTERÍSTICAS IMPORTANTES:
+        ----------------------------
+        • Si no se pasa ningún parámetro → copia TODO el array/string
+        • Si se pasa solo 'inicio' → desde 'inicio' hasta el final
+        • Acepta índices negativos (cuentan desde el final)
+        • NO modifica el array/string original
+        • Devuelve un NUEVO array o string
+        
+        EJEMPLO RÁPIDO:
+        ---------------
+        const arr = [1, 2, 3, 4, 5];
+        arr.slice(1, 4);    // [2, 3, 4]
+        arr.slice(-2);      // [4, 5]
+        arr.slice();        // [1, 2, 3, 4, 5] (copia)
+        ================================================================ 
+      */
+      // Limitar a 10 dígitos (opcional, ajusta según necesites)
+      const limitedNumbers = numbers.slice(0, 10)
+      
+      // Aplicar el formato: 3 números + espacio + 3 números + espacio + 4 números
+      let formatted: string = ''
+      if (limitedNumbers.length > 0) {
+        formatted = limitedNumbers.slice(0, 3)
+        if (limitedNumbers.length > 3) {
+          formatted += ' ' + limitedNumbers.slice(3, 6)
+          if (limitedNumbers.length > 6) {
+            formatted += ' ' + limitedNumbers.slice(6, 10)
+          }
+        }
+      }
+      
+      return formatted
+    }
+
+    /*
+     * Convierte una fecha en formato ISO (yyyy-mm-dd) a formato latino (dd/mm/yyyy)
+     * 
+     * @param fecha - Fecha en formato ISO "yyyy-mm-dd" (ej: "2026-09-04")
+     * @returns Fecha formateada como "dd/mm/yyyy" (ej: "04/09/2026")
+     * @throws {Error} Si la fecha no tiene el formato esperado
+     * 
+     * @example
+     * // Uso básico
+     * const resultado = convertDate("2026-09-04");
+     * console.log(resultado); // "04/09/2026"
+     * 
+     * @example
+     * // Con input de tipo date
+     * const fechaInput = document.querySelector<HTMLInputElement>('#miFecha')?.value;
+     * if (fechaInput) {
+     *   const fechaFormateada = convertDate(fechaInput);
+     *   console.log(fechaFormateada);
+     * }
+     *
+     * Fuente: https://chat.deepseek.com/share/2bxeigghmry1cmmu9t
+     */
+    function convertDate(fecha: string): string {
+        // Validación básica del formato
+        if (!fecha || typeof fecha !== 'string') {
+            throw new Error('La fecha debe ser una cadena de texto');
+        }
+
+        // Validar que tenga el formato yyyy-mm-dd
+        const regex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!regex.test(fecha)) {
+            throw new Error(`Formato inválido: "${fecha}". Debe ser "yyyy-mm-dd"`);
+        }
+
+        const partes = fecha.split('-');
+        
+        // TypeScript sabe que partes tiene 3 elementos por el split
+        const [anio, mes, dia] = partes;
+        
+        return `${dia}/${mes}/${anio}`;
+    }
+
+    /*
+     * Convierte una fecha en formato latino (dd/mm/yyyy) a formato ISO (yyyy-mm-dd).
+     *
+     * Esta función está diseñada para ser la contraparte directa de `convertirFecha`.
+     * Asume que la fecha de entrada SIEMPRE tiene el formato "dd/mm/yyyy" y es válida.
+     * Es una solución de alto rendimiento, ya que solo realiza un split y reordenamiento.
+     *
+     * @param fecha - Fecha en formato "dd/mm/yyyy" (ej: "04/09/2026")
+     * @returns Fecha formateada como "yyyy-mm-dd" (ej: "2026-09-04")
+     * @throws {Error} Si la fecha no tiene el formato esperado o está vacía.
+     *
+     * @example
+     * // Uso básico
+     * const resultado = convertReverseDate("04/09/2026");
+     * console.log(resultado); // "2026-09-04"
+     *
+     * @example
+     * // Con un valor de entrada
+     * const fechaInput = document.querySelector<HTMLInputElement>('#miFechaInput')?.value;
+     * if (fechaInput) {
+     *   const fechaISO = convertReverseDate(fechaInput);
+     *   console.log(fechaISO); // "2026-09-04"
+     * }
+     */
+    function convertReverseDate(fecha: string): string {
+        // Validación básica para asegurar que la entrada es una cadena no vacía
+        if (!fecha || typeof fecha !== 'string') {
+            throw new Error('La fecha debe ser una cadena de texto no vacía.');
+        }
+
+        // Validar que tenga el formato dd/mm/yyyy usando una expresión regular.
+        // \d{2} para el día y mes, \d{4} para el año.
+        const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (!regex.test(fecha)) {
+            throw new Error(
+                `Formato inválido: "${fecha}". Debe ser "dd/mm/yyyy" (ejemplo: 04/09/2026)`
+            );
+        }
+
+        // Dividir la fecha por el separador "/"
+        const partes = fecha.split('/');
+
+        // Desestructurar el arreglo en variables: [dia, mes, anio]
+        const [dia, mes, anio] = partes;
+
+        // Reordenar y devolver en formato ISO (yyyy-mm-dd)
+        return `${anio}-${mes}-${dia}`;
+    }
 
     return {
         handleRequest,
@@ -190,7 +344,10 @@ const helpers = () => {
         logout,
         getInformationUser,
         setForm,
-        handleMultipleRequests
+        handleMultipleRequests,
+        phoneTransform,
+        convertDate,
+        convertReverseDate
     }
 }
 
