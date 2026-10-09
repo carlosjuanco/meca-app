@@ -4,13 +4,13 @@ import TablePagination from '../TablePagination.vue'
 import InternalNotification from '../InternalNotification.vue'
 import ProfesorForm from './ProfesorForm.vue'
 import { useTeacher } from '../composables/useTeacher'
-// import ProfesorInformacion from './ProfesorInformacion.vue'
+import ProfesorInformacion from './ProfesorInformacion.vue'
 
 export default defineComponent({
   name: 'AppProfesor',
   components: {
     ProfesorForm,
-    // ProfesorInformacion,
+    ProfesorInformacion,
     TablePagination,
     InternalNotification,
   },
@@ -22,13 +22,15 @@ export default defineComponent({
       pagination,
       search,
       itemsPerPage,
+      showModalProfesorInformacion,
       openForm,
       confirmDelete,
       dataInternalNotification,
       showModalInternalNotification,
       onAnimationEnd,
       refreshData,
-      fetchData
+      fetchData,
+      viewInformation
     } = useTeacher()
 
     // Observar cambios en búsqueda y paginación
@@ -47,13 +49,15 @@ export default defineComponent({
       pagination,
       search,
       itemsPerPage,
+      showModalProfesorInformacion,
       openForm,
       confirmDelete,
       dataInternalNotification,
       showModalInternalNotification,
       onAnimationEnd,
       refreshData,
-      fetchData
+      fetchData,
+      viewInformation
     }
   }
 })
@@ -185,6 +189,13 @@ export default defineComponent({
     :show="showModalInternalNotification"
     :data="dataInternalNotification"
     @close="showModalInternalNotification = false, loading = false"
+  />
+
+  <!-- Modal para mostrar la información del profesor -->
+  <profesor-informacion
+    :show="showModalProfesorInformacion"
+    :data="formData"
+    @close="showModalProfesorInformacion = false"
   />
 
 </template>

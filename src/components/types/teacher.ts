@@ -8,7 +8,10 @@ import type { PaginationLink } from './tiposGenericos'
  * Los campos animateDisappearRow y hideRow, seguiré respetando es estilo
  *  de escritura CamelCase.
 */
-
+type School = {
+  id: number;
+  name: string;
+}
 export type DataModel = {
   id: number;
   /**
@@ -38,6 +41,7 @@ export type DataModel = {
   language?: string | undefined;
   language_variant?: string | undefined;
   school_id: number;
+  school?: School;
   animateDisappearRow?: boolean;
   hideRow?: boolean;
 }

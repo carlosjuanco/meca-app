@@ -8,6 +8,9 @@ export const useTeacher = () => {
   // Inicializar la variable showForm en false
   const showForm = ref(false)
 
+  // Inicializar la variable showModalProfesorInformacion en false
+  const showModalProfesorInformacion = ref(false)
+
   // Variable para realizar búsquedas
   const search = ref('')
 
@@ -198,6 +201,18 @@ export const useTeacher = () => {
   const onAnimationEnd = (row: DataModel) => {
     row.hideRow = true
   }
+
+  /*
+    Mostrar el modal para ver la información del profesor
+
+    @row de tipo DataModel
+
+    return void
+  */
+  const viewInformation = (row: DataModel) => {
+    Object.assign(formData, row)
+    showModalProfesorInformacion.value = true
+  }
   
   return {
     // Estado
@@ -207,6 +222,7 @@ export const useTeacher = () => {
     pagination,
     search,
     itemsPerPage,
+    showModalProfesorInformacion,
     
     // Métodos
     openForm,
@@ -215,6 +231,7 @@ export const useTeacher = () => {
     showModalInternalNotification,
     onAnimationEnd,
     refreshData,
-    fetchData
+    fetchData,
+    viewInformation
   }
 }
