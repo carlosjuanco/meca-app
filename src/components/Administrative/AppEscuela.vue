@@ -84,7 +84,7 @@ export default defineComponent({
     </div>
 
     <div class="control">
-      <button class="button is-info" @click="refresh()">
+      <button class="button is-info" @click="refreshData()">
         Buscar
       </button>
     </div>
