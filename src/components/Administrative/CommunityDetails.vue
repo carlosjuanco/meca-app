@@ -98,7 +98,7 @@ export default defineComponent({
                     <div class="field">
                       <div class="control">
                         <label class="input has-background-light">
-                          <span v-text="dataCommunity.claveEscuelaPrimaria"></span>
+                          <span v-text="dataCommunity.claveEscuelaPrimariaCompleta"></span>
                         </label>
                       </div>
                     </div>
@@ -140,7 +140,7 @@ export default defineComponent({
                     <div class="field">
                       <div class="control">
                         <label class="input has-background-light">
-                          <span v-text="dataCommunity.claveEscuelaPreescolar"></span>
+                          <span v-text="dataCommunity.claveEscuelaPreescolarCompleta"></span>
                         </label>
                       </div>
                     </div>
@@ -182,7 +182,7 @@ export default defineComponent({
                     <div class="field">
                       <div class="control">
                         <label class="input has-background-light">
-                          <span v-text="dataCommunity.claveEscuelaInicial"></span>
+                          <span v-text="dataCommunity.claveEscuelaInicialCompleta"></span>
                         </label>
                       </div>
                     </div>
@@ -249,6 +249,9 @@ export default defineComponent({
                   </div>
                 </div>
                 <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Nombre:</label>
+                  </div>
                   <div class="field-body">
                     <div class="field has-addons">
                       <div class="control is-expanded">
@@ -261,6 +264,20 @@ export default defineComponent({
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Teléfono:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="input has-background-light">
+                          <span v-text="dataCommunity.telefonoDelProfesorDeLaPrimaria"></span>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -279,6 +296,9 @@ export default defineComponent({
                   </div>
                 </div>
                 <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Nombre:</label>
+                  </div>
                   <div class="field-body">
                     <div class="field has-addons">
                       <div class="control is-expanded">
@@ -291,6 +311,20 @@ export default defineComponent({
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Teléfono:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="input has-background-light">
+                          <span v-text="dataCommunity.telefonoDelProfesorDePreescolar"></span>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -309,6 +343,9 @@ export default defineComponent({
                   </div>
                 </div>
                 <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Nombre:</label>
+                  </div>
                   <div class="field-body">
                     <div class="field has-addons">
                       <div class="control is-expanded">
@@ -321,6 +358,20 @@ export default defineComponent({
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Teléfono:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="input has-background-light">
+                          <span v-text="dataCommunity.telefonoDelProfesorDeInicial"></span>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -339,6 +390,9 @@ export default defineComponent({
                   </div>
                 </div>
                 <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Nombre:</label>
+                  </div>
                   <div class="field-body">
                     <div class="field has-addons">
                       <div class="control is-expanded">
@@ -351,6 +405,20 @@ export default defineComponent({
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Teléfono:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="input has-background-light">
+                          <span v-text="dataCommunity.telefonoDelProfesorDelAlbergueEscolar"></span>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
