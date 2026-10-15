@@ -63,60 +63,195 @@ export default defineComponent({
 
           <tbody>
             <tr>
-              <td>
-                <div class="field">
-                  <label class="label">Primaria</label>
-                  <label class="input has-background-light">
-                    Nombre: <span v-text="dataCommunity.primaria"></span>
-                  </label>
-                  <label class="input has-background-light">
-                    Clave: <span v-text="dataCommunity.claveEscuelaPrimaria"></span>
-                  </label>
+              <td v-if="dataCommunity.claveEscuelaPrimaria">
+                <div class="field is-horizontal">
+                  <div class="field-label">
+                    <!-- Left empty for spacing -->
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="label">Primaria</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Nombre:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="input has-background-light">
+                          <span v-text="dataCommunity.primaria"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Clave:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="input has-background-light">
+                          <span v-text="dataCommunity.claveEscuelaPrimaria"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </td>
-              <td>
-                <div class="field">
-                  <label class="label">Preescolar</label>
-                  <label class="input has-background-light">
-                    Nombre: <span v-text="dataCommunity.preescolar"></span>
-                  </label>
-                  <label class="input has-background-light">
-                    Clave: <span v-text="dataCommunity.claveEscuelaPreescolar"></span>
-                  </label>
+              <td v-if="dataCommunity.claveEscuelaPreescolar">
+                <div class="field is-horizontal">
+                  <div class="field-label">
+                    <!-- Left empty for spacing -->
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="label">Preescolar</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Nombre:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="input has-background-light">
+                          <span v-text="dataCommunity.preescolar"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Clave:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="input has-background-light">
+                          <span v-text="dataCommunity.claveEscuelaPreescolar"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </td>
-              <td>
-                <div class="field">
-                  <label class="label">Educación inicial</label>
-                  <label class="input has-background-light">
-                    Nombre: <span v-text="dataCommunity.inicial"></span>
-                  </label>
-                  <label class="input has-background-light">
-                    Clave: <span v-text="dataCommunity.claveEscuelaInicial"></span>
-                  </label>
+              <td v-if="dataCommunity.claveEscuelaInicial">
+                <div class="field is-horizontal">
+                  <div class="field-label">
+                    <!-- Left empty for spacing -->
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="label">Educación inicial</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Nombre:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="input has-background-light">
+                          <span v-text="dataCommunity.inicial"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Clave:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="input has-background-light">
+                          <span v-text="dataCommunity.claveEscuelaInicial"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </td>
-              <td>
-                <div class="field">
-                  <label class="label">Albergues escolares</label>
-                  <label class="input has-background-light">
-                    Nombre: <span v-text="dataCommunity.albergueEscolar"></span>
-                  </label>
-                  <label class="input has-background-light">
-                    Clave: <span v-text="dataCommunity.claveEscuelaAlbergueEscolar"></span>
-                  </label>
+              <td v-if="dataCommunity.claveEscuelaAlbergueEscolar">
+                <div class="field is-horizontal">
+                  <div class="field-label">
+                    <!-- Left empty for spacing -->
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="label">Albergues escolares</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Nombre:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="input has-background-light">
+                          <span v-text="dataCommunity.albergueEscolar"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal">
+                    <label class="label">Clave:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="input has-background-light">
+                          <span v-text="dataCommunity.claveEscuelaAlbergueEscolar"></span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </td>
 
             </tr>
 
             <tr>
-              <td>
-                <div class="field">
-                  <label class="label">Directivos</label>
-                  
-                  <div class="field has-addons">
-                    <div class="control is-expanded">
+              <td v-if="dataCommunity.directivoPrimaria">
+                <div class="field is-horizontal">
+                  <div class="field-label">
+                    <!-- Left empty for spacing -->
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="label">Directivos</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-body">
+                    <div class="field has-addons">
+                      <div class="control is-expanded">
                       <label class="input has-background-light"
                         v-text="dataCommunity.directivoPrimaria">
                       </label>
@@ -126,59 +261,96 @@ export default defineComponent({
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
+                    </div>
                   </div>
                 </div>
               </td>
-              <td>
-                <div class="field">
-                  <label class="label">Directivos</label>
-                  
-                  <div class="field has-addons">
-                    <div class="control is-expanded">
+              <td v-if="dataCommunity.directivoPreescolar">
+                <div class="field is-horizontal">
+                  <div class="field-label">
+                    <!-- Left empty for spacing -->
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="label">Directivos</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-body">
+                    <div class="field has-addons">
+                      <div class="control is-expanded">
                       <label class="input has-background-light"
                         v-text="dataCommunity.directivoPreescolar">
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info" >
+                      <button class="button is-info">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
+                    </div>
                     </div>
                   </div>
                 </div>
               </td>
-              <td>
-                <div class="field">
-                  <label class="label">Directivos</label>
-                  
-                  <div class="field has-addons">
-                    <div class="control is-expanded">
+              <td v-if="dataCommunity.directivoInicial">
+                <div class="field is-horizontal">
+                  <div class="field-label">
+                    <!-- Left empty for spacing -->
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="label">Directivos</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-body">
+                    <div class="field has-addons">
+                      <div class="control is-expanded">
                       <label class="input has-background-light"
                         v-text="dataCommunity.directivoInicial">
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info" >
+                      <button class="button is-info">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
+                    </div>
                     </div>
                   </div>
                 </div>
               </td>
-              <td>
-                <div class="field">
-                  <label class="label">Jefes</label>
-                  
-                  <div class="field has-addons">
-                    <div class="control is-expanded">
-                      <label class="input has-background-light" 
+              <td v-if="dataCommunity.directivoAlbergueEscolar">
+                <div class="field is-horizontal">
+                  <div class="field-label">
+                    <!-- Left empty for spacing -->
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="label">Directivos</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-body">
+                    <div class="field has-addons">
+                      <div class="control is-expanded">
+                      <label class="input has-background-light"
                         v-text="dataCommunity.directivoAlbergueEscolar">
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info" >
+                      <button class="button is-info">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
+                    </div>
                     </div>
                   </div>
                 </div>
