@@ -1,9 +1,12 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, watchEffect, PropType, watch } from 'vue'
 import type { DataModel } from '../types/reportePorComunidad'
+import type { DataModel as DataModelTeacher} from '../types/teacher'
+import ProfesorInformacion from './ProfesorInformacion.vue'
 
 export default defineComponent({
   name: 'CommunityDetails',
+  components: { ProfesorInformacion },
   props: {
     show: {
       type: Boolean,
@@ -21,6 +24,40 @@ export default defineComponent({
 
     const dataCommunity = reactive({} as DataModel)
 
+    // Inicializar la variable showModalProfesorInformacion en false
+    const showModalProfesorInformacion = ref(false)
+    // Inicializar los datos del formulario 
+    const formData = reactive({} as DataModelTeacher)
+
+    /*
+      Mostrar el modal para ver la información del profesor
+
+      @row de tipo DataModel
+
+      return void
+    */
+    const viewInformation = () => {
+      Object.assign(formData, { 
+        id: 0,
+        name: '',
+        paternal_surname: '',
+        maternal_surname: undefined,
+        curp: '',
+        rfc: '',
+        gender: '',
+        budget_code: '',
+        funcion: undefined,
+        telephone: '',
+        motivo: undefined,
+        date_of_entry_into_the_sep: undefined,
+        study_profile: undefined,
+        language: undefined,
+        language_variant: undefined,
+        school_id: 0,
+      })
+      showModalProfesorInformacion.value = true
+    }
+
     watchEffect(() => {
       if (props.data) Object.assign(dataCommunity, props.data)
     })
@@ -36,7 +73,12 @@ export default defineComponent({
       }
     })
 
-    return { dataCommunity }
+    return { 
+      dataCommunity,
+      showModalProfesorInformacion,
+      formData,
+      viewInformation
+    }
   }
 })
 </script>
@@ -260,7 +302,7 @@ export default defineComponent({
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info">
+                      <button class="button is-info" @click="viewInformation()">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -307,7 +349,7 @@ export default defineComponent({
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info">
+                      <button class="button is-info" @click="viewInformation()">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -354,7 +396,7 @@ export default defineComponent({
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info">
+                      <button class="button is-info" @click="viewInformation()">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -401,7 +443,7 @@ export default defineComponent({
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info">
+                      <button class="button is-info" @click="viewInformation()">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -457,6 +499,13 @@ export default defineComponent({
     </section>
 
   </div>
+
+  <!-- Modal para mostrar la información del profesor -->
+  <profesor-informacion
+    :show="showModalProfesorInformacion"
+    :data="formData"
+    @close="showModalProfesorInformacion = false"
+  />
 </div>
 
 </template>
