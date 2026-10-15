@@ -1,69 +1,42 @@
 <script lang="ts">
-import { defineComponent, reactive, watchEffect, PropType } from 'vue'
-
-type TeacherDataModel = {
-  id: number
-  name: string
-  lastNameFather: string
-  lastNameMother: string
-  curp?: string
-  rfc?: string
-  sex?: string
-  budgetKey?: string
-  function?: string
-  school?: string
-  phone?: number
-  reason?: number
-  admissionDate?: string
-  studyProfile?: string
-  language?: string
-  languageVariant?: string
-}
-
-type DataModel = {
-  id: number
-  nameCommunity: string
-  // Primarias
-  primarySchools: string
-  primaryKey: string
-  elementarySchoolTeachers: string
-  progressivePrimarySchoolNumbers: number
-  primaryStaff: TeacherDataModel[]
-  // preescolares
-  preschools: string
-  preschoolKey: string
-  preschoolTeachers: string
-  preschoolNumberProgression: number
-  preschoolStaff: TeacherDataModel[]
-  // Educación inicial
-  earlyChildhoodEducation: string
-  initialKey: string
-  earlyChildhoodEducationTeachers: string
-  initialStaff: TeacherDataModel[]
-  // Albergues
-  schoolDormitories: string
-  keyHostels: string
-  schoolDormitoryDirectors: string
-  shelterStaff: TeacherDataModel[]
-}
+import { defineComponent, reactive, ref, watchEffect, PropType, watch } from 'vue'
+import type { DataModel } from '../types/reportePorComunidad'
 
 export default defineComponent({
-  name: 'ModalDetail',
+  name: 'CommunityDetails',
   props: {
-    show: Boolean,
-    data: Object as PropType<DataModel>
+    show: {
+      type: Boolean,
+      required: true
+    },
+    data: {
+      type: Object as PropType<DataModel>,
+      required: true
+    }
   },
-  emits: ['close', 'openTeacherInformationModal'],
-  setup(props, { emit }) {
+  emits: ['close'],
+  setup(props) {
+    // Crear un contador para la key
+    const modalKey = ref(0)
 
-    const form = reactive({} as DataModel)
+    const dataCommunity = reactive({} as DataModel)
 
     watchEffect(() => {
-      if (props.data) Object.assign(form, props.data)
-        console.info('Ver la informacion de form', form)
+      if (props.data) Object.assign(dataCommunity, props.data)
     })
 
-    return { form, emit }
+    /*
+      Miro a props.show, si cambia de valor y es verdadero, entonces ponemos el foco
+        al primer elemento del formulario
+    */
+    watch(() => props.show, async (value: boolean) => {
+      if (value) {
+        // Incrementar la key cada vez que se abre el modal
+        modalKey.value++
+      }
+    })
+
+    return { dataCommunity }
   }
 })
 </script>
@@ -78,7 +51,7 @@ export default defineComponent({
     <header class="modal-card-head">
       <p class="modal-card-title has-text-centered">
         <strong>Comunidad: </strong>
-        <span v-text="form.nameCommunity"></span>
+        <span v-text="dataCommunity.nombreComunidad"></span>
       </p>
       <button class="delete" @click="$emit('close')"></button>
     </header>
@@ -94,10 +67,10 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Primaria</label>
                   <label class="input has-background-light">
-                    Nombre: <span v-text="form.primarySchools"></span>
+                    Nombre: <span v-text="dataCommunity.primaria"></span>
                   </label>
                   <label class="input has-background-light">
-                    Clave: <span v-text="form.primaryKey"></span>
+                    Clave: <span v-text="dataCommunity.claveEscuelaPrimaria"></span>
                   </label>
                 </div>
               </td>
@@ -105,10 +78,10 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Preescolar</label>
                   <label class="input has-background-light">
-                    Nombre: <span v-text="form.preschools"></span>
+                    Nombre: <span v-text="dataCommunity.preescolar"></span>
                   </label>
                   <label class="input has-background-light">
-                    Clave: <span v-text="form.preschoolKey"></span>
+                    Clave: <span v-text="dataCommunity.claveEscuelaPreescolar"></span>
                   </label>
                 </div>
               </td>
@@ -116,10 +89,10 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Educación inicial</label>
                   <label class="input has-background-light">
-                    Nombre: <span v-text="form.earlyChildhoodEducation"></span>
+                    Nombre: <span v-text="dataCommunity.inicial"></span>
                   </label>
                   <label class="input has-background-light">
-                    Clave: <span v-text="form.initialKey"></span>
+                    Clave: <span v-text="dataCommunity.claveEscuelaInicial"></span>
                   </label>
                 </div>
               </td>
@@ -127,10 +100,10 @@ export default defineComponent({
                 <div class="field">
                   <label class="label">Albergues escolares</label>
                   <label class="input has-background-light">
-                    Nombre: <span v-text="form.schoolDormitories"></span>
+                    Nombre: <span v-text="dataCommunity.albergueEscolar"></span>
                   </label>
                   <label class="input has-background-light">
-                    Clave: <span v-text="form.keyHostels"></span>
+                    Clave: <span v-text="dataCommunity.claveEscuelaAlbergueEscolar"></span>
                   </label>
                 </div>
               </td>
@@ -145,12 +118,11 @@ export default defineComponent({
                   <div class="field has-addons">
                     <div class="control is-expanded">
                       <label class="input has-background-light"
-                        v-text="form.elementarySchoolTeachers">
+                        v-text="dataCommunity.directivoPrimaria">
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info"
-                        @click="$emit('openTeacherInformationModal', stranger)">
+                      <button class="button is-info">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -164,12 +136,11 @@ export default defineComponent({
                   <div class="field has-addons">
                     <div class="control is-expanded">
                       <label class="input has-background-light"
-                        v-text="form.preschoolTeachers">
+                        v-text="dataCommunity.directivoPreescolar">
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info"
-                        @click="$emit('openTeacherInformationModal', stranger)">
+                      <button class="button is-info" >
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -183,12 +154,11 @@ export default defineComponent({
                   <div class="field has-addons">
                     <div class="control is-expanded">
                       <label class="input has-background-light"
-                        v-text="form.earlyChildhoodEducationTeachers">
+                        v-text="dataCommunity.directivoInicial">
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info"
-                        @click="$emit('openTeacherInformationModal', stranger)">
+                      <button class="button is-info" >
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -202,12 +172,11 @@ export default defineComponent({
                   <div class="field has-addons">
                     <div class="control is-expanded">
                       <label class="input has-background-light" 
-                        v-text="form.schoolDormitoryDirectors">
+                        v-text="dataCommunity.directivoAlbergueEscolar">
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info"
-                        @click="$emit('openTeacherInformationModal', stranger)">
+                      <button class="button is-info" >
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -221,81 +190,21 @@ export default defineComponent({
               <td>
                 <div class="field">
                   <label class="label">Personal</label>
-                  <template v-for="stranger in form.primaryStaff" :key="stranger.id">
-                    
-                    <div class="field has-addons">
-                      <div class="control is-expanded">
-                        <label class="input has-background-light" v-text="stranger.name">
-                        </label>
-                      </div>
-                      <div class="control">
-                        <button class="button is-info"
-                          @click="$emit('openTeacherInformationModal', stranger)">
-                          <span class="icon"><i class="fas fa-eye"></i></span>
-                        </button>
-                      </div>
-                    </div>
-                  </template>
                 </div>
               </td>
               <td>
                 <div class="field">
                   <label class="label">Personal</label>
-                  <template v-for="stranger in form.preschoolStaff" :key="stranger.id">
-                    
-                    <div class="field has-addons">
-                      <div class="control is-expanded">
-                        <label class="input has-background-light" v-text="stranger.name">
-                        </label>
-                      </div>
-                      <div class="control">
-                        <button class="button is-info"
-                          @click="$emit('openTeacherInformationModal', stranger)">
-                          <span class="icon"><i class="fas fa-eye"></i></span>
-                        </button>
-                      </div>
-                    </div>
-                  </template>
                 </div>
               </td>
               <td>
                 <div class="field">
                   <label class="label">Personal</label>
-                  <template v-for="stranger in form.initialStaff" :key="stranger.id">
-                    
-                    <div class="field has-addons">
-                      <div class="control is-expanded">
-                        <label class="input has-background-light" v-text="stranger.name">
-                        </label>
-                      </div>
-                      <div class="control">
-                        <button class="button is-info" 
-                          @click="$emit('openTeacherInformationModal', stranger)">
-                          <span class="icon"><i class="fas fa-eye"></i></span>
-                        </button>
-                      </div>
-                    </div>
-                  </template>
                 </div>
               </td>
               <td>
                 <div class="field">
                   <label class="label">Personal</label>
-                  <template v-for="stranger in form.shelterStaff" :key="stranger.id">
-                    
-                    <div class="field has-addons">
-                      <div class="control is-expanded">
-                        <label class="input has-background-light" v-text="stranger.name">
-                        </label>
-                      </div>
-                      <div class="control">
-                        <button class="button is-info" 
-                          @click="$emit('openTeacherInformationModal', stranger)">
-                          <span class="icon"><i class="fas fa-eye"></i></span>
-                        </button>
-                      </div>
-                    </div>
-                  </template>
                 </div>
               </td>
 
@@ -314,6 +223,58 @@ export default defineComponent({
 
 <style scoped>
 .ver-reporte-por-comunidad {
+  /* Ancho deseado en desktop */
   width: 80rem;
+  /* Nunca exceder el viewport (Bulma ya usa 20px de margen en modal-background) */
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 40px);
+}
+
+/* El body debe poder hacer scroll en pantallas cortas */
+.ver-reporte-por-comunidad .modal-card-body {
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+
+/* Permitir que valores largos (ej. CURP, RFC) hagan wrap 
+  Efectivamente si funciona si hago muy corta chica la pantalla, todo el texto se adapda con el campo
+*/
+.ver-reporte-por-comunidad .input {
+  height: auto;
+  white-space: normal;
+  word-break: break-word;
+  padding: 0.5rem 0.75rem;
+  display: block;
+  line-height: 1.4;
+}
+
+/* ===== Ajustes para móvil / tablet ===== */
+@media screen and (max-width: 768px) {
+  .ver-reporte-por-comunidad {
+    width: calc(100vw - 20px);
+    max-width: calc(100vw - 20px);
+    margin: 0 10px;
+  }
+
+  .ver-reporte-por-comunidad .modal-card-head,
+  .ver-reporte-por-comunidad .modal-card-body {
+    padding: 1rem;
+  }
+
+  .ver-reporte-por-comunidad .modal-card-title {
+    font-size: 1.15rem;
+  }
+}
+
+/* Opcional: modal a pantalla completa en móviles muy chicos */
+@media screen and (max-width: 480px) {
+  .ver-reporte-por-comunidad {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
 }
 </style>

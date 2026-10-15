@@ -1,14 +1,12 @@
 <script lang="ts">
-import { defineComponent, reactive, onMounted } from 'vue'
+import { defineComponent, reactive, onMounted, ref } from 'vue'
 import helpers from '../../helpers'
-// import CommunityDetails from './CommunityDetails.vue'
-// import ProfesorInformacion from './ProfesorInformacion.vue'
+import type { DataModel } from '../types/reportePorComunidad'
+import CommunityDetails from './CommunityDetails.vue'
 
 export default defineComponent({
   name: 'ReportePorComunidad',
-  // components: {
-  //   CommunityDetails,
-  // },
+  components: { CommunityDetails },
   setup() {
     const { 
       handleRequest,
@@ -16,36 +14,11 @@ export default defineComponent({
       phoneTransform,
     } = helpers()
 
-    type DataModel = {
-      nombreComunidad: string
-      // Primarias
-      primaria: string
-      claveEscuelaPrimaria: string
-      directivoPrimaria: string
-      telefonoDelProfesorDeLaPrimaria: string
-      numeroProgresivoPrimaria: number
-      // preescolares
-      preescolar: string
-      claveEscuelaPreescolar: string
-      directivoPreescolar: string
-      telefonoDelProfesorDePreescolar: string
-      numeroProgresivoPreescolar: string
-      // Educación inicial
-      inicial: string
-      claveEscuelaInicial: string
-      directivoInicial: string
-      telefonoDelProfesorDeInicial: string
-      // Albergues
-      albergueEscolar: string
-      claveEscuelaAlbergueEscolar: string
-      directivoAlbergueEscolar: string
-      telefonoDelProfesorDelAlbergueEscolar: string
-    }
-
-    // const showCommunityDetails = ref(false)
+    const showCommunityDetails = ref(false)
     // const showInformation = ref(false)
 
     const data = reactive<DataModel[]>([])
+    const dataCommunityDetails = reactive({} as DataModel)
 
     // Obtener reporte por comunidad
     const getReportByCommunity = async () => {
@@ -81,27 +54,39 @@ export default defineComponent({
       }
     }
 
-    // const detail = (row: DataModel ): void => {
-    //   if (row) Object.assign(formData, row)
+    /**
+     * [Descripción breve de qué hace Object.assign()]
+     * 
+     * [Descripción detallada: realiza una copia superficial (shallow copy)]
+     *
+     * @param {Object} target - El objeto destino que recibirá las propiedades y será modificado.
+     * @param {...Object} sources - Uno o más objetos origen que contienen las propiedades a copiar.
+     * @returns {Object} El objeto destino (target) ya modificado.
+     * 
+     * @see {@link https://mozilla.org|MDN Web Docs - Object.assign()}
+     * 
+     * @example
+     * // [Ejemplo breve de uso]
+     * const destino = {};
+     * const origen = { a: 1 };
+     * Object.assign(destino, origen);
+     */
 
-    //   console.info('Ver la informacion de formData', formData)
+    const showModalCommunityDetails = (row: DataModel ): void => {
+      Object.assign(dataCommunityDetails, row)
 
-    //   showCommunityDetails.value = true
-    // }
-
-    // const viewInformation = (row: TeacherDataModel ): void => {
-    //   console.info('3 meses sin garantia')
-    //   if (row) Object.assign(teacherFormData, row)
-
-    //   showInformation.value = true
-    // }
+      showCommunityDetails.value = true
+    }
 
     onMounted(() => {
       getReportByCommunity()
     })
 
     return { 
-      data
+      data,
+      showCommunityDetails,
+      showModalCommunityDetails,
+      dataCommunityDetails
     }
   }
 })
@@ -112,9 +97,9 @@ export default defineComponent({
   <h1 class="title has-text-centered">Reporte por comunidad</h1>
   <!-- Tabla -->
   <div class="table-container">
-    <table class="table is-fullwidth is-striped is-bordered">
+    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
       <thead>
-        <tr class="is-primary">
+        <tr class="is-info">
           <th>Comunidades</th>
           <th>Primaria 20DPB</th>
           <th>Directivos</th>
@@ -170,7 +155,7 @@ export default defineComponent({
             </td>
 
             <td>
-              <button class="button is-info">
+              <button class="button is-info" @click="showModalCommunityDetails(reporte)">
                 <span class="icon"><i class="fas fa-eye"></i></span>
               </button>
             </td>
@@ -181,10 +166,9 @@ export default defineComponent({
   </div>
 
   <!-- Modal de detalles -->
-  <!-- <CommunityDetails
+  <community-details
     :show="showCommunityDetails"
-    :data="formData"
+    :data="dataCommunityDetails"
     @close="showCommunityDetails = false"
-    @openTeacherInformationModal="viewInformation"
-  /> -->
+  />
 </template>
