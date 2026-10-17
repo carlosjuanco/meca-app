@@ -95,10 +95,10 @@ export default defineComponent({
       try {
         const response = await handleRequest('get', `thestaffforacommunity/${communityId}`)
 
-        const elementarySchool = response.find((row: DataModelStaff) => row.type_of_school == 'Primaria')
-        const preschool = response.find((row: DataModelStaff) => row.type_of_school == 'Preescolar')
-        const earlyChildhoodEducation = response.find((row: DataModelStaff) => row.type_of_school == 'Inicial')
-        const schoolHostels = response.find((row: DataModelStaff) => row.type_of_school == 'Albergues escolares')
+        const elementarySchool = response.filter((row: DataModelStaff) => row.type_of_school == 'Primaria')
+        const preschool = response.filter((row: DataModelStaff) => row.type_of_school == 'Preescolar')
+        const earlyChildhoodEducation = response.filter((row: DataModelStaff) => row.type_of_school == 'Inicial')
+        const schoolHostels = response.filter((row: DataModelStaff) => row.type_of_school == 'Albergues escolares')
 
         response.map((row: DataModelStaff) => {
           row.telephone = phoneTransform(row.telephone.toString()).toString();
@@ -111,19 +111,19 @@ export default defineComponent({
         */
 
         if(elementarySchool) {
-          primarySchoolStaffData.splice(0, primarySchoolStaffData.length, ...response)
+          primarySchoolStaffData.splice(0, primarySchoolStaffData.length, ...elementarySchool)
         }
         console.info('Preescolar', preschoolStaffData)
         if(preschool) {
-          preschoolStaffData.splice(0, preschoolStaffData.length, ...response)
+          preschoolStaffData.splice(0, preschoolStaffData.length, ...preschool)
         }
         console.info('Inicial', earlyChildhoodStaffData)
         if(earlyChildhoodEducation) {
-          earlyChildhoodStaffData.splice(0, earlyChildhoodStaffData.length, ...response)
+          earlyChildhoodStaffData.splice(0, earlyChildhoodStaffData.length, ...earlyChildhoodEducation)
         }
         console.info('Albergues escolares', schoolDormitoryStaffData)
         if(schoolHostels) {
-          schoolDormitoryStaffData.splice(0, schoolDormitoryStaffData.length, ...response)
+          schoolDormitoryStaffData.splice(0, schoolDormitoryStaffData.length, ...schoolHostels)
         }
         
       } catch (error) {
