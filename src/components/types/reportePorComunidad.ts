@@ -1,4 +1,5 @@
 export type DataModel = {
+  idComunidad: number
   nombreComunidad: string
   // Primarias
   primaria: string

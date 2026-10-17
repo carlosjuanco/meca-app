@@ -20,6 +20,12 @@ export default defineComponent({
   },
   emits: ['close'],
   setup(props) {
+    type DataModelStaff = {
+      id: number,
+      telephone: string,
+      type_of_school: string
+    }
+
     const { 
       handleRequest,
       handleErrors,
@@ -33,14 +39,8 @@ export default defineComponent({
 
     // Inicializar la variable showModalProfesorInformacion en false
     const showModalProfesorInformacion = ref(false)
-    // Inicializar la variable loadingPrimarySchoolTeacherInformation en false
-    const loadingPrimarySchoolTeacherInformation = ref(false)
-    // Inicializar la variable loadingPreschoolTeacherInformation en false
-    const loadingPreschoolTeacherInformation = ref(false)
-    // Inicializar la variable loadingInitialTeacherInformation en false
-    const loadingInitialTeacherInformation = ref(false)
-    // Inicializar la variable loadingInformationForSchoolDormitoryTeachers en false
-    const loadingInformationForSchoolDormitoryTeachers = ref(false)
+    // Para que aparezca el loading en cada botón del profesor
+    const loadingBottonTeacher = ref(0)
     // Inicializar los datos del formulario 
     const formData = reactive({} as DataModelTeacher)
 
@@ -51,16 +51,8 @@ export default defineComponent({
 
       return void
     */
-    const viewInformation = async (id: number, loading: string) => {
-      if(loading == "Primaria") {
-        loadingPrimarySchoolTeacherInformation.value = true
-      } else if(loading == "Preescolar") {
-        loadingPreschoolTeacherInformation.value = true
-      } else if(loading == "Inicial") {
-        loadingInitialTeacherInformation.value = true
-      } else if(loading == "Albergues escolares") {
-        loadingInformationForSchoolDormitoryTeachers.value = true
-      }
+    const viewInformation = async (id: number) => {
+      loadingBottonTeacher.value = id
 
       try {
         const response = await handleRequest('get', `teacher/${id}`)
@@ -75,15 +67,7 @@ export default defineComponent({
 
         Object.assign(formData, response)
 
-        if(loading == "Primaria") {
-          loadingPrimarySchoolTeacherInformation.value = false
-        } else if(loading == "Preescolar") {
-          loadingPreschoolTeacherInformation.value = false
-        } else if(loading == "Inicial") {
-          loadingInitialTeacherInformation.value = false
-        } else if(loading == "Albergues escolares") {
-          loadingInformationForSchoolDormitoryTeachers.value = false
-        }
+        loadingBottonTeacher.value = 0
 
         showModalProfesorInformacion.value = true
       } catch (error) {
@@ -91,8 +75,66 @@ export default defineComponent({
       }
     }
 
+    // Para almacenar los datos del personal de primaria
+    const primarySchoolStaffData = reactive<DataModelStaff[]>([])
+    // Para almacenar los datos del personal de preescolar
+    const preschoolStaffData = reactive<DataModelStaff[]>([])
+    // Para almacenar los datos del personal de inicial
+    const earlyChildhoodStaffData = reactive<DataModelStaff[]>([])
+    // Para almacenar los datos del personal de albergues escolares
+    const schoolDormitoryStaffData = reactive<DataModelStaff[]>([])
+
+    /*
+      Obtener el personal de una comunidad, menos el director
+
+      @row de tipo DataModel
+
+      return void
+    */
+    const getTheStaffForACommunity = async (communityId: number) => {
+      try {
+        const response = await handleRequest('get', `thestaffforacommunity/${communityId}`)
+
+        const elementarySchool = response.find((row: DataModelStaff) => row.type_of_school == 'Primaria')
+        const preschool = response.find((row: DataModelStaff) => row.type_of_school == 'Preescolar')
+        const earlyChildhoodEducation = response.find((row: DataModelStaff) => row.type_of_school == 'Inicial')
+        const schoolHostels = response.find((row: DataModelStaff) => row.type_of_school == 'Albergues escolares')
+
+        response.map((row: DataModelStaff) => {
+          row.telephone = phoneTransform(row.telephone.toString()).toString();
+        })
+
+        /*
+          Reiniciar el array manteniendo la reactividad
+          Los tres puntos son el operador de propagación (spread operator).
+            Su función es "expandir" o "desempaquetar" los elementos de un array
+        */
+
+        if(elementarySchool) {
+          primarySchoolStaffData.splice(0, primarySchoolStaffData.length, ...response)
+        }
+        console.info('Preescolar', preschoolStaffData)
+        if(preschool) {
+          preschoolStaffData.splice(0, preschoolStaffData.length, ...response)
+        }
+        console.info('Inicial', earlyChildhoodStaffData)
+        if(earlyChildhoodEducation) {
+          earlyChildhoodStaffData.splice(0, earlyChildhoodStaffData.length, ...response)
+        }
+        console.info('Albergues escolares', schoolDormitoryStaffData)
+        if(schoolHostels) {
+          schoolDormitoryStaffData.splice(0, schoolDormitoryStaffData.length, ...response)
+        }
+        
+      } catch (error) {
+        handleErrors(error)
+      }
+    }
+
     watchEffect(() => {
       if (props.data) Object.assign(dataCommunity, props.data)
+
+      getTheStaffForACommunity(props.data.idComunidad)
     })
 
     /*
@@ -109,12 +151,13 @@ export default defineComponent({
     return { 
       dataCommunity,
       showModalProfesorInformacion,
-      loadingPrimarySchoolTeacherInformation,
-      loadingPreschoolTeacherInformation,
-      loadingInitialTeacherInformation,
-      loadingInformationForSchoolDormitoryTeachers,
+      loadingBottonTeacher,
       formData,
-      viewInformation
+      viewInformation,
+      primarySchoolStaffData,
+      preschoolStaffData,
+      earlyChildhoodStaffData,
+      schoolDormitoryStaffData
     }
   }
 })
@@ -340,9 +383,9 @@ export default defineComponent({
                     </div>
                     <div class="control">
                       <button 
-                        :class="{'button is-info': true, 'is-loading': loadingPrimarySchoolTeacherInformation }"
-                        :disabled="loadingPrimarySchoolTeacherInformation == true"
-                        @click="viewInformation(dataCommunity.idDirectivoPrimaria, 'Primaria')">
+                        :class="{'button is-info': true, 'is-loading': loadingBottonTeacher == dataCommunity.idDirectivoPrimaria }"
+                        :disabled="loadingBottonTeacher == dataCommunity.idDirectivoPrimaria"
+                        @click="viewInformation(dataCommunity.idDirectivoPrimaria)">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -390,9 +433,9 @@ export default defineComponent({
                     </div>
                     <div class="control">
                       <button
-                        :class="{'button is-info': true, 'is-loading': loadingPreschoolTeacherInformation }"
-                        :disabled="loadingPreschoolTeacherInformation == true"
-                        @click="viewInformation(dataCommunity.idDirectivoPreescolar, 'Preescolar')">
+                        :class="{'button is-info': true, 'is-loading': loadingBottonTeacher == dataCommunity.idDirectivoPreescolar }"
+                        :disabled="loadingBottonTeacher == dataCommunity.idDirectivoPreescolar"
+                        @click="viewInformation(dataCommunity.idDirectivoPreescolar)">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -440,9 +483,9 @@ export default defineComponent({
                     </div>
                     <div class="control">
                       <button
-                        :class="{'button is-info': true, 'is-loading': loadingInitialTeacherInformation }"
-                        :disabled="loadingInitialTeacherInformation == true"
-                        @click="viewInformation(dataCommunity.idDirectivoInicial, 'Inicial')">
+                        :class="{'button is-info': true, 'is-loading': loadingBottonTeacher == dataCommunity.idDirectivoInicial }"
+                        :disabled="loadingBottonTeacher == dataCommunity.idDirectivoInicial"
+                        @click="viewInformation(dataCommunity.idDirectivoInicial)">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -490,9 +533,9 @@ export default defineComponent({
                     </div>
                     <div class="control">
                       <button
-                        :class="{'button is-info': true, 'is-loading': loadingInformationForSchoolDormitoryTeachers }"
-                        :disabled="loadingInformationForSchoolDormitoryTeachers == true"
-                        @click="viewInformation(dataCommunity.idDirectivoAlbergueEscolar, 'Albergues escolares')">
+                        :class="{'button is-info': true, 'is-loading': loadingBottonTeacher == dataCommunity.idDirectivoAlbergueEscolar }"
+                        :disabled="loadingBottonTeacher == dataCommunity.idDirectivoAlbergueEscolar"
+                        @click="viewInformation(dataCommunity.idDirectivoAlbergueEscolar)">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -518,25 +561,213 @@ export default defineComponent({
             </tr>
 
             <tr>
-              <td>
-                <div class="field">
-                  <label class="label">Personal</label>
+              <td v-if="primarySchoolStaffData.length > 0">
+                <div class="field is-horizontal">
+                  <div class="field-label">
+                    <!-- Left empty for spacing -->
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="label">Personal</label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <template v-for="teacher in primarySchoolStaffData" :key="teacher.id">
+                  <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                      <label class="label">Nombre:</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field has-addons">
+                        <div class="control is-expanded">
+                        <label class="input has-background-light"
+                          v-text="teacher.full_name">
+                        </label>
+                      </div>
+                      <div class="control">
+                        <button 
+                          :class="{'button is-info': true, 'is-loading': loadingBottonTeacher == teacher.id }"
+                          :disabled="loadingBottonTeacher == teacher.id"
+                          @click="viewInformation(teacher.id, 'Primaria')">
+                          <span class="icon"><i class="fas fa-eye"></i></span>
+                        </button>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                      <label class="label">Teléfono:</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <label class="input has-background-light">
+                            <span v-text="teacher.telephone"></span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
               </td>
-              <td>
-                <div class="field">
-                  <label class="label">Personal</label>
+              <td v-if="preschoolStaffData.length > 0">
+                <div class="field is-horizontal">
+                  <div class="field-label">
+                    <!-- Left empty for spacing -->
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="label">Personal</label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <template v-for="teacher in preschoolStaffData" :key="teacher.id">
+                  <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                      <label class="label">Nombre:</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field has-addons">
+                        <div class="control is-expanded">
+                        <label class="input has-background-light"
+                          v-text="teacher.full_name">
+                        </label>
+                      </div>
+                      <div class="control">
+                        <button 
+                          :class="{'button is-info': true, 'is-loading': loadingBottonTeacher == teacher.id }"
+                          :disabled="loadingBottonTeacher == teacher.id"
+                          @click="viewInformation(teacher.id, 'Primaria')">
+                          <span class="icon"><i class="fas fa-eye"></i></span>
+                        </button>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                      <label class="label">Teléfono:</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <label class="input has-background-light">
+                            <span v-text="teacher.telephone"></span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
               </td>
-              <td>
-                <div class="field">
-                  <label class="label">Personal</label>
+              <td v-if="earlyChildhoodStaffData.length > 0">
+                <div class="field is-horizontal">
+                  <div class="field-label">
+                    <!-- Left empty for spacing -->
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="label">Personal</label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <template v-for="teacher in earlyChildhoodStaffData" :key="teacher.id">
+                  <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                      <label class="label">Nombre:</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field has-addons">
+                        <div class="control is-expanded">
+                        <label class="input has-background-light"
+                          v-text="teacher.full_name">
+                        </label>
+                      </div>
+                      <div class="control">
+                        <button 
+                          :class="{'button is-info': true, 'is-loading': loadingBottonTeacher == teacher.id }"
+                          :disabled="loadingBottonTeacher == teacher.id"
+                          @click="viewInformation(teacher.id, 'Primaria')">
+                          <span class="icon"><i class="fas fa-eye"></i></span>
+                        </button>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                      <label class="label">Teléfono:</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <label class="input has-background-light">
+                            <span v-text="teacher.telephone"></span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
               </td>
-              <td>
-                <div class="field">
-                  <label class="label">Personal</label>
+              <td v-if="schoolDormitoryStaffData.length > 0">
+                <div class="field is-horizontal">
+                  <div class="field-label">
+                    <!-- Left empty for spacing -->
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <div class="control">
+                        <label class="label">Personal</label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <template v-for="teacher in schoolDormitoryStaffData" :key="teacher.id">
+                  <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                      <label class="label">Nombre:</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field has-addons">
+                        <div class="control is-expanded">
+                        <label class="input has-background-light"
+                          v-text="teacher.full_name">
+                        </label>
+                      </div>
+                      <div class="control">
+                        <button 
+                          :class="{'button is-info': true, 'is-loading': loadingBottonTeacher == teacher.id }"
+                          :disabled="loadingBottonTeacher == teacher.id"
+                          @click="viewInformation(teacher.id, 'Primaria')">
+                          <span class="icon"><i class="fas fa-eye"></i></span>
+                        </button>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field is-horizontal">
+                    <div class="field-label is-normal">
+                      <label class="label">Teléfono:</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control">
+                          <label class="input has-background-light">
+                            <span v-text="teacher.telephone"></span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
               </td>
 
             </tr>
