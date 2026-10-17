@@ -41,7 +41,7 @@ export default defineComponent({
           if (row.telefonoDelProfesorDelAlbergueEscolar) {
             row.telefonoDelProfesorDelAlbergueEscolar = phoneTransform(row.telefonoDelProfesorDelAlbergueEscolar.toString()).toString();
           }
-        });
+        })
         
         /*
           Reiniciar el array manteniendo la reactividad

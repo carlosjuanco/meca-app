@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, watchEffect, PropType, watch } from 'vue'
+import helpers from '../../helpers'
 import type { DataModel } from '../types/reportePorComunidad'
 import type { DataModel as DataModelTeacher} from '../types/teacher'
 import ProfesorInformacion from './ProfesorInformacion.vue'
@@ -19,6 +20,12 @@ export default defineComponent({
   },
   emits: ['close'],
   setup(props) {
+    const { 
+      handleRequest,
+      handleErrors,
+      phoneTransform,
+      convertDate,
+    } = helpers()
     // Crear un contador para la key
     const modalKey = ref(0)
 
@@ -36,26 +43,24 @@ export default defineComponent({
 
       return void
     */
-    const viewInformation = () => {
-      Object.assign(formData, { 
-        id: 0,
-        name: '',
-        paternal_surname: '',
-        maternal_surname: undefined,
-        curp: '',
-        rfc: '',
-        gender: '',
-        budget_code: '',
-        funcion: undefined,
-        telephone: '',
-        motivo: undefined,
-        date_of_entry_into_the_sep: undefined,
-        study_profile: undefined,
-        language: undefined,
-        language_variant: undefined,
-        school_id: 0,
-      })
-      showModalProfesorInformacion.value = true
+    const viewInformation = async (id: number) => {
+      try {
+        const response = await handleRequest('get', `teacher/${id}`)
+        // Transformar el teléfono en el formato xxx xxx xxxx
+        // Transformar la fecha de ingreso a la sep de 2026-09-04 a 04/09/2026
+        if (response.telephone) {
+          response.telephone = phoneTransform(response.telephone.toString()).toString();
+        }
+        if (response.date_of_entry_into_the_sep) {
+          response.date_of_entry_into_the_sep = convertDate(response.date_of_entry_into_the_sep.toString()).toString();
+        }
+
+        Object.assign(formData, response)
+
+        showModalProfesorInformacion.value = true
+      } catch (error) {
+        handleErrors(error)
+      }
     }
 
     watchEffect(() => {
@@ -302,7 +307,7 @@ export default defineComponent({
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info" @click="viewInformation()">
+                      <button class="button is-info" @click="viewInformation(dataCommunity.idDirectivoPrimaria)">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -349,7 +354,7 @@ export default defineComponent({
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info" @click="viewInformation()">
+                      <button class="button is-info" @click="viewInformation(dataCommunity.idDirectivoPreescolar)">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -396,7 +401,7 @@ export default defineComponent({
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info" @click="viewInformation()">
+                      <button class="button is-info" @click="viewInformation(dataCommunity.idDirectivoInicial)">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -443,7 +448,7 @@ export default defineComponent({
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info" @click="viewInformation()">
+                      <button class="button is-info" @click="viewInformation(dataCommunity.idDirectivoAlbergueEscolar)">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
