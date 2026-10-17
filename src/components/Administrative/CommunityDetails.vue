@@ -33,6 +33,14 @@ export default defineComponent({
 
     // Inicializar la variable showModalProfesorInformacion en false
     const showModalProfesorInformacion = ref(false)
+    // Inicializar la variable loadingPrimarySchoolTeacherInformation en false
+    const loadingPrimarySchoolTeacherInformation = ref(false)
+    // Inicializar la variable loadingPreschoolTeacherInformation en false
+    const loadingPreschoolTeacherInformation = ref(false)
+    // Inicializar la variable loadingInitialTeacherInformation en false
+    const loadingInitialTeacherInformation = ref(false)
+    // Inicializar la variable loadingInformationForSchoolDormitoryTeachers en false
+    const loadingInformationForSchoolDormitoryTeachers = ref(false)
     // Inicializar los datos del formulario 
     const formData = reactive({} as DataModelTeacher)
 
@@ -43,7 +51,17 @@ export default defineComponent({
 
       return void
     */
-    const viewInformation = async (id: number) => {
+    const viewInformation = async (id: number, loading: string) => {
+      if(loading == "Primaria") {
+        loadingPrimarySchoolTeacherInformation.value = true
+      } else if(loading == "Preescolar") {
+        loadingPreschoolTeacherInformation.value = true
+      } else if(loading == "Inicial") {
+        loadingInitialTeacherInformation.value = true
+      } else if(loading == "Albergues escolares") {
+        loadingInformationForSchoolDormitoryTeachers.value = true
+      }
+
       try {
         const response = await handleRequest('get', `teacher/${id}`)
         // Transformar el teléfono en el formato xxx xxx xxxx
@@ -56,6 +74,16 @@ export default defineComponent({
         }
 
         Object.assign(formData, response)
+
+        if(loading == "Primaria") {
+          loadingPrimarySchoolTeacherInformation.value = false
+        } else if(loading == "Preescolar") {
+          loadingPreschoolTeacherInformation.value = false
+        } else if(loading == "Inicial") {
+          loadingInitialTeacherInformation.value = false
+        } else if(loading == "Albergues escolares") {
+          loadingInformationForSchoolDormitoryTeachers.value = false
+        }
 
         showModalProfesorInformacion.value = true
       } catch (error) {
@@ -81,6 +109,10 @@ export default defineComponent({
     return { 
       dataCommunity,
       showModalProfesorInformacion,
+      loadingPrimarySchoolTeacherInformation,
+      loadingPreschoolTeacherInformation,
+      loadingInitialTeacherInformation,
+      loadingInformationForSchoolDormitoryTeachers,
       formData,
       viewInformation
     }
@@ -307,7 +339,10 @@ export default defineComponent({
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info" @click="viewInformation(dataCommunity.idDirectivoPrimaria)">
+                      <button 
+                        :class="{'button is-info': true, 'is-loading': loadingPrimarySchoolTeacherInformation }"
+                        :disabled="loadingPrimarySchoolTeacherInformation == true"
+                        @click="viewInformation(dataCommunity.idDirectivoPrimaria, 'Primaria')">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -354,7 +389,10 @@ export default defineComponent({
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info" @click="viewInformation(dataCommunity.idDirectivoPreescolar)">
+                      <button
+                        :class="{'button is-info': true, 'is-loading': loadingPreschoolTeacherInformation }"
+                        :disabled="loadingPreschoolTeacherInformation == true"
+                        @click="viewInformation(dataCommunity.idDirectivoPreescolar, 'Preescolar')">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -401,7 +439,10 @@ export default defineComponent({
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info" @click="viewInformation(dataCommunity.idDirectivoInicial)">
+                      <button
+                        :class="{'button is-info': true, 'is-loading': loadingInitialTeacherInformation }"
+                        :disabled="loadingInitialTeacherInformation == true"
+                        @click="viewInformation(dataCommunity.idDirectivoInicial, 'Inicial')">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
@@ -448,7 +489,10 @@ export default defineComponent({
                       </label>
                     </div>
                     <div class="control">
-                      <button class="button is-info" @click="viewInformation(dataCommunity.idDirectivoAlbergueEscolar)">
+                      <button
+                        :class="{'button is-info': true, 'is-loading': loadingInformationForSchoolDormitoryTeachers }"
+                        :disabled="loadingInformationForSchoolDormitoryTeachers == true"
+                        @click="viewInformation(dataCommunity.idDirectivoAlbergueEscolar, 'Albergues escolares')">
                         <span class="icon"><i class="fas fa-eye"></i></span>
                       </button>
                     </div>
