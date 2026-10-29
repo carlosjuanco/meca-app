@@ -66,7 +66,7 @@ export default defineComponent({
 <template>
 
 <div :class="{'modal': true, 'is-active': show}">
-  <div class="modal-background" @click="$emit('close')"></div>
+  <div class="modal-background data-profesor-informacion-modal-background" @click="$emit('close')"></div>
 
   <div class="modal-card ver-informacion-profesor">
     
@@ -74,7 +74,7 @@ export default defineComponent({
       <p class="modal-card-title has-text-white">
         <span >Información del profesor</span>
       </p>
-      <button class="delete" @click="$emit('close')"></button>
+      <button class="delete data-profesor-informacion-delete" @click="$emit('close')"></button>
     </header>
 
     <section class="modal-card-body">

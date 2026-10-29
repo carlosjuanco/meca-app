@@ -237,7 +237,7 @@ export default defineComponent({
 <template>
   <!-- Modal card -->
   <div :class="{'modal': true, 'is-active': show}">
-    <div class="modal-background" @click="$emit('close')"></div>
+    <div class="modal-background data-profesor-form-modal-background" @click="$emit('close')"></div>
 
     <div class="modal-card">
 
@@ -246,7 +246,7 @@ export default defineComponent({
           <span v-if="data.id">Editar profesor</span>
           <span v-else>Nuevo profesor</span>
         </p>
-        <button class="delete" @click="$emit('close')"></button>
+        <button class="delete data-profesor-form-delete" data- @click="$emit('close')"></button>
       </header>
 
       <Form
