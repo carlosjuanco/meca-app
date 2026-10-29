@@ -51,7 +51,8 @@ describe('Componente AppProfesor - Validaciones y cierre', () => {
   }
 
   const cerrarModalYSesion = () => {
-    cy.get(".modal .modal-background").click({ force: true })
+    // { force: true } va dentro del click porque no es un botón
+    cy.get(".modal .data-profesor-form-modal-background").click({ force: true })
     cerrarSesion()
   }
 
@@ -157,14 +158,15 @@ describe('Componente AppProfesor - Validaciones y cierre', () => {
 
   it('debe cerrar el modal al hacer clic en el botón de cerrar (X)', () => {
     abrirModal()
-    cy.get(".modal-card-head .delete").click()
+    cy.get(".modal-card-head .data-profesor-form-delete").click()
     cy.get(".modal").should('not.have.class', 'is-active')
     cerrarSesion()
   })
 
   it('debe cerrar el modal al hacer clic en el fondo (modal-background)', () => {
     abrirModal()
-    cy.get(".modal-background").click({ force: true })
+    // { force: true } va dentro del click porque no es un botón
+    cy.get(".modal .data-profesor-form-modal-background").click({ force: true })
     cy.get(".modal").should('not.have.class', 'is-active')
     cerrarSesion()
   })

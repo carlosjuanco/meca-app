@@ -99,7 +99,8 @@ describe('Componente AppProfesor', () => {
   }
 
   const cerrarModalYSesion = () => {
-    cy.get(".modal .modal-background").click({ force: true })
+    // { force: true } va dentro del click porque no es un botón
+    cy.get(".modal .data-profesor-form-modal-background").click({ force: true })
     cerrarSesion()
   }
 
