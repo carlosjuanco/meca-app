@@ -1,189 +1,105 @@
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
-import ModalDetail from './ModalDetail.vue'
-import ProfesorInformacion from './ProfesorInformacion.vue'
+import { defineComponent, reactive, onMounted, ref } from 'vue'
+import helpers from '../../helpers'
+import type { DataModel } from '../types/reportePorComunidad'
+import CommunityDetails from './CommunityDetails.vue'
 
 export default defineComponent({
   name: 'ReportePorComunidad',
-  components: {
-    ModalDetail,
-    ProfesorInformacion
-  },
+  components: { CommunityDetails },
   setup() {
+    const { 
+      handleRequest,
+      handleErrors,
+      phoneTransform,
+    } = helpers()
 
-    type TeacherDataModel = {
-      id: number
-      name: string
-      lastNameFather: string
-      lastNameMother: string
-      curp?: string
-      rfc?: string
-      sex?: string
-      budgetKey?: string
-      function?: string
-      school?: string
-      phone?: number
-      reason?: number
-      admissionDate?: string
-      studyProfile?: string
-      language?: string
-      languageVariant?: string
-    }
+    const showCommunityDetails = ref(false)
+    // const showInformation = ref(false)
 
-    type DataModel = {
-      id: number
-      nameCommunity: string
-      // Primarias
-      primarySchools: string
-      primaryKey: string
-      elementarySchoolTeachers: string
-      progressivePrimarySchoolNumbers: number
-      primaryStaff: TeacherDataModel[]
-      // preescolares
-      preschools: string
-      preschoolKey: string
-      preschoolTeachers: string
-      preschoolNumberProgression: number
-      preschoolStaff: TeacherDataModel[]
-      // Educación inicial
-      earlyChildhoodEducation: string
-      initialKey: string
-      earlyChildhoodEducationTeachers: string
-      initialStaff: TeacherDataModel[]
-      // Albergues
-      schoolDormitories: string
-      keyHostels: string
-      schoolDormitoryDirectors: string
-      shelterStaff: TeacherDataModel[]
-    }
+    const data = reactive<DataModel[]>([])
+    const dataCommunityDetails = reactive({} as DataModel)
 
-    const showModal = ref(false)
-    const showInformation = ref(false)
+    // Obtener reporte por comunidad
+    const getReportByCommunity = async () => {
+      try {
+        const response = await handleRequest('get', `teachers`)
 
-    const formData = reactive({} as DataModel)
-    const teacherFormData = reactive({} as TeacherDataModel)
+        // Transformar el teléfono en el formato xxx xxx xxxx
+        response.forEach((row: DataModel) => {
+          if (row.telefonoDelProfesorDeLaPrimaria) {
+            row.telefonoDelProfesorDeLaPrimaria = phoneTransform(row.telefonoDelProfesorDeLaPrimaria.toString()).toString();
+          }
+          if (row.telefonoDelProfesorDePreescolar) {
+            row.telefonoDelProfesorDePreescolar = phoneTransform(row.telefonoDelProfesorDePreescolar.toString()).toString();
+          }
 
-    const data = reactive<DataModel[]>([
-      {
-        id: 1,
-        nameCommunity: 'San Juan Monteflor',
-        primarySchools: 'Redencion',
-        primaryKey: '0239T',
-        elementarySchoolTeachers: 'Pedro Mejia Caballero',
-        progressivePrimarySchoolNumbers: 1,
-        primaryStaff: [{
-          id: 1,
-          name: 'Gloria',
-          lastNameFather: 'Garcia',
-          lastNameMother: 'Ramirez'
-        }],
-        preschools: 'Miguel Hidalgo',
-        preschoolKey: '0460P',
-        preschoolTeachers: 'Julia A. Hernandez Santiago',
-        preschoolNumberProgression: 0,
-        preschoolStaff: [{
-          id: 2,
-          name: 'Gloria',
-          lastNameFather: 'Garcia',
-          lastNameMother: 'Ramirez'
-        }],
-        earlyChildhoodEducation: '',
-        initialKey: '20DIN',
-        earlyChildhoodEducationTeachers: '',
-        initialStaff: [{
-          id: 3,
-          name: 'Gloria',
-          lastNameFather: 'Jimenez',
-          lastNameMother: 'Jimenez'
-        }],
-        schoolDormitories: 'Redencion',
-        keyHostels: '20TA10124A',
-        schoolDormitoryDirectors: 'Casto Ines Sanchez',
-        shelterStaff: [{
-          id: 4,
-          name: 'Iris',
-          lastNameFather: 'Garcia',
-          lastNameMother: 'Garcia'
-        }]
-      },
-      {
-        id: 2,
-        nameCommunity: 'Santa Maria Peñoles',
-        primarySchools: 'Redencion',
-        primaryKey: '0450N',
-        elementarySchoolTeachers: 'Eloy Rojas Perez',
-        progressivePrimarySchoolNumbers: 2,
-        primaryStaff: [{
-          id: 5,
-          name: 'Vilma',
-          lastNameFather: 'Ramirez',
-          lastNameMother: 'Ramirez'
-        }],
-        preschools: 'Juan Amos Comenio',
-        preschoolKey: '04610',
-        preschoolTeachers: 'Nashielly Martinez Vel',
-        preschoolNumberProgression: 0,
-        preschoolStaff: [{
-          id: 6,
-          name: 'Ramon',
-          lastNameFather: 'Garcia',
-          lastNameMother: 'Ramirez'
-        }],
-        earlyChildhoodEducation: '',
-        initialKey: '',
-        earlyChildhoodEducationTeachers: '',
-        initialStaff: [{
-          id: 7,
-          name: 'Lenin',
-          lastNameFather: 'Jimenez',
-          lastNameMother: 'Jimenez'
-        }],
-        schoolDormitories: 'Redencion',
-        keyHostels: 'TA10293W',
-        schoolDormitoryDirectors: 'Gustavo E. Rojas',
-        shelterStaff: [{
-          id: 8,
-          name: 'Denis',
-          lastNameFather: 'Garcia',
-          lastNameMother: 'Garcia'
-        }]
+          if (row.telefonoDelProfesorDeInicial) {
+            row.telefonoDelProfesorDeInicial = phoneTransform(row.telefonoDelProfesorDeInicial.toString()).toString();
+          }
+
+          if (row.telefonoDelProfesorDelAlbergueEscolar) {
+            row.telefonoDelProfesorDelAlbergueEscolar = phoneTransform(row.telefonoDelProfesorDelAlbergueEscolar.toString()).toString();
+          }
+        })
+        
+        /*
+          Reiniciar el array manteniendo la reactividad
+          Los tres puntos son el operador de propagación (spread operator).
+            Su función es "expandir" o "desempaquetar" los elementos de un array
+        */
+        data.splice(0, data.length, ...response)
+      } catch (error) {
+        console.info(handleErrors(error))
       }
-    ])
-
-    const detail = (row: DataModel ): void => {
-      if (row) Object.assign(formData, row)
-
-      console.info('Ver la informacion de formData', formData)
-
-      showModal.value = true
     }
 
-    const viewInformation = (row: TeacherDataModel ): void => {
-      console.info('3 meses sin garantia')
-      if (row) Object.assign(teacherFormData, row)
+    /**
+     * [Descripción breve de qué hace Object.assign()]
+     * 
+     * [Descripción detallada: realiza una copia superficial (shallow copy)]
+     *
+     * @param {Object} target - El objeto destino que recibirá las propiedades y será modificado.
+     * @param {...Object} sources - Uno o más objetos origen que contienen las propiedades a copiar.
+     * @returns {Object} El objeto destino (target) ya modificado.
+     * 
+     * @see {@link https://mozilla.org|MDN Web Docs - Object.assign()}
+     * 
+     * @example
+     * // [Ejemplo breve de uso]
+     * const destino = {};
+     * const origen = { a: 1 };
+     * Object.assign(destino, origen);
+     */
 
-      showInformation.value = true
+    const showModalCommunityDetails = (row: DataModel ): void => {
+      Object.assign(dataCommunityDetails, row)
+
+      showCommunityDetails.value = true
     }
+
+    onMounted(() => {
+      getReportByCommunity()
+    })
 
     return { 
       data,
-      formData,
-      showModal,
-      detail,
-      showInformation,
-      viewInformation,
-      teacherFormData
+      showCommunityDetails,
+      showModalCommunityDetails,
+      dataCommunityDetails
     }
   }
 })
 </script>
 
 <template>
+  <!-- Título del componente -->
+  <h1 class="title has-text-centered">Reporte por comunidad</h1>
   <!-- Tabla -->
   <div class="table-container">
-    <table class="table is-fullwidth is-striped is-bordered">
+    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
       <thead>
-        <tr class="is-primary">
+        <tr class="is-info">
           <th>Comunidades</th>
           <th>Primaria 20DPB</th>
           <th>Directivos</th>
@@ -200,34 +116,46 @@ export default defineComponent({
       </thead>
 
       <tbody>
-        <template v-for="stranger in data" :key="stranger.id">
+        <template v-for="reporte in data" :key="reporte.id">
           <tr>
-            <td v-text="stranger.nameCommunity"></td>
+            <td v-text="reporte.nombreComunidad"></td>
             <td>
-              <p v-text="stranger.primarySchools"></p>
-              <p v-text="stranger.primaryKey"></p>
+              <p v-text="reporte.primaria"></p>
+              <p v-text="reporte.claveEscuelaPrimaria"></p>
             </td>
-            <td v-text="stranger.elementarySchoolTeachers"></td>
-            <td v-text="stranger.progressivePrimarySchoolNumbers"></td>
             <td>
-              <p v-text="stranger.preschools"></p>
-              <p v-text="stranger.preschoolKey"></p>
+              <p v-text="reporte.directivoPrimaria"></p>
+              <p v-text="reporte.telefonoDelProfesorDeLaPrimaria"></p>
             </td>
-            <td v-text="stranger.preschoolTeachers"></td>
-            <td v-text="stranger.preschoolNumberProgression"></td>
+            <td v-text="reporte.numeroProgresivoPrimaria"></td>
             <td>
-              <p v-text="stranger.earlyChildhoodEducation"></p>
-              <p v-text="stranger.initialKey"></p>
+              <p v-text="reporte.preescolar"></p>
+              <p v-text="reporte.claveEscuelaPreescolar"></p>
             </td>
-            <td v-text="stranger.earlyChildhoodEducationTeachers"></td>
             <td>
-              <p v-text="stranger.schoolDormitories"></p>
-              <p v-text="stranger.keyHostels"></p>
+              <p v-text="reporte.directivoPreescolar"></p>
+              <p v-text="reporte.telefonoDelProfesorDePreescolar"></p>
             </td>
-            <td v-text="stranger.schoolDormitoryDirectors"></td>
+            <td v-text="reporte.numeroProgresivoPreescolar"></td>
+            <td>
+              <p v-text="reporte.inicial"></p>
+              <p v-text="reporte.claveEscuelaInicial"></p>
+            </td>
+            <td>
+              <p v-text="reporte.directivoInicial"></p>
+              <p v-text="reporte.telefonoDelProfesorDeInicial"></p>
+            </td>
+            <td>
+              <p v-text="reporte.albergueEscolar"></p>
+              <p v-text="reporte.claveEscuelaAlbergueEscolar"></p>
+            </td>
+            <td>
+              <p v-text="reporte.directivoAlbergueEscolar"></p>
+              <p v-text="reporte.telefonoDelProfesorDelAlbergueEscolar"></p>
+            </td>
 
             <td>
-              <button class="button is-info" @click="detail(stranger)">
+              <button class="button is-info" @click="showModalCommunityDetails(reporte)">
                 <span class="icon"><i class="fas fa-eye"></i></span>
               </button>
             </td>
@@ -238,17 +166,9 @@ export default defineComponent({
   </div>
 
   <!-- Modal de detalles -->
-  <ModalDetail
-    :show="showModal"
-    :data="formData"
-    @close="showModal = false"
-    @openTeacherInformationModal="viewInformation"
-  />
-
-  <!-- Modal de información de un profesor -->
-  <ProfesorInformacion
-    :show="showInformation"
-    :data="teacherFormData"
-    @close="showInformation = false"
+  <community-details
+    :show="showCommunityDetails"
+    :data="dataCommunityDetails"
+    @close="showCommunityDetails = false"
   />
 </template>
