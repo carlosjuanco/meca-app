@@ -97,7 +97,7 @@ export default defineComponent({
   <h1 class="title has-text-centered">Reporte por comunidad</h1>
   <!-- Tabla -->
   <div class="table-container">
-    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth data-reporte-por-comunidad-table">
       <thead>
         <tr class="is-info">
           <th>Comunidades</th>
