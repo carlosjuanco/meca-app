@@ -166,7 +166,7 @@ export default defineComponent({
 <template>
 
 <div :class="{'modal': true, 'is-active': show}">
-  <div class="modal-background" @click="$emit('close')"></div>
+  <div class="modal-background data-community-details-modal-background" @click="$emit('close')"></div>
 
   <div class="modal-card ver-reporte-por-comunidad">
 
@@ -175,7 +175,7 @@ export default defineComponent({
         <strong>Comunidad: </strong>
         <span v-text="dataCommunity.nombreComunidad"></span>
       </p>
-      <button class="delete" @click="$emit('close')"></button>
+      <button class="delete data-community-details-delete" @click="$emit('close')"></button>
     </header>
 
     <section class="modal-card-body">
