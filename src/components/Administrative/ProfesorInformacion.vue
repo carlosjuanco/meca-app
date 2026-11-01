@@ -65,7 +65,7 @@ export default defineComponent({
 
 <template>
 
-<div :class="{'modal': true, 'is-active': show}">
+<div :class="{'modal data-profesor-informacion-modal': true, 'is-active': show}">
   <div class="modal-background data-profesor-informacion-modal-background" @click="$emit('close')"></div>
 
   <div class="modal-card ver-informacion-profesor">
