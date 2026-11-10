@@ -6,6 +6,7 @@ import { Field, Form, ErrorMessage } from 'vee-validate'
 import { object, string, number, mixed, date } from 'yup'
 import type { DataModel } from '../types/teacher'
 import type { DataModel as DataModelSchool } from '../types/escuela'
+import type { DataModel as DataModelComunity } from '../types/comunidad'
 
 export default defineComponent({
   name: 'ProfesorForm',
@@ -112,7 +113,12 @@ export default defineComponent({
         .required('La escuela es obligatorio')
         // Si no le pongo esta opción de que al menos tenga un caracter no hace
         // que la escuela sea obligatoria
-        .min(1, 'Selecciona una escuela')
+        .min(1, 'Selecciona una escuela'),
+      comunity_id: number()
+        .required('La comunidad es obligatoria')
+        // Si no le pongo esta opción de que al menos tenga un caracter no hace
+        // que la comunidad sea obligatoria
+        .min(1, 'Selecciona una comunidad')
     })
 
     const firstInput = ref<HTMLInputElement | null>(null)
@@ -121,9 +127,9 @@ export default defineComponent({
     let schools = reactive<DataModelSchool[]>([])
 
     // Obtener todas las escuelas
-    const getAllTheSchools = async () => {
+    const getAllTheSchools = async (comunity_id: number) => {
       try {
-        const response = await handleRequest('get', `schools`)
+        const response = await handleRequest('get', `allSchoolsThatBelongToACommunity/${comunity_id}`)
 
         /*
           Reiniciar el array manteniendo la reactividad
@@ -131,6 +137,25 @@ export default defineComponent({
             Su función es "expandir" o "desempaquetar" los elementos de un array
         */
         schools.splice(0, schools.length, ...response)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    // Crear la variable communities para almacenar todas las comunidades
+    let communities = reactive<DataModelComunity[]>([])
+
+    // Obtener todas las comunidades
+    const getAllTheComminities = async () => {
+      try {
+        const response = await handleRequest('get', `communities`)
+
+        /*
+          Reiniciar el array manteniendo la reactividad
+          Los tres puntos son el operador de propagación (spread operator).
+            Su función es "expandir" o "desempaquetar" los elementos de un array
+        */
+        communities.splice(0, communities.length, ...response)
       } catch (error) {
         console.log(error)
       }
@@ -215,7 +240,7 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      getAllTheSchools()
+      getAllTheComminities()
     })
 
     return {
@@ -228,6 +253,8 @@ export default defineComponent({
       showModalInternalNotification,
       dataInternalNotification,
       schools,
+      getAllTheSchools,
+      communities,
       handlePhoneInput
     }
   }
@@ -358,6 +385,32 @@ export default defineComponent({
               </Field>
             </div>
             <ErrorMessage name="funcion" class="tag is-warning"/>
+          </div>
+
+          <div class="field">
+            <label class="label">Comunidad</label>
+            <div class="select is-fullwidth">
+              <Field name="comunity_id" v-slot="{ field, value, handleChange }">
+                <select
+                  v-bind="field"
+                  @change="(e) => {
+                    handleChange(e)
+                    getAllTheSchools(Number(e.target.value))
+                  }"
+                >
+                  <option value="" disabled>Selecciona una comunidad</option>
+                  <option 
+                    v-for="comunity in communities" 
+                    :key="comunity.id" 
+                    :value="Number(comunity.id)"
+                    :selected="value === Number(comunity.id)"
+                  >
+                  {{ comunity.name }}
+                  </option>
+                </select>
+              </Field>
+            </div>
+            <ErrorMessage name="comunity_id" class="tag is-warning"/>
           </div>
 
           <div class="field">
