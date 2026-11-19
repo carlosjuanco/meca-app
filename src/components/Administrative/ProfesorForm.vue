@@ -219,6 +219,7 @@ export default defineComponent({
         let community: number | string = ""
         if(props.data.school){
           community = props.data.school.community_id
+          getAllTheSchools(community)
         }
         
         Object.assign(initialValues, {
