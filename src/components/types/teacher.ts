@@ -11,6 +11,7 @@ import type { PaginationLink } from './tiposGenericos'
 type School = {
   id: number;
   name: string;
+  community_id: number;
 }
 export type DataModel = {
   id: number;
@@ -42,6 +43,7 @@ export type DataModel = {
   language_variant?: string | undefined;
   school_id: number;
   school?: School;
+  community_id?: number | string
   animateDisappearRow?: boolean;
   hideRow?: boolean;
 }

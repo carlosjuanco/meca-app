@@ -114,7 +114,7 @@ export default defineComponent({
         // Si no le pongo esta opción de que al menos tenga un caracter no hace
         // que la escuela sea obligatoria
         .min(1, 'Selecciona una escuela'),
-      comunity_id: number()
+      community_id: number()
         .required('La comunidad es obligatoria')
         // Si no le pongo esta opción de que al menos tenga un caracter no hace
         // que la comunidad sea obligatoria
@@ -127,9 +127,9 @@ export default defineComponent({
     let schools = reactive<DataModelSchool[]>([])
 
     // Obtener todas las escuelas
-    const getAllTheSchools = async (comunity_id: number) => {
+    const getAllTheSchools = async (community_id: number) => {
       try {
-        const response = await handleRequest('get', `allSchoolsThatBelongToACommunity/${comunity_id}`)
+        const response = await handleRequest('get', `allSchoolsThatBelongToACommunity/${community_id}`)
 
         /*
           Reiniciar el array manteniendo la reactividad
@@ -215,10 +215,16 @@ export default defineComponent({
         if(props.data.date_of_entry_into_the_sep) {
           date = convertReverseDate(props.data.date_of_entry_into_the_sep)
         }
+
+        let community: number | string = ""
+        if(props.data.school){
+          community = props.data.school.community_id
+        }
         
         Object.assign(initialValues, {
           ...props.data,
-          date_of_entry_into_the_sep: date
+          date_of_entry_into_the_sep: date,
+          community_id: community
         })
       }
     })
@@ -390,7 +396,9 @@ export default defineComponent({
           <div class="field">
             <label class="label">Comunidad</label>
             <div class="select is-fullwidth">
-              <Field name="comunity_id" v-slot="{ field, value, handleChange }">
+              <Field
+                v-if="communities.length" 
+                name="community_id" v-slot="{ field, handleChange }">
                 <select
                   v-bind="field"
                   @change="(e) => {
@@ -403,14 +411,17 @@ export default defineComponent({
                     v-for="comunity in communities" 
                     :key="comunity.id" 
                     :value="Number(comunity.id)"
-                    :selected="value === Number(comunity.id)"
                   >
                   {{ comunity.name }}
                   </option>
                 </select>
               </Field>
+              <!-- Placeholder mientras carga -->
+              <select v-else disabled>
+                <option>Cargando comunidades…</option>
+              </select>
             </div>
-            <ErrorMessage name="comunity_id" class="tag is-warning"/>
+            <ErrorMessage name="community_id" class="tag is-warning"/>
           </div>
 
           <div class="field">
