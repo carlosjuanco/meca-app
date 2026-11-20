@@ -68,7 +68,7 @@ export default defineComponent({
 <div :class="{'modal data-profesor-informacion-modal': true, 'is-active': show}">
   <div class="modal-background data-profesor-informacion-modal-background" @click="$emit('close')"></div>
 
-  <div class="modal-card ver-informacion-profesor">
+  <div class="modal-card modal-card-large">
     
     <header class="modal-card-head has-background-link">
       <p class="modal-card-title has-text-white">
@@ -153,60 +153,3 @@ export default defineComponent({
 </div>
 
 </template>
-<style scoped>
-.ver-informacion-profesor {
-  /* Ancho deseado en desktop */
-  width: 80rem;
-  /* Nunca exceder el viewport (Bulma ya usa 20px de margen en modal-background) */
-  max-width: calc(100vw - 40px);
-  max-height: calc(100vh - 40px);
-}
-
-/* El body debe poder hacer scroll en pantallas cortas */
-.ver-informacion-profesor .modal-card-body {
-  overflow-y: auto;
-  flex: 1 1 auto;
-}
-
-/* Permitir que valores largos (ej. CURP, RFC) hagan wrap 
-  Efectivamente si funciona si hago muy corta chica la pantalla, todo el texto se adapda con el campo
-*/
-.ver-informacion-profesor .input {
-  height: auto;
-  white-space: normal;
-  word-break: break-word;
-  padding: 0.5rem 0.75rem;
-  display: block;
-  line-height: 1.4;
-}
-
-/* ===== Ajustes para móvil / tablet ===== */
-@media screen and (max-width: 768px) {
-  .ver-informacion-profesor {
-    width: calc(100vw - 20px);
-    max-width: calc(100vw - 20px);
-    margin: 0 10px;
-  }
-
-  .ver-informacion-profesor .modal-card-head,
-  .ver-informacion-profesor .modal-card-body {
-    padding: 1rem;
-  }
-
-  .ver-informacion-profesor .modal-card-title {
-    font-size: 1.15rem;
-  }
-}
-
-/* Opcional: modal a pantalla completa en móviles muy chicos */
-@media screen and (max-width: 480px) {
-  .ver-informacion-profesor {
-    width: 100%;
-    max-width: 100%;
-    height: 100%;
-    max-height: 100vh;
-    margin: 0;
-    border-radius: 0;
-  }
-}
-</style>

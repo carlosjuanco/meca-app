@@ -168,7 +168,7 @@ export default defineComponent({
 <div :class="{'modal': true, 'is-active': show}">
   <div class="modal-background data-community-details-modal-background" @click="$emit('close')"></div>
 
-  <div class="modal-card ver-reporte-por-comunidad">
+  <div class="modal-card modal-card-large">
 
     <header class="modal-card-head">
       <p class="modal-card-title has-text-centered">
@@ -789,61 +789,3 @@ export default defineComponent({
 </div>
 
 </template>
-
-<style scoped>
-.ver-reporte-por-comunidad {
-  /* Ancho deseado en desktop */
-  width: 80rem;
-  /* Nunca exceder el viewport (Bulma ya usa 20px de margen en modal-background) */
-  max-width: calc(100vw - 40px);
-  max-height: calc(100vh - 40px);
-}
-
-/* El body debe poder hacer scroll en pantallas cortas */
-.ver-reporte-por-comunidad .modal-card-body {
-  overflow-y: auto;
-  flex: 1 1 auto;
-}
-
-/* Permitir que valores largos (ej. CURP, RFC) hagan wrap 
-  Efectivamente si funciona si hago muy corta chica la pantalla, todo el texto se adapda con el campo
-*/
-.ver-reporte-por-comunidad .input {
-  height: auto;
-  white-space: normal;
-  word-break: break-word;
-  padding: 0.5rem 0.75rem;
-  display: block;
-  line-height: 1.4;
-}
-
-/* ===== Ajustes para móvil / tablet ===== */
-@media screen and (max-width: 768px) {
-  .ver-reporte-por-comunidad {
-    width: calc(100vw - 20px);
-    max-width: calc(100vw - 20px);
-    margin: 0 10px;
-  }
-
-  .ver-reporte-por-comunidad .modal-card-head,
-  .ver-reporte-por-comunidad .modal-card-body {
-    padding: 1rem;
-  }
-
-  .ver-reporte-por-comunidad .modal-card-title {
-    font-size: 1.15rem;
-  }
-}
-
-/* Opcional: modal a pantalla completa en móviles muy chicos */
-@media screen and (max-width: 480px) {
-  .ver-reporte-por-comunidad {
-    width: 100%;
-    max-width: 100%;
-    height: 100%;
-    max-height: 100vh;
-    margin: 0;
-    border-radius: 0;
-  }
-}
-</style>

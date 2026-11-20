@@ -291,261 +291,274 @@ export default defineComponent({
       >
         <!-- Cuerpo del modal -->
         <section class="modal-card-body">
+
+          <div class="columns">
+            <div class="column">
       
-          <div class="field">
-            <label class="label">Nombre</label>
-            <Field name="name" v-slot="{ value, handleChange, handleBlur }"
-            >
-              <input 
-                :value="value"
-                @input="handleChange"
-                @blur="handleBlur"
-                ref="firstInput"
-                type="text"
-                class="input"
-                placeholder="Nombre"
-              />
-            </Field>
-            <ErrorMessage name="name" class="tag is-warning"/>
-          </div>
-
-          <div class="field">
-            <label class="label">Apellido paterno</label>
-            <Field name="paternal_surname"
-              type="text"
-              placeholder="Apellido paterno"
-              class="input"
-            >
-            </Field>
-            <ErrorMessage name="paternal_surname" class="tag is-warning"/>
-          </div>
-
-          <div class="field">
-            <label class="label">Apellido materno</label>
-            <Field name="maternal_surname"
-              type="text"
-              placeholder="Apellido materno"
-              class="input"
-            >
-            </Field>
-            <ErrorMessage name="maternal_surname" class="tag is-warning"/>
-          </div>
-
-          <div class="field">
-            <label class="label">CURP</label>
-            <Field name="curp"
-              type="text"
-              placeholder="CURP"
-              class="input"
-            >
-            </Field>
-            <ErrorMessage name="curp" class="tag is-warning"/>
-          </div>
-
-          <div class="field">
-            <label class="label">R.F.C.</label>
-            <Field name="rfc"
-              type="text"
-              placeholder="R.F.C."
-              class="input"
-            >
-            </Field>
-            <ErrorMessage name="rfc" class="tag is-warning"/>
-          </div>
-
-          <div class="field">
-            <label class="label">Sexo</label>
-            <div class="select is-fullwidth">
-              <Field name="gender" v-slot="{ field }">
-                <select v-bind="field">
-                  <option value="" disabled>Seleccione un sexo</option>
-                  <option value="Hombre">Hombre</option>
-                  <option value="Mujer">Mujer</option>
-                </select>
-              </Field>
-            </div>
-            <ErrorMessage name="gender" class="tag is-warning"/>
-          </div>
-
-          <div class="field">
-            <label class="label">Clave presupuestal</label>
-            <Field name="budget_code"
-              type="text"
-              placeholder="Clave presupuestal"
-              class="input"
-            >
-            </Field>
-            <ErrorMessage name="budget_code" class="tag is-warning"/>
-          </div>
-
-          <div class="field">
-            <label class="label">Función</label>
-            <div class="select is-fullwidth">
-              <Field name="funcion" v-slot="{ field }">
-                <select v-bind="field">
-                  <option value="" disabled>Selecciona una función</option>
-                  <option value="Docente">Docente</option>
-                  <option value="Administrativo">Administrativo</option>
-                  <option value="Docente con grupo">Docente con grupo</option>
-                  <option value="Director">Director</option>
-                </select>
-              </Field>
-            </div>
-            <ErrorMessage name="funcion" class="tag is-warning"/>
-          </div>
-
-          <div class="field">
-            <label class="label">Comunidad</label>
-            <div class="select is-fullwidth">
-              <Field
-                v-if="communities.length" 
-                name="community_id" v-slot="{ field, handleChange }">
-                <select
-                  v-bind="field"
-                  @change="(e) => {
-                    handleChange(e)
-                    getAllTheSchools(Number(e.target.value))
-                  }"
+              <div class="field">
+                <label class="label">Nombre</label>
+                <Field name="name" v-slot="{ value, handleChange, handleBlur }"
                 >
-                  <option value="" disabled>Selecciona una comunidad</option>
-                  <option 
-                    v-for="comunity in communities" 
-                    :key="comunity.id" 
-                    :value="Number(comunity.id)"
-                  >
-                  {{ comunity.name }}
-                  </option>
-                </select>
-              </Field>
-              <!-- Placeholder mientras carga -->
-              <select v-else disabled>
-                <option>Cargando comunidades…</option>
-              </select>
+                  <input 
+                    :value="value"
+                    @input="handleChange"
+                    @blur="handleBlur"
+                    ref="firstInput"
+                    type="text"
+                    class="input"
+                    placeholder="Nombre"
+                  />
+                </Field>
+                <ErrorMessage name="name" class="tag is-warning"/>
+              </div>
+
+              <div class="field">
+                <label class="label">Apellido paterno</label>
+                <Field name="paternal_surname"
+                  type="text"
+                  placeholder="Apellido paterno"
+                  class="input"
+                >
+                </Field>
+                <ErrorMessage name="paternal_surname" class="tag is-warning"/>
+              </div>
+
+              <div class="field">
+                <label class="label">Apellido materno</label>
+                <Field name="maternal_surname"
+                  type="text"
+                  placeholder="Apellido materno"
+                  class="input"
+                >
+                </Field>
+                <ErrorMessage name="maternal_surname" class="tag is-warning"/>
+              </div>
+
+              <div class="field">
+                <label class="label">CURP</label>
+                <Field name="curp"
+                  type="text"
+                  placeholder="CURP"
+                  class="input"
+                >
+                </Field>
+                <ErrorMessage name="curp" class="tag is-warning"/>
+              </div>
+
+              <div class="field">
+                <label class="label">R.F.C.</label>
+                <Field name="rfc"
+                  type="text"
+                  placeholder="R.F.C."
+                  class="input"
+                >
+                </Field>
+                <ErrorMessage name="rfc" class="tag is-warning"/>
+              </div>
+
+              <div class="field">
+                <label class="label">Sexo</label>
+                <div class="select is-fullwidth">
+                  <Field name="gender" v-slot="{ field }">
+                    <select v-bind="field">
+                      <option value="" disabled>Seleccione un sexo</option>
+                      <option value="Hombre">Hombre</option>
+                      <option value="Mujer">Mujer</option>
+                    </select>
+                  </Field>
+                </div>
+                <ErrorMessage name="gender" class="tag is-warning"/>
+              </div>
+
             </div>
-            <ErrorMessage name="community_id" class="tag is-warning"/>
-          </div>
 
-          <div class="field">
-            <label class="label">Escuela</label>
-            <div class="select is-fullwidth">
-              <Field name="school_id" v-slot="{ field, value }">
-                <select v-bind="field">
-                  <option value="" disabled>Selecciona una escuela</option>
-                  <option 
-                    v-for="school in schools" 
-                    :key="school.id" 
-                    :value="Number(school.id)"
-                    :selected="value === Number(school.id)"
-                  >
-                  {{ school.name }}
-                  </option>
-                </select>
-              </Field>
+            <div class="column">
+
+              <div class="field">
+                <label class="label">Clave presupuestal</label>
+                <Field name="budget_code"
+                  type="text"
+                  placeholder="Clave presupuestal"
+                  class="input"
+                >
+                </Field>
+                <ErrorMessage name="budget_code" class="tag is-warning"/>
+              </div>
+
+              <div class="field">
+                <label class="label">Función</label>
+                <div class="select is-fullwidth">
+                  <Field name="funcion" v-slot="{ field }">
+                    <select v-bind="field">
+                      <option value="" disabled>Selecciona una función</option>
+                      <option value="Docente">Docente</option>
+                      <option value="Administrativo">Administrativo</option>
+                      <option value="Docente con grupo">Docente con grupo</option>
+                      <option value="Director">Director</option>
+                    </select>
+                  </Field>
+                </div>
+                <ErrorMessage name="funcion" class="tag is-warning"/>
+              </div>
+
+              <div class="field">
+                <label class="label">Comunidad</label>
+                <div class="select is-fullwidth">
+                  <Field
+                    v-if="communities.length" 
+                    name="community_id" v-slot="{ field, handleChange }">
+                    <select
+                      v-bind="field"
+                      @change="(e) => {
+                        handleChange(e)
+                        getAllTheSchools(Number(e.target.value))
+                      }"
+                    >
+                      <option value="" disabled>Selecciona una comunidad</option>
+                      <option 
+                        v-for="comunity in communities" 
+                        :key="comunity.id" 
+                        :value="Number(comunity.id)"
+                      >
+                      {{ comunity.name }}
+                      </option>
+                    </select>
+                  </Field>
+                  <!-- Placeholder mientras carga -->
+                  <select v-else disabled>
+                    <option>Cargando comunidades…</option>
+                  </select>
+                </div>
+                <ErrorMessage name="community_id" class="tag is-warning"/>
+              </div>
+
+              <div class="field">
+                <label class="label">Escuela</label>
+                <div class="select is-fullwidth">
+                  <Field name="school_id" v-slot="{ field, value }">
+                    <select v-bind="field">
+                      <option value="" disabled>Selecciona una escuela</option>
+                      <option 
+                        v-for="school in schools" 
+                        :key="school.id" 
+                        :value="Number(school.id)"
+                        :selected="value === Number(school.id)"
+                      >
+                      {{ school.name }}
+                      </option>
+                    </select>
+                  </Field>
+                </div>
+                <ErrorMessage name="school_id" class="tag is-warning"/>
+              </div>
+
+              <div class="field">
+                <label class="label">Teléfono</label>
+                <Field 
+                  name="telephone"
+                  v-slot="{ field, handleChange }" 
+                >
+                  <input
+                    type="text"
+                    v-bind="field"
+                    @input="(e) => handlePhoneInput(e, handleChange)"
+                    placeholder="Teléfono"
+                    maxlength="12"
+                    class="input"
+                  />
+                </Field>
+                <ErrorMessage name="telephone" class="tag is-warning"/>
+              </div>
             </div>
-            <ErrorMessage name="school_id" class="tag is-warning"/>
-          </div>
 
-          <div class="field">
-            <label class="label">Teléfono</label>
-            <Field 
-              name="telephone"
-              v-slot="{ field, handleChange }" 
-            >
-              <input
-                type="text"
-                v-bind="field"
-                @input="(e) => handlePhoneInput(e, handleChange)"
-                placeholder="Teléfono"
-                maxlength="12"
-                class="input"
-              />
-            </Field>
-            <ErrorMessage name="telephone" class="tag is-warning"/>
-          </div>
+            <div class="column">
 
-          <div class="field">
-            <label class="label">Motivo</label>
-            <Field 
-              name="motivo"
-              v-slot="{ value, field }"
-            >
-              <input
-                :value="value"
-                v-bind="field"
-                type="number"
-                placeholder="Motivo"
-                max="99"
-                min="0"
-                class="input"
-              />
-            </Field>
-            <ErrorMessage name="motivo" class="tag is-warning"/>
-          </div>
+              <div class="field">
+                <label class="label">Motivo</label>
+                <Field 
+                  name="motivo"
+                  v-slot="{ value, field }"
+                >
+                  <input
+                    :value="value"
+                    v-bind="field"
+                    type="number"
+                    placeholder="Motivo"
+                    max="99"
+                    min="0"
+                    class="input"
+                  />
+                </Field>
+                <ErrorMessage name="motivo" class="tag is-warning"/>
+              </div>
 
-          <div class="field">
-            <label class="label">Fecha de ingreso a la SEP</label>
-            <Field 
-              name="date_of_entry_into_the_sep"
-              v-slot="{ field }"
-            >
-              <input
-                type="date"
-                v-bind="field"
-                placeholder="Fecha de ingreso a la SEP"
-                class="input"
-              />
-            </Field>
-            <ErrorMessage name="date_of_entry_into_the_sep" class="tag is-warning"/>
-          </div>
+              <div class="field">
+                <label class="label">Fecha de ingreso a la SEP</label>
+                <Field 
+                  name="date_of_entry_into_the_sep"
+                  v-slot="{ field }"
+                >
+                  <input
+                    type="date"
+                    v-bind="field"
+                    placeholder="Fecha de ingreso a la SEP"
+                    class="input"
+                  />
+                </Field>
+                <ErrorMessage name="date_of_entry_into_the_sep" class="tag is-warning"/>
+              </div>
 
-          <div class="field">
-            <label class="label">Perfil de estudios</label>
-            <div class="select is-fullwidth">
-              <Field name="study_profile" v-slot="{ field }">
-                <select v-bind="field">
-                  <option value="" disabled>Seleccione un perfil de estudios</option>
-                  <option value="Titulado de U.P.N.">Titulado de U.P.N.</option>
-                  <option value="Pasante de normal superior">Pasante de normal superior</option>
-                  <option value="Pasante de maestría">Pasante de maestría</option>
-                  <option value="Pasante de U.P.N.">Pasante de U.P.N.</option>
-                </select>
-              </Field>
+              <div class="field">
+                <label class="label">Perfil de estudios</label>
+                <div class="select is-fullwidth">
+                  <Field name="study_profile" v-slot="{ field }">
+                    <select v-bind="field">
+                      <option value="" disabled>Seleccione un perfil de estudios</option>
+                      <option value="Titulado de U.P.N.">Titulado de U.P.N.</option>
+                      <option value="Pasante de normal superior">Pasante de normal superior</option>
+                      <option value="Pasante de maestría">Pasante de maestría</option>
+                      <option value="Pasante de U.P.N.">Pasante de U.P.N.</option>
+                    </select>
+                  </Field>
+                </div>
+                <ErrorMessage name="study_profile" class="tag is-warning"/>
+              </div>
+
+              <div class="field">
+                <label class="label">Lengua</label>
+                <div class="select is-fullwidth">
+                  <Field name="language" v-slot="{ field }">
+                    <select v-bind="field">
+                      <option value="" disabled>Selecciona una lengua</option>
+                      <option value="Mixteca">Mixteca</option>
+                      <option value="Cañada">Cañada</option>
+                      <option value="Costa">Costa</option>
+                      <option value="Istmo">Istmo</option>
+                      <option value="Papaloapan">Papaloapan</option>
+                      <option value="Sierra sur">Sierra sur</option>
+                      <option value="Sierra norte">Sierra norte</option>
+                      <option value="Valles centrales">Valles centrales</option>
+                    </select>
+                  </Field>
+                </div>
+                <ErrorMessage name="language" class="tag is-warning"/>
+              </div>
+
+              <div class="field">
+                <label class="label">Variante de lengua</label>
+                <div class="select is-fullwidth">
+                  <Field name="language_variant" v-slot="{ field }">
+                    <select v-bind="field">
+                      <option value="" disabled>Selecciona una variante</option>
+                      <option value="Alta">Alta</option>
+                      <option value="Baja">Baja</option>
+                    </select>
+                  </Field>
+                </div>
+                <ErrorMessage name="language_variant" class="tag is-warning"/>
+              </div>
+
             </div>
-            <ErrorMessage name="study_profile" class="tag is-warning"/>
-          </div>
-
-          <div class="field">
-            <label class="label">Lengua</label>
-            <div class="select is-fullwidth">
-              <Field name="language" v-slot="{ field }">
-                <select v-bind="field">
-                  <option value="" disabled>Selecciona una lengua</option>
-                  <option value="Mixteca">Mixteca</option>
-                  <option value="Cañada">Cañada</option>
-                  <option value="Costa">Costa</option>
-                  <option value="Istmo">Istmo</option>
-                  <option value="Papaloapan">Papaloapan</option>
-                  <option value="Sierra sur">Sierra sur</option>
-                  <option value="Sierra norte">Sierra norte</option>
-                  <option value="Valles centrales">Valles centrales</option>
-                </select>
-              </Field>
-            </div>
-            <ErrorMessage name="language" class="tag is-warning"/>
-          </div>
-
-          <div class="field">
-            <label class="label">Variante de lengua</label>
-            <div class="select is-fullwidth">
-              <Field name="language_variant" v-slot="{ field }">
-                <select v-bind="field">
-                  <option value="" disabled>Selecciona una variante</option>
-                  <option value="Alta">Alta</option>
-                  <option value="Baja">Baja</option>
-                </select>
-              </Field>
-            </div>
-            <ErrorMessage name="language_variant" class="tag is-warning"/>
           </div>
         </section>
 
