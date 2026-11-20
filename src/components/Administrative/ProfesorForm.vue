@@ -39,6 +39,9 @@ export default defineComponent({
     // Crear un contador para la key
     const modalKey = ref(0)
 
+    // Crear un contador para hacer un formulario único
+    const formId = `profesor-form-${Math.random().toString(36).slice(2, 8)}`
+
     // Inicializar la variable form, con datos vacios
     const initialValues = reactive({} as DataModel)
 
@@ -255,6 +258,7 @@ export default defineComponent({
       save,
       loading,
       modalKey,
+      formId,
       firstInput,
       schema,
       showModalInternalNotification,
@@ -273,7 +277,7 @@ export default defineComponent({
   <div :class="{'modal': true, 'is-active': show}">
     <div class="modal-background data-profesor-form-modal-background" @click="$emit('close')"></div>
 
-    <div class="modal-card">
+    <div class="modal-card modal-card-large">
 
       <header class="modal-card-head">
         <p class="modal-card-title">
@@ -283,15 +287,16 @@ export default defineComponent({
         <button class="delete data-profesor-form-delete" data- @click="$emit('close')"></button>
       </header>
 
-      <Form
-        :key="data?.id ? `edit-${data.id}` : `new-${modalKey}`" 
-        :validation-schema="schema" 
-        :initial-values="initialValues"
-        @submit="save"
-      >
-        <!-- Cuerpo del modal -->
-        <section class="modal-card-body">
+      <!-- Cuerpo del modal -->
+      <section class="modal-card-body">
 
+        <Form
+          :id="formId"
+          :key="data?.id ? `edit-${data.id}` : `new-${modalKey}`" 
+          :validation-schema="schema" 
+          :initial-values="initialValues"
+          @submit="save"
+        >
           <div class="columns">
             <div class="column">
       
@@ -560,30 +565,31 @@ export default defineComponent({
 
             </div>
           </div>
-        </section>
 
-        <!-- Pie del modal -->
-        <footer class="modal-card-foot">
-          <div class="buttons">
-            <button
-              type="submit"
-              :class="{'button is-link': true, 'is-loading': loading }"
-              :disabled="loading == true"
-            >
-              <span v-if="data.id">Actualizar</span>
-              <span v-else>Guardar</span>
-            </button>
+        </Form>
+      </section>
 
-            <button class="button" 
-              type="button"
-              @click="$emit('close')"
-            >
-              Cancelar
-            </button>
-          </div>
-        </footer>
+      <!-- Pie del modal -->
+      <footer class="modal-card-foot">
+        <div class="buttons">
+          <button
+            type="submit"
+            :form="formId"
+            :class="{'button is-link': true, 'is-loading': loading }"
+            :disabled="loading == true"
+          >
+            <span v-if="data.id">Actualizar</span>
+            <span v-else>Guardar</span>
+          </button>
 
-      </Form>
+          <button class="button" 
+            type="button"
+            @click="$emit('close')"
+          >
+            Cancelar
+          </button>
+        </div>
+      </footer>
     </div>
   </div>
 
